@@ -74,7 +74,7 @@ func GetOrderItem(id string) (types.Item, error) {
 
 	if err != nil {
 		return item, err
-	}	
+	}
 
 	if resp.StatusCode != 200 {
 		return item, fmt.Errorf("item was not found")
@@ -83,7 +83,7 @@ func GetOrderItem(id string) (types.Item, error) {
 	respBody, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return item, err
-	}	
+	}
 
 	err = json.Unmarshal(respBody, &item)
 	if err != nil {
