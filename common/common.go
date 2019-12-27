@@ -63,6 +63,7 @@ func ErrorHandler(w http.ResponseWriter, err error) {
 	}
 }
 
+//NotFoundHandler returns a 404 when an entity is not found
 func NotFoundHandler(w http.ResponseWriter, msg string) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusNotFound)
@@ -75,6 +76,7 @@ func NotFoundHandler(w http.ResponseWriter, msg string) {
 	}
 }
 
+//BadRequestHandler returns a 400 when the client sends an incorrect payload
 func BadRequestHandler(w http.ResponseWriter, err error) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusNotFound)
@@ -87,6 +89,7 @@ func BadRequestHandler(w http.ResponseWriter, err error) {
 	}
 }
 
+//ResponseHandler returns a 200 when the response is successful
 func ResponseHandler(w http.ResponseWriter, response interface{}) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
