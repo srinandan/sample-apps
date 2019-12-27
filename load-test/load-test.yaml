@@ -28,17 +28,19 @@ spec:
         - containerPort: 8080
         env:
           - name: API_KEY
-            value: "xxxx"        
+            value: "xxxx"   #set actual api key
         resources:
           requests:
             cpu: 250m
         args:
         - load
         - -t
-        - 30s
+        - "0" #run forever
         - -qps
         - "1"
-        - -quiet        
+        - -quiet
+        - -H
+        - "x-api-key: $API_KEY"        
         - https://httpbin.org/get
       nodeSelector:
         cloud.google.com/gke-nodepool: apps
