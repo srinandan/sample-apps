@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: inventory
+  labels:
+    app: inventory
+spec:
+  ports:
+  - port: 8080
+    name: http
+  selector:
+    app: inventory
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: inventory
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: inventory
+        version: v1
+    spec:
+      containers:
+      - image: gcr.io/nandanks-151422/inventory
+        imagePullPolicy: IfNotPresent
+        name: inventory
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            cpu: 100m
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      nodeSelector:
+        cloud.google.com/gke-nodepool: apps                          

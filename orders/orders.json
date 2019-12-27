@@ -1,0 +1,38 @@
+[
+    {
+        "operationId": "100000",
+        "shipmentId": "shipment-1",
+        "lineItems": [
+          {
+            "lineItemId": "999999",
+            "quantity": 1
+          }
+        ],
+        "carrier": "FedEx",
+        "trackingId": "200000"
+      },
+      {
+        "operationId": "100001",
+        "shipmentId": "shipment-2",
+        "lineItems": [
+          {
+            "lineItemId": "999998",
+            "quantity": 1
+          }
+        ],
+        "carrier": "UPS",
+        "trackingId": "200001"
+      },
+      {
+        "operationId": "100002",
+        "shipmentId": "shipment-3",
+        "lineItems": [
+          {
+            "lineItemId": "999997",
+            "quantity": 1
+          }
+        ],
+        "carrier": "USPS",
+        "trackingId": "200002"
+      }
+]

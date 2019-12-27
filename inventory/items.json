@@ -1,0 +1,53 @@
+[
+    {
+        "inventory": {
+          "salePrice": {
+            "currency": "USD",
+            "value": "225.72"
+          },
+          "sellOnGoogleQuantity": "1",
+          "availability": 0,
+          "kind": "content#inventory",
+          "price": {
+            "currency": "USD",
+            "value": "238.13"
+          }
+        },
+        "productId": "999999",
+        "storeCode": "online"
+      },
+      {
+        "inventory": {
+          "salePrice": {
+            "currency": "USD",
+            "value": "225.72"
+          },
+          "sellOnGoogleQuantity": "1",
+          "availability": 5,
+          "kind": "content#inventory",
+          "price": {
+            "currency": "USD",
+            "value": "238.13"
+          }
+        },
+        "productId": "999998",
+        "storeCode": "online"
+      },
+      {
+        "inventory": {
+          "salePrice": {
+            "currency": "USD",
+            "value": "225.72"
+          },
+          "sellOnGoogleQuantity": "5",
+          "availability": 10,
+          "kind": "content#inventory",
+          "price": {
+            "currency": "USD",
+            "value": "238.13"
+          }
+        },
+        "productId": "999997",
+        "storeCode": "online"
+      }
+]
