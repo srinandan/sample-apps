@@ -1,6 +1,7 @@
 #docker build -t gcr.io/nandanks-151422/orders .
 #docker run -d -p 8080:8080 --name orders -e DEBUG="true" gcr.io/nandanks-151422/orders
 FROM golang:latest as builder
+RUN useradd -U app
 ADD . /go/src/orders 
 WORKDIR /go/src/orders
 COPY . /go/src/orders
@@ -16,5 +17,7 @@ FROM scratch
 WORKDIR /
 COPY --from=builder /go/bin/orders .
 COPY --from=builder /go/src/orders/orders.json .
+COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+USER app
 CMD ["./orders"]
