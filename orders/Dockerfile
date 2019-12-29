@@ -7,7 +7,7 @@ WORKDIR /go/src/orders
 COPY . /go/src/orders
 ENV GO111MODULE=on
 RUN go mod download
-RUN CGO_ENABLED=0 GOOS=linux go build -o /go/bin/orders
+RUN CGO_ENABLED=0 GOOS=linux go build -a -ldflags '-w -extldflags "-static"' -o /go/bin/orders
 
 #without these certificates, we cannot verify the JWT token
 FROM alpine:latest as certs
