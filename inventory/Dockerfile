@@ -7,7 +7,7 @@ WORKDIR /go/src/inventory
 COPY . /go/src/inventory
 ENV GO111MODULE=on
 RUN go mod download
-RUN CGO_ENABLED=0 GOOS=linux go build -o /go/bin/inventory
+RUN CGO_ENABLED=0 GOOS=linux go build -a -ldflags '-w -extldflags "-static"' -o /go/bin/inventory
 
 #without these certificates, we cannot verify the JWT token
 FROM alpine:latest as certs
