@@ -32,7 +32,7 @@ spec:
         env:
           - name: DEBUG
             value: "true"     
-          - name: tracking
+          - name: TRACKING
             value: "http://tracking.apps.svc.cluster.local:50051"             
         resources:
           requests:
