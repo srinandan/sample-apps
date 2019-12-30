@@ -30,6 +30,8 @@ build:
         - golang:latest
         - alpine:latest
       dockerfile: ./Dockerfile.client
+cluster:
+  namespace: apps
 deploy:
   kubectl:
     manifests:
