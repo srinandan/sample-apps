@@ -30,10 +30,10 @@ build:
         - golang:latest
         - alpine:latest
       dockerfile: ./Dockerfile.client
-cluster:
-  namespace: apps
 deploy:
   kubectl:
+    flags:
+      global: ["--namespace=apps"]
     manifests:
     - inventory/inventory.yaml
     - orders/orders.yaml
