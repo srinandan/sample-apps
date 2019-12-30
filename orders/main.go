@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"log"
 
 	"github.com/gorilla/mux"
 	common "github.com/srinandan/sample-apps/common"
@@ -47,7 +46,7 @@ func main() {
 
 	go func() {
 		if err := srv.ListenAndServe(); err != nil {
-			log.Println(err)
+			common.Error.Println(err)
 		}
 	}()
 	c := make(chan os.Signal, 1)
