@@ -10,7 +10,7 @@ build:
       cacheFrom: 
         - golang:latest
         - alpine:latest        
-  - image: gcr.io/nandanks-151422/order
+  - image: gcr.io/nandanks-151422/orders
     context: orders
     docker:
       cacheFrom: 
