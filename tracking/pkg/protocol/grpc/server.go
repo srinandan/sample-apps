@@ -8,9 +8,9 @@ import (
 
 	"google.golang.org/grpc"
 
+	common "github.com/srinandan/sample-apps/common"
 	api "github.com/srinandan/sample-apps/tracking/pkg/api/v1"
 	service "github.com/srinandan/sample-apps/tracking/pkg/service/v1"
-	common "github.com/srinandan/sample-apps/common"
 )
 
 // RunServer runs gRPC service to publish tracking service
@@ -26,7 +26,7 @@ func RunServer(port string) error {
 	// register service
 	server := grpc.NewServer()
 
-	trackingService,err := service.NewTrackingService()
+	trackingService, err := service.NewTrackingService()
 	if err != nil {
 		return err
 	}
