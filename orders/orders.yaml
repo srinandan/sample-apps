@@ -24,7 +24,7 @@ spec:
         version: v1
     spec:
       containers:
-      - image: gcr.io/nandanks-151422/order
+      - image: gcr.io/nandanks-151422/orders
         imagePullPolicy: IfNotPresent
         name: orders
         ports:
