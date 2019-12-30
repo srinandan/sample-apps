@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tracking-client
+  labels:
+    app: tracking-client
+spec:
+  ports:
+  - port: 8080
+    name: http
+  selector:
+    app: tracking-client
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: tracking-client
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: tracking-client
+        version: v1
+    spec:
+      containers:
+      - image: gcr.io/nandanks-151422/tracking-client
+        imagePullPolicy: IfNotPresent
+        name: tracking-client
+        ports:
+        - containerPort: 8080
+        env:
+          - name: DEBUG
+            value: "true"     
+          - name: tracking
+            value: "http://tracking.apps.svc.cluster.local:50051"             
+        resources:
+          requests:
+            cpu: 100m
+      nodeSelector:
+        cloud.google.com/gke-nodepool: apps          

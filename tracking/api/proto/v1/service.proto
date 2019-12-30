@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package v1;
+
+service Tracking {
+    rpc GetTrackingDetails(TrackingRequest) returns (TrackingResponse) {};
+}
+
+message TrackingRequest {
+    string trackingId = 1;
+}
+
+message TrackingResponse {
+    string trackingId = 1;
+    string status = 2;
+    string created = 3;
+    string updated = 4;
+    string signed = 5;
+    string weight = 6;
+    string est_delivery_date = 7;
+    string carrier = 8;
+}

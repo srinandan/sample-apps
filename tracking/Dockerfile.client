@@ -1,0 +1,25 @@
+#docker build -f Dockerfile.client -t gcr.io/nandanks-151422/tracking-client .
+#docker run -d -p 50051:50051 --name tracking gcr.io/nandanks-151422/tracking-client
+FROM golang:latest as builder
+RUN useradd -U app
+ADD ./api /go/src/tracking-client/api
+ADD ./cmd/client /go/src/tracking-client/cmd/client
+ADD ./pkg /go/src/tracking-client/pkg
+COPY go.mod go.sum /go/src/tracking-client/
+WORKDIR /go/src/tracking-client
+
+ENV GO111MODULE=on
+RUN go mod download
+RUN CGO_ENABLED=0 GOOS=linux go build -a -ldflags '-w -extldflags "-static"' -o /go/bin/tracking-client /go/src/tracking-client/cmd/client/main.go
+
+#without these certificates, we cannot verify the JWT token
+FROM alpine:latest as certs
+RUN apk --update add ca-certificates
+
+FROM scratch
+WORKDIR /
+COPY --from=builder /go/bin/tracking-client .
+COPY --from=builder /etc/passwd /etc/passwd
+COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+USER app
+CMD ["./tracking-client"]
