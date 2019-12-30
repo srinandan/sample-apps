@@ -6,10 +6,34 @@ build:
   artifacts:
   - image: gcr.io/nandanks-151422/inventory
     context: inventory
+    docker:
+      cacheFrom: 
+        - golang:latest
+        - alpine:latest        
   - image: gcr.io/nandanks-151422/order
     context: orders
+    docker:
+      cacheFrom: 
+        - golang:latest
+        - alpine:latest        
+  - image: gcr.io/nandanks-151422/tracking
+    context: tracking
+    docker:
+      cacheFrom: 
+        - golang:latest
+        - alpine:latest    
+      dockerfile: ./Dockerfile.server
+  - image: gcr.io/nandanks-151422/tracking-client
+    context: tracking
+    docker:
+      cacheFrom: 
+        - golang:latest
+        - alpine:latest
+      dockerfile: ./Dockerfile.client
 deploy:
   kubectl:
     manifests:
     - inventory/inventory.yaml
     - orders/orders.yaml
+    - tracking/tracking.yaml
+    - tracking/tracking-client.yaml
