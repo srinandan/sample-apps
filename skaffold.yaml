@@ -3,6 +3,8 @@ kind: Config
 metadata:
   name: sample-apps
 build:
+  googleCloudBuild:
+    projectId: nandanks-151422
   artifacts:
   - image: gcr.io/nandanks-151422/inventory
     context: inventory
