@@ -1,9 +1,12 @@
 syntax = "proto3";
 
+import "google/protobuf/empty.proto";
+
 package v1;
 
 service Tracking {
     rpc GetTrackingDetails(TrackingRequest) returns (TrackingResponse) {};
+    rpc ListTrackingDetails(google.protobuf.Empty) returns (TrackingListResponse) {};
 }
 
 message TrackingRequest {
@@ -14,9 +17,13 @@ message TrackingResponse {
     string trackingId = 1;
     string status = 2;
     string created = 3;
-    string updated = 4;
     string signed = 5;
+    string updated = 4;
     string weight = 6;
     string est_delivery_date = 7;
     string carrier = 8;
+}
+
+message TrackingListResponse {
+    repeated TrackingResponse trackingResponse = 1;
 }

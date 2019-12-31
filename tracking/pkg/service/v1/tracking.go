@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 
+	empty "github.com/golang/protobuf/ptypes/empty"
 	v1 "github.com/srinandan/sample-apps/tracking/pkg/api/v1"
 )
 
@@ -64,4 +65,25 @@ func (s *trackingServer) GetTrackingDetails(ctx context.Context, req *v1.Trackin
 		}
 	}
 	return &v1.TrackingResponse{}, fmt.Errorf("tracking item not found")
+}
+
+func (s *trackingServer) ListTrackingDetails(ctx context.Context, empty *empty.Empty) (*v1.TrackingListResponse, error) {
+	trackingListResponse := v1.TrackingListResponse{}
+	
+	if len(trackingItems) == 0 {
+		return &trackingListResponse, fmt.Errorf("tracking items not found")
+	}
+
+	for _, trackingItem := range trackingItems {
+		trackingResponse := v1.TrackingResponse{}
+		trackingResponse.TrackingId = trackingItem.TrackingId
+		trackingResponse.Status = trackingItem.Status
+		trackingResponse.Created = trackingItem.Created
+		trackingResponse.Updated = trackingItem.Updated
+		trackingResponse.Weight = trackingItem.Weight
+		trackingResponse.EstDeliveryDate = trackingItem.EstDeliveryDate
+		trackingResponse.Carrier = trackingItem.Carrier
+		trackingListResponse.TrackingResponse = append(trackingListResponse.TrackingResponse, &trackingResponse)
+	}
+	return &trackingListResponse, nil
 }
