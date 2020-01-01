@@ -31,11 +31,11 @@ func main() {
 	r.HandleFunc("/items/{id}", apis.DeleteInventoryHandler).
 		Methods("DELETE")
 
-	common.Info.Println("Starting server - ", common.Address)
+	common.Info.Println("Starting server - ", common.GetAddress())
 
 	//the following code is from gorilla mux samples
 	srv := &http.Server{
-		Addr:         common.Address,
+		Addr:         common.GetAddress(),
 		WriteTimeout: time.Second * 15,
 		ReadTimeout:  time.Second * 15,
 		IdleTimeout:  time.Second * 60,
