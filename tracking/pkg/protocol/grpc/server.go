@@ -18,6 +18,8 @@ func RunServer(port string) error {
 
 	ctx := context.Background()
 
+	common.Info.Println("Starting server on port ", port)
+
 	listen, err := net.Listen("tcp", ":"+port)
 	if err != nil {
 		return err
