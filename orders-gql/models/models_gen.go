@@ -17,16 +17,16 @@ type Item struct {
 }
 
 type LineItem struct {
-	LineItem []*Item `json:"lineItem"`
-	Quantity *int    `json:"quantity"`
+	Item     *Item `json:"item"`
+	Quantity *int  `json:"quantity"`
 }
 
 type Order struct {
-	ID         string    `json:"id"`
-	ShipmentID *string   `json:"shipmentId"`
-	LineItems  *LineItem `json:"lineItems"`
-	Carrier    *string   `json:"carrier"`
-	TrackingID *string   `json:"trackingId"`
+	OperationID string      `json:"operationId"`
+	ShipmentID  *string     `json:"shipmentId"`
+	LineItems   []*LineItem `json:"lineItems"`
+	Carrier     *string     `json:"carrier"`
+	TrackingID  *string     `json:"trackingId"`
 }
 
 type Price struct {

@@ -1,25 +1,20 @@
 package main
 
 import (
-	"log"
 	"net/http"
-	"os"
 
 	"github.com/99designs/gqlgen/handler"
-	orders_gql "github.com/srinandan/sample-apps/orders-gql"
+	common "github.com/srinandan/sample-apps/common"
+	gql "github.com/srinandan/sample-apps/orders-gql/gql"
+	resolvers "github.com/srinandan/sample-apps/orders-gql/resolvers"
 )
 
-const defaultPort = "8080"
-
 func main() {
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = defaultPort
-	}
-
 	http.Handle("/", handler.Playground("GraphQL playground", "/query"))
-	http.Handle("/query", handler.GraphQL(orders_gql.NewExecutableSchema(orders_gql.Config{Resolvers: &orders_gql.Resolver{}})))
-
-	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+	http.Handle("/query", handler.GraphQL(gql.NewExecutableSchema(gql.Config{Resolvers: &resolvers.Resolver{}})))
+	
+	common.InitLog()
+	
+	common.Info.Printf("connect to http://%s/ for GraphQL playground", common.GetAddress())
+	common.Error.Fatal(http.ListenAndServe(common.GetAddress(), nil))
 }

@@ -13,3 +13,5 @@ resolver:
   filename: resolvers/resolver.go
   type: Resolver
 autobind: []
+
+struct_tag: json

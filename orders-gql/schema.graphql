@@ -23,20 +23,20 @@ type Item {
 }
 
 type LineItem {
-  lineItem: [Item!]!
+  item: Item
   quantity: Int
 }
 
 
 type Order {
-  id: ID!
+  operationId: ID!
   shipmentId: String
-  lineItems: LineItem
+  lineItems: [LineItem!]!
   carrier: String
   trackingId: String
 }
 
 type Query {
-  getOrder(id: ID!): Order
+  getOrder(operationId: ID!): Order
   listOrders: [Order!]!
 }

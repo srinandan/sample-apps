@@ -57,16 +57,16 @@ type ComplexityRoot struct {
 	}
 
 	LineItem struct {
-		LineItem func(childComplexity int) int
+		Item     func(childComplexity int) int
 		Quantity func(childComplexity int) int
 	}
 
 	Order struct {
-		Carrier    func(childComplexity int) int
-		ID         func(childComplexity int) int
-		LineItems  func(childComplexity int) int
-		ShipmentID func(childComplexity int) int
-		TrackingID func(childComplexity int) int
+		Carrier     func(childComplexity int) int
+		LineItems   func(childComplexity int) int
+		OperationID func(childComplexity int) int
+		ShipmentID  func(childComplexity int) int
+		TrackingID  func(childComplexity int) int
 	}
 
 	Price struct {
@@ -75,13 +75,13 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		GetOrder   func(childComplexity int, id string) int
+		GetOrder   func(childComplexity int, operationID string) int
 		ListOrders func(childComplexity int) int
 	}
 }
 
 type QueryResolver interface {
-	GetOrder(ctx context.Context, id string) (*models.Order, error)
+	GetOrder(ctx context.Context, operationID string) (*models.Order, error)
 	ListOrders(ctx context.Context) ([]*models.Order, error)
 }
 
@@ -156,12 +156,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Item.StoreCode(childComplexity), true
 
-	case "LineItem.lineItem":
-		if e.complexity.LineItem.LineItem == nil {
+	case "LineItem.item":
+		if e.complexity.LineItem.Item == nil {
 			break
 		}
 
-		return e.complexity.LineItem.LineItem(childComplexity), true
+		return e.complexity.LineItem.Item(childComplexity), true
 
 	case "LineItem.quantity":
 		if e.complexity.LineItem.Quantity == nil {
@@ -177,19 +177,19 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Order.Carrier(childComplexity), true
 
-	case "Order.id":
-		if e.complexity.Order.ID == nil {
-			break
-		}
-
-		return e.complexity.Order.ID(childComplexity), true
-
 	case "Order.lineItems":
 		if e.complexity.Order.LineItems == nil {
 			break
 		}
 
 		return e.complexity.Order.LineItems(childComplexity), true
+
+	case "Order.operationId":
+		if e.complexity.Order.OperationID == nil {
+			break
+		}
+
+		return e.complexity.Order.OperationID(childComplexity), true
 
 	case "Order.shipmentId":
 		if e.complexity.Order.ShipmentID == nil {
@@ -229,7 +229,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetOrder(childComplexity, args["id"].(string)), true
+		return e.complexity.Query.GetOrder(childComplexity, args["operationId"].(string)), true
 
 	case "Query.listOrders":
 		if e.complexity.Query.ListOrders == nil {
@@ -312,21 +312,21 @@ type Item {
 }
 
 type LineItem {
-  lineItem: [Item!]!
+  item: Item
   quantity: Int
 }
 
 
 type Order {
-  id: ID!
+  operationId: ID!
   shipmentId: String
-  lineItems: LineItem
+  lineItems: [LineItem!]!
   carrier: String
   trackingId: String
 }
 
 type Query {
-  getOrder(id: ID!): Order
+  getOrder(operationId: ID!): Order
   listOrders: [Order!]!
 }`},
 )
@@ -353,13 +353,13 @@ func (ec *executionContext) field_Query_getOrder_args(ctx context.Context, rawAr
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
-	if tmp, ok := rawArgs["id"]; ok {
+	if tmp, ok := rawArgs["operationId"]; ok {
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["id"] = arg0
+	args["operationId"] = arg0
 	return args, nil
 }
 
@@ -671,7 +671,7 @@ func (ec *executionContext) _Item_storeCode(ctx context.Context, field graphql.C
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _LineItem_lineItem(ctx context.Context, field graphql.CollectedField, obj *models.LineItem) (ret graphql.Marshaler) {
+func (ec *executionContext) _LineItem_item(ctx context.Context, field graphql.CollectedField, obj *models.LineItem) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -690,22 +690,19 @@ func (ec *executionContext) _LineItem_lineItem(ctx context.Context, field graphq
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.LineItem, nil
+		return obj.Item, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.([]*models.Item)
+	res := resTmp.(*models.Item)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNItem2ᚕᚖgithubᚗcomᚋsrinandanᚋsampleᚑappsᚋordersᚑgqlᚋmodelsᚐItemᚄ(ctx, field.Selections, res)
+	return ec.marshalOItem2ᚖgithubᚗcomᚋsrinandanᚋsampleᚑappsᚋordersᚑgqlᚋmodelsᚐItem(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _LineItem_quantity(ctx context.Context, field graphql.CollectedField, obj *models.LineItem) (ret graphql.Marshaler) {
@@ -742,7 +739,7 @@ func (ec *executionContext) _LineItem_quantity(ctx context.Context, field graphq
 	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Order_id(ctx context.Context, field graphql.CollectedField, obj *models.Order) (ret graphql.Marshaler) {
+func (ec *executionContext) _Order_operationId(ctx context.Context, field graphql.CollectedField, obj *models.Order) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -761,7 +758,7 @@ func (ec *executionContext) _Order_id(ctx context.Context, field graphql.Collect
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
+		return obj.OperationID, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -839,12 +836,15 @@ func (ec *executionContext) _Order_lineItems(ctx context.Context, field graphql.
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*models.LineItem)
+	res := resTmp.([]*models.LineItem)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOLineItem2ᚖgithubᚗcomᚋsrinandanᚋsampleᚑappsᚋordersᚑgqlᚋmodelsᚐLineItem(ctx, field.Selections, res)
+	return ec.marshalNLineItem2ᚕᚖgithubᚗcomᚋsrinandanᚋsampleᚑappsᚋordersᚑgqlᚋmodelsᚐLineItemᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Order_carrier(ctx context.Context, field graphql.CollectedField, obj *models.Order) (ret graphql.Marshaler) {
@@ -1009,7 +1009,7 @@ func (ec *executionContext) _Query_getOrder(ctx context.Context, field graphql.C
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetOrder(rctx, args["id"].(string))
+		return ec.resolvers.Query().GetOrder(rctx, args["operationId"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2366,11 +2366,8 @@ func (ec *executionContext) _LineItem(ctx context.Context, sel ast.SelectionSet,
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("LineItem")
-		case "lineItem":
-			out.Values[i] = ec._LineItem_lineItem(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
+		case "item":
+			out.Values[i] = ec._LineItem_item(ctx, field, obj)
 		case "quantity":
 			out.Values[i] = ec._LineItem_quantity(ctx, field, obj)
 		default:
@@ -2395,8 +2392,8 @@ func (ec *executionContext) _Order(ctx context.Context, sel ast.SelectionSet, ob
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Order")
-		case "id":
-			out.Values[i] = ec._Order_id(ctx, field, obj)
+		case "operationId":
+			out.Values[i] = ec._Order_operationId(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -2404,6 +2401,9 @@ func (ec *executionContext) _Order(ctx context.Context, sel ast.SelectionSet, ob
 			out.Values[i] = ec._Order_shipmentId(ctx, field, obj)
 		case "lineItems":
 			out.Values[i] = ec._Order_lineItems(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "carrier":
 			out.Values[i] = ec._Order_carrier(ctx, field, obj)
 		case "trackingId":
@@ -2773,11 +2773,11 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 	return res
 }
 
-func (ec *executionContext) marshalNItem2githubᚗcomᚋsrinandanᚋsampleᚑappsᚋordersᚑgqlᚋmodelsᚐItem(ctx context.Context, sel ast.SelectionSet, v models.Item) graphql.Marshaler {
-	return ec._Item(ctx, sel, &v)
+func (ec *executionContext) marshalNLineItem2githubᚗcomᚋsrinandanᚋsampleᚑappsᚋordersᚑgqlᚋmodelsᚐLineItem(ctx context.Context, sel ast.SelectionSet, v models.LineItem) graphql.Marshaler {
+	return ec._LineItem(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNItem2ᚕᚖgithubᚗcomᚋsrinandanᚋsampleᚑappsᚋordersᚑgqlᚋmodelsᚐItemᚄ(ctx context.Context, sel ast.SelectionSet, v []*models.Item) graphql.Marshaler {
+func (ec *executionContext) marshalNLineItem2ᚕᚖgithubᚗcomᚋsrinandanᚋsampleᚑappsᚋordersᚑgqlᚋmodelsᚐLineItemᚄ(ctx context.Context, sel ast.SelectionSet, v []*models.LineItem) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -2801,7 +2801,7 @@ func (ec *executionContext) marshalNItem2ᚕᚖgithubᚗcomᚋsrinandanᚋsample
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNItem2ᚖgithubᚗcomᚋsrinandanᚋsampleᚑappsᚋordersᚑgqlᚋmodelsᚐItem(ctx, sel, v[i])
+			ret[i] = ec.marshalNLineItem2ᚖgithubᚗcomᚋsrinandanᚋsampleᚑappsᚋordersᚑgqlᚋmodelsᚐLineItem(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -2814,14 +2814,14 @@ func (ec *executionContext) marshalNItem2ᚕᚖgithubᚗcomᚋsrinandanᚋsample
 	return ret
 }
 
-func (ec *executionContext) marshalNItem2ᚖgithubᚗcomᚋsrinandanᚋsampleᚑappsᚋordersᚑgqlᚋmodelsᚐItem(ctx context.Context, sel ast.SelectionSet, v *models.Item) graphql.Marshaler {
+func (ec *executionContext) marshalNLineItem2ᚖgithubᚗcomᚋsrinandanᚋsampleᚑappsᚋordersᚑgqlᚋmodelsᚐLineItem(ctx context.Context, sel ast.SelectionSet, v *models.LineItem) graphql.Marshaler {
 	if v == nil {
 		if !ec.HasError(graphql.GetResolverContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
 		}
 		return graphql.Null
 	}
-	return ec._Item(ctx, sel, v)
+	return ec._LineItem(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalNOrder2githubᚗcomᚋsrinandanᚋsampleᚑappsᚋordersᚑgqlᚋmodelsᚐOrder(ctx context.Context, sel ast.SelectionSet, v models.Order) graphql.Marshaler {
@@ -3172,15 +3172,15 @@ func (ec *executionContext) marshalOInventory2ᚖgithubᚗcomᚋsrinandanᚋsamp
 	return ec._Inventory(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOLineItem2githubᚗcomᚋsrinandanᚋsampleᚑappsᚋordersᚑgqlᚋmodelsᚐLineItem(ctx context.Context, sel ast.SelectionSet, v models.LineItem) graphql.Marshaler {
-	return ec._LineItem(ctx, sel, &v)
+func (ec *executionContext) marshalOItem2githubᚗcomᚋsrinandanᚋsampleᚑappsᚋordersᚑgqlᚋmodelsᚐItem(ctx context.Context, sel ast.SelectionSet, v models.Item) graphql.Marshaler {
+	return ec._Item(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalOLineItem2ᚖgithubᚗcomᚋsrinandanᚋsampleᚑappsᚋordersᚑgqlᚋmodelsᚐLineItem(ctx context.Context, sel ast.SelectionSet, v *models.LineItem) graphql.Marshaler {
+func (ec *executionContext) marshalOItem2ᚖgithubᚗcomᚋsrinandanᚋsampleᚑappsᚋordersᚑgqlᚋmodelsᚐItem(ctx context.Context, sel ast.SelectionSet, v *models.Item) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
-	return ec._LineItem(ctx, sel, v)
+	return ec._Item(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalOOrder2githubᚗcomᚋsrinandanᚋsampleᚑappsᚋordersᚑgqlᚋmodelsᚐOrder(ctx context.Context, sel ast.SelectionSet, v models.Order) graphql.Marshaler {

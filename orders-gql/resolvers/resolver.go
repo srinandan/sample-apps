@@ -3,11 +3,10 @@ package resolvers
 import (
 	"context"
 
+	"github.com/srinandan/sample-apps/orders-gql/app"
 	"github.com/srinandan/sample-apps/orders-gql/gql"
 	"github.com/srinandan/sample-apps/orders-gql/models"
 )
-
-// THIS CODE IS A STARTING POINT ONLY. IT WILL NOT BE UPDATED WITH SCHEMA CHANGES.
 
 type Resolver struct{}
 
@@ -18,8 +17,11 @@ func (r *Resolver) Query() gql.QueryResolver {
 type queryResolver struct{ *Resolver }
 
 func (r *queryResolver) GetOrder(ctx context.Context, id string) (*models.Order, error) {
-	panic("not implemented")
+	order, err := app.GetOrder(ctx, id)
+	return order, err
 }
+
 func (r *queryResolver) ListOrders(ctx context.Context) ([]*models.Order, error) {
-	panic("not implemented")
+	orders, err := app.ListOrders(ctx)
+	return orders, err
 }
