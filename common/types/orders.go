@@ -9,4 +9,6 @@ type Order struct {
 	OperationId string     `json:"operationId,omitempty"`
 	ShipmentId  string     `json:"shipmentId,omitempty"`
 	LineItems   []LineItem `json:"lineItems,omitempty"`
+	Carrier     string     `json:"carrier,omitempty"`
+	TrackingID  string     `json:"trackingId,omitempty"`
 }
