@@ -10,14 +10,12 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/srinandan/sample-apps/common"
 	types "github.com/srinandan/sample-apps/common/types"
 )
 
 //Orders
 var orders = []types.Order{}
-
-//endpoint to reach the inventory service
-var inventoryEndpoint = os.Getenv("INVENTORY")
 
 func ReadOrdersFile() error {
 	orderListBytes, err := ioutil.ReadFile("orders.json")
@@ -54,6 +52,17 @@ func getId() string {
 	return strconv.Itoa(rand.Intn(max-min+1) + min)
 }
 
+func getInventoryEndpoint() string {
+	//endpoint to reach the inventory service
+	var inventoryEndpoint = os.Getenv("INVENTORY")
+
+	if inventoryEndpoint == "" {
+		return "http://inventory.apps.svc.cluster.local:8080"
+	}
+
+	return inventoryEndpoint
+}
+
 func GetOrderItem(id string) (types.Item, error) {
 
 	var req *http.Request
@@ -62,15 +71,18 @@ func GetOrderItem(id string) (types.Item, error) {
 
 	client := &http.Client{}
 
-	itemUrl := inventoryEndpoint + "/items/" + id
+	itemURL := getInventoryEndpoint() + "/items/" + id
+	common.Info.Println("Connecting to: ", itemURL)
 
-	req, err := http.NewRequest("GET", itemUrl, nil)
+	req, err := http.NewRequest("GET", itemURL, nil)
 	if err != nil {
 		return item, err
 	}
 
 	resp, err := client.Do(req)
-	defer resp.Body.Close()
+	if resp != nil {
+		defer resp.Body.Close()
+	}
 
 	if err != nil {
 		return item, err
