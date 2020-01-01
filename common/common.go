@@ -24,7 +24,11 @@ type ErrorMessage struct {
 var errorMessage = ErrorMessage{StatusCode: http.StatusInternalServerError}
 
 //Address to start server
-const Address = "0.0.0.0:8080"
+var address = "0.0.0.0:"
+
+const defaultPort = "8080"
+
+const defaultgRPCPort = "50051"
 
 //InitLog function initializes the logger objects
 func InitLog() {
@@ -45,6 +49,22 @@ func InitLog() {
 	Error = log.New(errorHandle,
 		"ERROR: ",
 		log.Ldate|log.Ltime|log.Lshortfile)
+}
+
+func GetAddress() string {
+	port := os.Getenv("PORT")
+	if port == "" {
+		return address + port
+	}
+	return address + defaultPort
+}
+
+func GetgRPCPort() string {
+	port := os.Getenv("GRPC_PORT")
+	if port == "" {
+		return defaultgRPCport
+	}
+	return port
 }
 
 //HealthHandler handles kubernetes healthchecks
