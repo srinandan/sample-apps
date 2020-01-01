@@ -32,6 +32,12 @@ build:
         - golang:latest
         - alpine:latest
       dockerfile: ./Dockerfile.client
+  - image: gcr.io/nandanks-151422/orders-gql
+    context: orders-gql
+    docker:
+      cacheFrom: 
+        - golang:latest
+        - alpine:latest      
 deploy:
   kubectl:
     flags:
@@ -41,3 +47,4 @@ deploy:
     - orders/orders.yaml
     - tracking/tracking.yaml
     - tracking/tracking-client.yaml
+    - orders-gql/orders-gql.yaml
