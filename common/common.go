@@ -55,9 +55,9 @@ func InitLog() {
 func GetAddress() string {
 	port := os.Getenv("PORT")
 	if port == "" {
-		return address + port
+		return address + defaultPort
 	}
-	return address + defaultPort
+	return address + port
 }
 
 //GetgRPCPort returns the gRPC port for the server to listen to
