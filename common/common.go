@@ -24,7 +24,7 @@ type ErrorMessage struct {
 var errorMessage = ErrorMessage{StatusCode: http.StatusInternalServerError}
 
 //Address to start server
-var address = "0.0.0.0:"
+const address = "0.0.0.0:"
 
 const defaultPort = "8080"
 
@@ -51,6 +51,7 @@ func InitLog() {
 		log.Ldate|log.Ltime|log.Lshortfile)
 }
 
+//GetAddress returns the REST API port for the server to listen to
 func GetAddress() string {
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -59,10 +60,11 @@ func GetAddress() string {
 	return address + defaultPort
 }
 
+//GetgRPCPort returns the gRPC port for the server to listen to
 func GetgRPCPort() string {
 	port := os.Getenv("GRPC_PORT")
 	if port == "" {
-		return defaultgRPCport
+		return defaultgRPCPort
 	}
 	return port
 }
