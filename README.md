@@ -28,3 +28,34 @@ skaffold run
 ```
 
 NOTE: `client` and `load-test` are not installed.
+
+### Skaffold Errors
+
+When rerunning/installing the applications, you may observe errors like this:
+
+```bash
+
+ - Error from server (Invalid): error when applying patch:
+ - {"metadata":{"annotations":{"kubectl.kubernetes.io/last-applied-configuration":"{\"apiVersion\":\"extensions/v1beta1\",\"kind\":\"Deployment\",\"metadata\":{\"annotations\":{},\"labels\":{\"app.kubernetes.io/managed-by\":\"skaffold-v1.1.0\",\"skaffold.dev/builder\":\"google-cloud-build\",\"skaffold.dev/cleanup\":\"true\",\"skaffold.dev/deployer\":
+ ...
+ ...
+ `selector` does not match template `labels`
+ ```
+
+ There is an open [issue](https://github.com/GoogleContainerTools/skaffold/issues/3133) for this in the skaffold project.
+
+ Workaound
+
+ first run
+
+ ```bash
+
+ skaffold delete
+ ```
+
+and then
+
+```bash
+
+skaffold run
+```
