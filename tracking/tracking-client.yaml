@@ -47,7 +47,7 @@ spec:
           - name: DEBUG
             value: "true"     
           - name: TRACKING
-            value: "http://tracking.apps.svc.cluster.local:50051"             
+            value: "tracking.apps.svc.cluster.local:50051"             
         resources:
           requests:
             cpu: 100m
