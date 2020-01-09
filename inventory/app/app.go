@@ -25,6 +25,6 @@ func Initialize() {
 	common.InitLog()
 	//ReadInventoryFile
 	if err := items.ReadInventoryFile(); err != nil {
-		common.Error.Fatalln("error reading inventory file ", err)
+		common.Error.Println("error reading inventory file ", err)
 	}
 }

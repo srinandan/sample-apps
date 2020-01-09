@@ -25,6 +25,6 @@ func Initialize() {
 	common.InitLog()
 	//ReadOrdersFile
 	if err := odr.ReadOrdersFile(); err != nil {
-		common.Error.Fatalln("error reading orders file ", err)
+		common.Error.Println("error reading orders file ", err)
 	}
 }

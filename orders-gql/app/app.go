@@ -18,6 +18,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+
 	"github.com/srinandan/sample-apps/common"
 	"github.com/srinandan/sample-apps/common/types"
 	"github.com/srinandan/sample-apps/orders-gql/models"
@@ -83,12 +84,12 @@ func getIntPtr(i int) *int {
 }
 
 func GetOrder(ctx context.Context, id string) (*models.Order, error) {
-	
+
 	respBody, err := callOrderEndpoint("/orders/" + id)
 	if err != nil {
-		return nil, err		
+		return nil, err
 	}
-	
+
 	order := &models.Order{}
 
 	if err = json.Unmarshal(respBody, order); err != nil {
@@ -98,7 +99,7 @@ func GetOrder(ctx context.Context, id string) (*models.Order, error) {
 
 	respBody, err = callOrderEndpoint("/orders/" + id + "/items")
 	if err != nil {
-		return nil, err		
+		return nil, err
 	}
 
 	items := []types.Item{}
@@ -106,19 +107,19 @@ func GetOrder(ctx context.Context, id string) (*models.Order, error) {
 		common.Error.Println("error unmarshaling: ", err)
 		return nil, err
 	}
-	
+
 	for i, item := range items {
 		lineItem := &models.LineItem{}
 		lineItem.Item = &models.Item{}
 		lineItem.Item.Inventory = &models.Inventory{}
 		lineItem.Item.Inventory.SalePrice = &models.Price{}
-		lineItem.Item.Inventory.SalePrice.Currency = getStringPtr(item.Inventory.SalePrice.Currency) 
+		lineItem.Item.Inventory.SalePrice.Currency = getStringPtr(item.Inventory.SalePrice.Currency)
 		lineItem.Item.Inventory.SalePrice.Value = getStringPtr(item.Inventory.SalePrice.Value)
 		lineItem.Item.Inventory.SellOnGoogleQuantity = getStringPtr(item.Inventory.SellOnGoogleQuantity)
 		lineItem.Item.Inventory.Availability = getIntPtr(item.Inventory.Availability)
 		lineItem.Item.Inventory.Kind = getStringPtr(item.Inventory.Kind)
 		lineItem.Item.Inventory.Price = &models.Price{}
-		lineItem.Item.Inventory.Price.Currency = getStringPtr(item.Inventory.Price.Currency) 
+		lineItem.Item.Inventory.Price.Currency = getStringPtr(item.Inventory.Price.Currency)
 		lineItem.Item.Inventory.Price.Value = getStringPtr(item.Inventory.Price.Value)
 		lineItem.Item.ProductID = getStringPtr(item.ProductId)
 		lineItem.Item.StoreCode = getStringPtr(item.StoreCode)

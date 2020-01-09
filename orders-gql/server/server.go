@@ -26,9 +26,9 @@ import (
 func main() {
 	http.Handle("/", handler.Playground("GraphQL playground", "/query"))
 	http.Handle("/query", handler.GraphQL(gql.NewExecutableSchema(gql.Config{Resolvers: &resolvers.Resolver{}})))
-	
+
 	common.InitLog()
-	
+
 	common.Info.Printf("connect to http://%s/ for GraphQL playground", common.GetAddress())
 	common.Error.Fatal(http.ListenAndServe(common.GetAddress(), nil))
 }

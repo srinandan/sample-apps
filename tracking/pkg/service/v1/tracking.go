@@ -83,7 +83,7 @@ func (s *trackingServer) GetTrackingDetails(ctx context.Context, req *v1.Trackin
 
 func (s *trackingServer) ListTrackingDetails(ctx context.Context, empty *empty.Empty) (*v1.TrackingListResponse, error) {
 	trackingListResponse := v1.TrackingListResponse{}
-	
+
 	if len(trackingItems) == 0 {
 		return &trackingListResponse, fmt.Errorf("tracking items not found")
 	}
