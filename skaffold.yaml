@@ -53,7 +53,7 @@ build:
         - golang:latest
         - alpine:latest   
   - image: gcr.io/nandanks-151422/customers
-    context: orders
+    context: customers
     docker:
       cacheFrom: 
         - golang:latest
