@@ -1,0 +1,24 @@
+[
+  {
+    "customerId": "600000",
+    "firstName": "John",
+    "lastName": "Doe",
+    "SSN": "456-567-8080",
+    "phone": [
+      {
+        "number": "212-344-6859",
+        "type": "mobile"
+      }
+    ],
+    "emails": ["johndoe@email.com"],
+    "addresses": [
+      {
+        "street1": "100 main st.",
+        "street2": "",
+        "city": "Springfield",
+        "state": "CA",
+        "country": "USA"
+      }
+    ]
+  }
+]

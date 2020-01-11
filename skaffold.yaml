@@ -51,7 +51,13 @@ build:
     docker:
       cacheFrom: 
         - golang:latest
-        - alpine:latest      
+        - alpine:latest   
+  - image: gcr.io/nandanks-151422/customers
+    context: orders
+    docker:
+      cacheFrom: 
+        - golang:latest
+        - alpine:latest           
 deploy:
   kubectl:
     flags:
@@ -62,3 +68,4 @@ deploy:
     - tracking/tracking.yaml
     - tracking/tracking-client.yaml
     - orders-gql/orders-gql.yaml
+    - customers/customers.yaml

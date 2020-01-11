@@ -1,0 +1,6 @@
+github.com/gorilla/mux v1.7.3 h1:gnP5JzjVOuiZD07fKKToCAOjS0yOpj/qPETTXCCS6hw=
+github.com/gorilla/mux v1.7.3/go.mod h1:1lud6UwP+6orDFRuTfBEV8e9/aOM/c4fVVCaMa2zaAs=
+github.com/srinandan/sample-apps/common v0.0.0-20200109043049-3dd52a348d6c h1:+AUaIsPkIZFMr6TqACdNr01gG1A3s1HMRQ5aNt/1MN0=
+github.com/srinandan/sample-apps/common v0.0.0-20200109043049-3dd52a348d6c/go.mod h1:MCjG9Kmzl2VeeoBCSbxnGBKzRMIuvHEBMIlpA8SeWV0=
+github.com/srinandan/sample-apps/common v0.0.0-20200111034604-2fc986dcad04 h1:zhKmnYxX2RjYcAQ+gr6u3FlH/fFAXkuiZQ5w/JiMt2g=
+github.com/srinandan/sample-apps/common v0.0.0-20200111034604-2fc986dcad04/go.mod h1:MCjG9Kmzl2VeeoBCSbxnGBKzRMIuvHEBMIlpA8SeWV0=
