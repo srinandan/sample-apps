@@ -100,7 +100,7 @@ func ErrorHandler(w http.ResponseWriter, err error) {
 }
 
 //NotFoundHandler returns a 404 when an entity is not found
-func NotFoundHandler(w http.ResponseWriter, msg interface{}) {
+func NotFoundHandler(w http.ResponseWriter, msg string) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusNotFound)
 
