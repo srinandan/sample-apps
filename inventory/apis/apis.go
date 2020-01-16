@@ -40,7 +40,7 @@ func GetInventoryHandler(w http.ResponseWriter, r *http.Request) {
 	if pos != -1 {
 		common.ResponseHandler(w, item)
 	} else {
-		common.NotFoundHandler(w, "item not found")
+		common.NotFoundHandler(w, map[string]string{"msg": "item not found"})
 	}
 }
 
@@ -75,6 +75,6 @@ func DeleteInventoryHandler(w http.ResponseWriter, r *http.Request) {
 		common.NotFoundHandler(w, "item not found")
 		return
 	} else {
-		common.ResponseHandler(w, "{\"msg\":\""+vars["id"]+" is deleted\"}")
+		common.ResponseHandler(w, map[string]string{"msg": vars["key"] + " is deleted"})
 	}
 }

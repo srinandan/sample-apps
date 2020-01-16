@@ -40,7 +40,7 @@ func GetCustomerHandler(w http.ResponseWriter, r *http.Request) {
 	if pos != -1 {
 		common.ResponseHandler(w, customer)
 	} else {
-		common.NotFoundHandler(w, "customer not found")
+		common.NotFoundHandler(w, map[string]string{"msg": "customer not found"})
 	}
 }
 
@@ -74,6 +74,6 @@ func DeleteCustomerHandler(w http.ResponseWriter, r *http.Request) {
 		common.NotFoundHandler(w, "customer not found")
 		return
 	} else {
-		common.ResponseHandler(w, "{\"msg\":\""+vars["id"]+" is deleted\"}")
+		common.ResponseHandler(w, map[string]string{"msg": vars["key"] + " is deleted"})
 	}
 }
