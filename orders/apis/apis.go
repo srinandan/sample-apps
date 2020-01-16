@@ -40,7 +40,7 @@ func GetOrderHandler(w http.ResponseWriter, r *http.Request) {
 	if pos != -1 {
 		common.ResponseHandler(w, order)
 	} else {
-		common.NotFoundHandler(w, map[string]string{"msg": "order not found"})
+		common.NotFoundHandler(w,"order not found")
 	}
 }
 
@@ -76,7 +76,7 @@ func DeleteOrderHandler(w http.ResponseWriter, r *http.Request) {
 	err := odr.DeleteOrder(vars["id"])
 
 	if err != nil {
-		common.NotFoundHandler(w, map[string]string{"msg": "order not found"})
+		common.NotFoundHandler(w, "order not found")
 		return
 	} else {
 		common.ResponseHandler(w, map[string]string{"msg": vars["key"] + " is deleted"})
@@ -96,6 +96,6 @@ func GetOrderItemsHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		common.ResponseHandler(w, items)
 	} else {
-		common.NotFoundHandler(w, map[string]string{"msg": "order not found"})
+		common.NotFoundHandler(w, "order not found")
 	}
 }

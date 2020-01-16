@@ -40,7 +40,7 @@ func GetInventoryHandler(w http.ResponseWriter, r *http.Request) {
 	if pos != -1 {
 		common.ResponseHandler(w, item)
 	} else {
-		common.NotFoundHandler(w, map[string]string{"msg": "item not found"})
+		common.NotFoundHandler(w, "item not found")
 	}
 }
 
