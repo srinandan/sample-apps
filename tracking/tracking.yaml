@@ -21,7 +21,7 @@ metadata:
 spec:
   ports:
   - port: 50051
-    name: http
+    name: grpc
   selector:
     app: tracking
 ---
