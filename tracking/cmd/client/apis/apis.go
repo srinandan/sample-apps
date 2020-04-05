@@ -150,11 +150,11 @@ func ListTrackingDetailsHandler(w http.ResponseWriter, r *http.Request) {
 		e, _ := status.FromError(err)
 		if e.Code() == codes.Unavailable {
 			common.ErrorHandler(w, err)
+		} else if e.Code() == codes.PermissionDenied || e.Code() == codes.Unauthenticated {
+			common.PermissionDeniedHandler(w, err)
 		} else {
 			common.NotFoundHandler(w, err.Error())
 		}
-
-		codes.
 		return
 	}
 	m := &jsonpb.Marshaler{}
@@ -194,8 +194,8 @@ func GetTrackingDetailsHandler(w http.ResponseWriter, r *http.Request) {
 		e, _ := status.FromError(err)
 		if e.Code() == codes.Unavailable {
 			common.ErrorHandler(w, err)
-		} else if e.Code() == codes.PermissionDenied || e.Code() == codes.Unauthenticated  {
-			common.PermissionDeniedHandler(w, err.Error())
+		} else if e.Code() == codes.PermissionDenied || e.Code() == codes.Unauthenticated {
+			common.PermissionDeniedHandler(w, err)
 		} else {
 			common.NotFoundHandler(w, err.Error())
 		}
