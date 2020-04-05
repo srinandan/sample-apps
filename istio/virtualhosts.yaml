@@ -1,0 +1,95 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: customers
+  namespace: apps
+spec:
+  hosts:
+  - customers
+  http:
+  - timeout: 5s  
+    route:
+    rewrite:
+      authority: customers.apps.svc.cluster.local 
+    - destination:
+        host: customers.apps.svc.cluster.local
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: orders
+  namespace: apps
+spec:
+  hosts:
+  - orders
+  http:
+  - timeout: 5s  
+    rewrite:
+      authority: orders.apps.svc.cluster.local
+    route:
+    - destination:
+        host: orders.apps.svc.cluster.local
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: inventory
+  namespace: apps
+spec:
+  hosts:
+  - inventory
+  http:
+  - timeout: 5s
+    rewrite:
+      authority: inventory.apps.svc.cluster.local   
+    route:
+    - destination:
+        host: inventory.apps.svc.cluster.local
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: orders-gql
+  namespace: apps
+spec:
+  hosts:
+  - orders-gql
+  http:
+  - timeout: 5s
+    rewrite:
+      authority: orders-gql.apps.svc.cluster.local     
+    route:
+    - destination:
+        host: orders-gql.apps.svc.cluster.local
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: tracking
+  namespace: apps
+spec:
+  hosts:
+  - tracking
+  http:
+  - timeout: 5s  
+    rewrite:
+      authority: tracking.apps.svc.cluster.local   
+    route:
+    - destination:
+        host: tracking.apps.svc.cluster.local
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: tracking-client
+  namespace: apps
+spec:
+  hosts:
+  - tracking-client
+  http:
+  - timeout: 5s  
+    rewrite:
+      authority: tracking-client.apps.svc.cluster.local   
+    route:
+    - destination:
+        host: tracking-client.apps.svc.cluster.local
