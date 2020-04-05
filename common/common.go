@@ -41,8 +41,10 @@ var errorMessage = ErrorMessage{StatusCode: http.StatusInternalServerError}
 const address = "0.0.0.0:"
 
 const defaultPort = "8080"
+const defaultHealthPort = "8090"
 
 const defaultgRPCPort = "50051"
+const defaultgRPCHealthPort = "5000"
 
 //InitLog function initializes the logger objects
 func InitLog() {
@@ -65,6 +67,15 @@ func InitLog() {
 		log.Ldate|log.Ltime|log.Lshortfile)
 }
 
+//GetHealthAddress returns the healthcheck port
+func GetHealthAddress() string {
+	port := os.Getenv("HEALTH_PORT")
+	if port == "" {
+		return address + defaultHealthPort
+	}
+	return defaultHealthPort + port
+}
+
 //GetAddress returns the REST API port for the server to listen to
 func GetAddress() string {
 	port := os.Getenv("PORT")
@@ -79,6 +90,15 @@ func GetgRPCPort() string {
 	port := os.Getenv("GRPC_PORT")
 	if port == "" {
 		return defaultgRPCPort
+	}
+	return port
+}
+
+//GetgRPCHealthPort returns the gRPC port for the server to listen to
+func GetgRPCHealthPort() string {
+	port := os.Getenv("GRPC_HEALTH_PORT")
+	if port == "" {
+		return defaultgRPCHealthPort
 	}
 	return port
 }
