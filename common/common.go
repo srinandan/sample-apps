@@ -105,7 +105,7 @@ func NotFoundHandler(w http.ResponseWriter, msg string) {
 	w.WriteHeader(http.StatusNotFound)
 
 	errorMessage.Message = msg
-	errorMessage.StatusCode = http.StatusNotFound
+	errorMessage.StatusCode = e.Code()
 
 	if err := json.NewEncoder(w).Encode(errorMessage); err != nil {
 		Error.Println(err)
@@ -118,7 +118,7 @@ func BadRequestHandler(w http.ResponseWriter, err error) {
 	w.WriteHeader(http.StatusNotFound)
 
 	errorMessage.Message = err.Error()
-	errorMessage.StatusCode = http.StatusBadRequest
+	errorMessage.StatusCode = e.Code()
 
 	if err := json.NewEncoder(w).Encode(errorMessage); err != nil {
 		Error.Println(err)
@@ -131,6 +131,18 @@ func ResponseHandler(w http.ResponseWriter, response interface{}) {
 	w.WriteHeader(http.StatusOK)
 
 	if err := json.NewEncoder(w).Encode(response); err != nil {
+		Error.Println(err)
+	}
+}
+
+func PermissionDeniedHandler(w http.ResponseWriter, err error) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.WriteHeader(http.StatusForbidden)
+
+	errorMessage.Message = err.Error()
+	errorMessage.StatusCode = e.Code()
+
+	if err := json.NewEncoder(w).Encode(errorMessage); err != nil {
 		Error.Println(err)
 	}
 }
