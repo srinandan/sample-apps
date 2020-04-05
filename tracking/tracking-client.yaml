@@ -22,6 +22,8 @@ spec:
   ports:
   - port: 8080
     name: http
+  - port: 8090
+    name: http-health    
   selector:
     app: tracking-client
 ---
