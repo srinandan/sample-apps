@@ -8,6 +8,7 @@ This repo contains a few sample microservices for experimenting with Apigee.
 * [Tracking Client](./tracking) - A REST service that exposes the tracking service as a REST API
 * [Client](./client) - A busybox based kubernetes pod for debugging/troubleshooting in kubernetes
 * [Orders GraphQL](./orders-gql) - A graphQL implementation of the `orders` and `inventory` service.
+* [Customers] - To demonstrate the use of Cloud DLP (https://cloud.google.com/dlp/)
 * [Load Teest](./load-test) - A [fortio](https://github.com/fortio/fortio) based load test application. For deployment in kubernetes
 
 ## Installation

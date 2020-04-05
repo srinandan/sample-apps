@@ -16,16 +16,43 @@ package grpc
 
 import (
 	"context"
+	"fmt"
 	"net"
 	"os"
 	"os/signal"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
 
 	common "github.com/srinandan/sample-apps/common"
 	api "github.com/srinandan/sample-apps/tracking/pkg/api/v1"
 	service "github.com/srinandan/sample-apps/tracking/pkg/service/v1"
 )
+
+func unaryInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return nil, fmt.Errorf("error get ctx")
+	}
+
+	if len(md["authorization"]) > 0 {
+		if md["authorization"][0] != "" {
+			common.Info.Println("Access token is ", md["authorization"][0])
+		}
+	}
+
+	if len(md["x-api-key"]) > 0 {
+		if md["x-api-key"][0] != "" {
+			common.Info.Println("api key is ", md["x-api-key"][0])
+		}
+	}
+
+	m, err := handler(ctx, req)
+	if err != nil {
+		common.Error.Println("RPC failed with error %v", err)
+	}
+	return m, err
+}
 
 // RunServer runs gRPC service to publish tracking service
 func RunServer(port string) error {
@@ -40,7 +67,8 @@ func RunServer(port string) error {
 	}
 
 	// register service
-	server := grpc.NewServer()
+	//server := grpc.NewServer()
+	server := grpc.NewServer(grpc.UnaryInterceptor(unaryInterceptor))
 
 	trackingService, err := service.NewTrackingService()
 	if err != nil {
