@@ -34,8 +34,6 @@ func main() {
 	app.Initialize()
 
 	r := mux.NewRouter()
-	r.HandleFunc("/healthz", common.HealthHandler).
-		Methods("GET")
 	r.HandleFunc("/orders", apis.ListOrdersHandler).
 		Methods("GET")
 	r.HandleFunc("/orders", apis.CreateOrderHandler).
@@ -63,6 +61,27 @@ func main() {
 			common.Error.Println(err)
 		}
 	}()
+
+	rHealth := mux.NewRouter()
+	rHealth.HandleFunc("/healthz", common.HealthHandler).
+		Methods("GET")
+
+	healthSvr := &http.Server{
+		Addr:         common.GetHealthAddress(),
+		WriteTimeout: time.Second * 15,
+		ReadTimeout:  time.Second * 15,
+		IdleTimeout:  time.Second * 60,
+		Handler:      rHealth,
+	}
+
+	common.Info.Println("Starting healthcheck - ", common.GetHealthAddress())
+
+	go func() {
+		if err := healthSvr.ListenAndServe(); err != nil {
+			common.Error.Println(err)
+		}
+	}()
+
 	c := make(chan os.Signal, 1)
 	// We'll accept graceful shutdowns when quit via SIGINT (Ctrl+C)
 	// SIGKILL, SIGQUIT or SIGTERM (Ctrl+/) will not be caught.

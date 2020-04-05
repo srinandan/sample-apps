@@ -12,3 +12,5 @@ github.com/srinandan/sample-apps/common v0.0.0-20200101055728-ced7581b72a9 h1:yN
 github.com/srinandan/sample-apps/common v0.0.0-20200101055728-ced7581b72a9/go.mod h1:MCjG9Kmzl2VeeoBCSbxnGBKzRMIuvHEBMIlpA8SeWV0=
 github.com/srinandan/sample-apps/common v0.0.0-20200101193219-836005a79c08 h1:ewFy6MGNBl9LTi7ZkbMvIXUny4tcI4HNGurW3Z/JfFU=
 github.com/srinandan/sample-apps/common v0.0.0-20200101193219-836005a79c08/go.mod h1:MCjG9Kmzl2VeeoBCSbxnGBKzRMIuvHEBMIlpA8SeWV0=
+github.com/srinandan/sample-apps/common v0.0.0-20200405184613-107668f4ec46 h1:NM6UdUo1RE8r/xKoyGt+WwD1RMRwijN8aW8UWMllSqY=
+github.com/srinandan/sample-apps/common v0.0.0-20200405184613-107668f4ec46/go.mod h1:MCjG9Kmzl2VeeoBCSbxnGBKzRMIuvHEBMIlpA8SeWV0=

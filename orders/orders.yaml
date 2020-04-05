@@ -22,6 +22,8 @@ spec:
   ports:
   - port: 8080
     name: http
+  - port: 8090
+    name: http-health    
   selector:
     app: orders
 ---
@@ -52,7 +54,7 @@ spec:
         livenessProbe:
           httpGet:
             path: /healthz
-            port: 8080
+            port: 8090
           initialDelaySeconds: 5
           periodSeconds: 5
       nodeSelector:
