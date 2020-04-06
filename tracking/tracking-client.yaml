@@ -21,9 +21,7 @@ metadata:
 spec:
   ports:
   - port: 8080
-    name: http
-  - port: 8090
-    name: http-health    
+    name: http   
   selector:
     app: tracking-client
 ---
@@ -35,6 +33,11 @@ spec:
   replicas: 1
   template:
     metadata:
+      annotations:
+        # exlude health check port for envoy filter
+        readiness.status.sidecar.istio.io/applicationPorts: "8090"
+        # rewrite http probe
+        sidecar.istio.io/rewriteAppHTTPProbers: "true"    
       labels:
         app: tracking-client
         version: v1
@@ -45,6 +48,7 @@ spec:
         name: tracking-client
         ports:
         - containerPort: 8080
+        - containerPort: 8090
         env:
           - name: DEBUG
             value: "true"     

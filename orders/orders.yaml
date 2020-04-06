@@ -22,8 +22,6 @@ spec:
   ports:
   - port: 8080
     name: http
-  - port: 8090
-    name: http-health    
   selector:
     app: orders
 ---
@@ -35,6 +33,11 @@ spec:
   replicas: 1
   template:
     metadata:
+      annotations:
+        # exlude health check port for envoy filter
+        readiness.status.sidecar.istio.io/applicationPorts: "8090"
+        # rewrite http probe
+        sidecar.istio.io/rewriteAppHTTPProbers: "true"
       labels:
         app: orders
         version: v1
@@ -45,6 +48,7 @@ spec:
         name: orders
         ports:
         - containerPort: 8080
+        - containerPort: 8090
         env:
           - name: INVENTORY
             value: "http://inventory.apps.svc.cluster.local:8080"             

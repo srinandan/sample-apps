@@ -45,10 +45,10 @@ spec:
   http:
   - timeout: 5s
     rewrite:
-      authority: inventory.apps.svc.cluster.local   
+      authority: inventory.apps.svc.cluster.local:8080   
     route:
     - destination:
-        host: inventory.apps.svc.cluster.local:8080
+        host: inventory.apps.svc.cluster.local
         port:
           number: 8080        
 ---
@@ -63,10 +63,10 @@ spec:
   http:
   - timeout: 5s
     rewrite:
-      authority: orders-gql.apps.svc.cluster.local     
+      authority: orders-gql.apps.svc.cluster.local:8080     
     route:
     - destination:
-        host: orders-gql.apps.svc.cluster.local:8080
+        host: orders-gql.apps.svc.cluster.local
         port:
           number: 8080        
 ---
@@ -81,10 +81,10 @@ spec:
   http:
   - timeout: 5s  
     rewrite:
-      authority: tracking.apps.svc.cluster.local   
+      authority: tracking.apps.svc.cluster.local:50051   
     route:
     - destination:
-        host: tracking.apps.svc.cluster.local:50051
+        host: tracking.apps.svc.cluster.local
         port:
           number: 50051        
 ---
@@ -99,9 +99,9 @@ spec:
   http:
   - timeout: 5s  
     rewrite:
-      authority: tracking-client.apps.svc.cluster.local   
+      authority: tracking-client.apps.svc.cluster.local:8080   
     route:
     - destination:
-        host: tracking-client.apps.svc.cluster.local:8080
+        host: tracking-client.apps.svc.cluster.local
         port:
           number: 8080        

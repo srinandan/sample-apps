@@ -21,20 +21,23 @@ metadata:
 spec:
   ports:
   - port: 8080
-    name: http
-  - port: 8090
-    name: http-health    
+    name: http 
   selector:
     app: inventory
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: inventory
+  name: inventory  
 spec:
   replicas: 1
-  template:
+  template:  
     metadata:
+      annotations:
+        # exlude health check port for envoy filter
+        readiness.status.sidecar.istio.io/applicationPorts: "8090"
+        # rewrite http probe
+        sidecar.istio.io/rewriteAppHTTPProbers: "true"    
       labels:
         app: inventory
         version: v1
@@ -45,6 +48,7 @@ spec:
         name: inventory
         ports:
         - containerPort: 8080
+        - containerPort: 8090
         resources:
           requests:
             cpu: 100m
