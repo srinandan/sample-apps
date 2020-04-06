@@ -8,11 +8,13 @@ spec:
   - customers
   http:
   - timeout: 5s  
-    route:
     rewrite:
-      authority: customers.apps.svc.cluster.local 
+      authority: customers.apps.svc.cluster.local:8080
+    route:
     - destination:
         host: customers.apps.svc.cluster.local
+        port:
+          number: 8080
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -25,10 +27,12 @@ spec:
   http:
   - timeout: 5s  
     rewrite:
-      authority: orders.apps.svc.cluster.local
+      authority: orders.apps.svc.cluster.local:8080
     route:
     - destination:
         host: orders.apps.svc.cluster.local
+        port:
+          number: 8080
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -44,7 +48,9 @@ spec:
       authority: inventory.apps.svc.cluster.local   
     route:
     - destination:
-        host: inventory.apps.svc.cluster.local
+        host: inventory.apps.svc.cluster.local:8080
+        port:
+          number: 8080        
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -60,7 +66,9 @@ spec:
       authority: orders-gql.apps.svc.cluster.local     
     route:
     - destination:
-        host: orders-gql.apps.svc.cluster.local
+        host: orders-gql.apps.svc.cluster.local:8080
+        port:
+          number: 8080        
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -76,7 +84,9 @@ spec:
       authority: tracking.apps.svc.cluster.local   
     route:
     - destination:
-        host: tracking.apps.svc.cluster.local
+        host: tracking.apps.svc.cluster.local:50051
+        port:
+          number: 50051        
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -92,4 +102,6 @@ spec:
       authority: tracking-client.apps.svc.cluster.local   
     route:
     - destination:
-        host: tracking-client.apps.svc.cluster.local
+        host: tracking-client.apps.svc.cluster.local:8080
+        port:
+          number: 8080        
