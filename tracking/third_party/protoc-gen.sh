@@ -14,4 +14,9 @@
 
 #./third_party/protoc-gen.sh
 #protoc --proto_path=api/proto/v1 --proto_path=third_party --go_out=plugins=grpc:pkg/api/v1 service.proto
-protoc -I/Users/srinandans/local_workspace/protoc-3.11.2-osx-x86_64/include -I/Users/srinandans/go/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.14.4/third_party/googleapis --proto_path=api/proto/v1 --proto_path=third_party --go_out=plugins=grpc:pkg/api/v1 service.proto
+#protoc -I/Users/srinandans/local_workspace/protoc-3.11.2-osx-x86_64/include -I/Users/srinandans/go/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.14.4/third_party/googleapis --proto_path=api/proto/v1 --proto_path=third_party  --descriptor_set_out=./third_party/service.pb --go_out=plugins=grpc:pkg/api/v1 service.proto
+
+#git clone https://github.com/googleapis/googleapis
+#export GOOGLEAPIS_DIR=<path_to_googleapis>
+protoc -I${GOOGLEAPIS_DIR} --proto_path=api/proto/v1 --proto_path=third_party --go_out=plugins=grpc:pkg/api/v1 service.proto
+protoc -I${GOOGLEAPIS_DIR} --include_imports --include_source_info --descriptor_set_out=service.pb --proto_path=api/proto/v1 --proto_path=third_party service.proto
