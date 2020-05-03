@@ -13,4 +13,5 @@
 # limitations under the License.
 
 #./third_party/protoc-gen.sh
-protoc --proto_path=api/proto/v1 --proto_path=third_party --go_out=plugins=grpc:pkg/api/v1 service.proto
+#protoc --proto_path=api/proto/v1 --proto_path=third_party --go_out=plugins=grpc:pkg/api/v1 service.proto
+protoc -I/Users/srinandans/local_workspace/protoc-3.11.2-osx-x86_64/include -I/Users/srinandans/go/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.14.4/third_party/googleapis --proto_path=api/proto/v1 --proto_path=third_party --go_out=plugins=grpc:pkg/api/v1 service.proto

@@ -15,12 +15,21 @@
 syntax = "proto3";
 
 import "google/protobuf/empty.proto";
+import "google/api/annotations.proto";
 
 package v1;
 
 service Tracking {
-    rpc GetTrackingDetails(TrackingRequest) returns (TrackingResponse) {};
-    rpc ListTrackingDetails(google.protobuf.Empty) returns (TrackingListResponse) {};
+    rpc GetTrackingDetails(TrackingRequest) returns (TrackingResponse) {
+        option (google.api.http) = {
+            get: "/tracking/{trackingId}"
+        };        
+    };
+    rpc ListTrackingDetails(google.protobuf.Empty) returns (TrackingListResponse) {
+        option (google.api.http) = {
+            get: "/tracking"
+        };        
+    };
 }
 
 message TrackingRequest {
