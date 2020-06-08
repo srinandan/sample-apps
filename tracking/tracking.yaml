@@ -25,12 +25,15 @@ spec:
   selector:
     app: tracking
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: tracking
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: tracking  
   template:
     metadata:
       labels:
@@ -38,16 +41,16 @@ spec:
         version: v1
     spec:
       containers:
-      - image: gcr.io/nandanks-151422/tracking
+      - image: gcr.io/project-id/tracking
         imagePullPolicy: IfNotPresent
         name: tracking
         ports:
         - containerPort: 50051
         env:
           - name: DEBUG
-            value: "true"             
+            value: "true"
         resources:
           requests:
             cpu: 100m
       nodeSelector:
-        cloud.google.com/gke-nodepool: apps          
+        cloud.google.com/gke-nodepool: apps

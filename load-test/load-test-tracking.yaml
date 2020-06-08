@@ -23,12 +23,15 @@ spec:
   selector:
     app: load-test-tracking
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: load-test-tracking
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: load-test-tracking
   template:
     metadata:
       labels:
@@ -51,7 +54,7 @@ spec:
         - "1"
         - -quiet
         - -H
-        - "x-api-key: xxx"        
+        - "x-api-key: xxx"
         - https://api.fazio.apigeeks.net/tracking
       nodeSelector:
         cloud.google.com/gke-nodepool: apps

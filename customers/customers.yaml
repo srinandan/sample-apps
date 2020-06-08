@@ -25,12 +25,15 @@ spec:
   selector:
     app: customers
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: customers
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: customers
   template:
     metadata:
       labels:
@@ -38,7 +41,7 @@ spec:
         version: v1
     spec:
       containers:
-      - image: gcr.io/nandanks-151422/customers
+      - image: gcr.io/project-id/customers
         imagePullPolicy: IfNotPresent
         name: customers
         ports:
@@ -53,4 +56,4 @@ spec:
           initialDelaySeconds: 5
           periodSeconds: 5
       nodeSelector:
-        cloud.google.com/gke-nodepool: apps                          
+        cloud.google.com/gke-nodepool: apps
