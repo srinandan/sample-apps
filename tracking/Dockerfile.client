@@ -1,5 +1,5 @@
-#docker build -f Dockerfile.client -t gcr.io/nandanks-151422/tracking-client .
-#docker run -d -p 50051:50051 --name tracking gcr.io/nandanks-151422/tracking-client
+#docker build -f Dockerfile.client -t gcr.io/project-id/tracking-client .
+#docker run -d -p 50051:50051 --name tracking gcr.io/project-id/tracking-client
 FROM golang:latest as builder
 RUN useradd -U app
 ADD ./api /go/src/tracking-client/api

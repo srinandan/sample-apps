@@ -23,12 +23,15 @@ spec:
   selector:
     app: load-test-orders
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: load-test-orders
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: load-test-orders
   template:
     metadata:
       labels:
@@ -51,7 +54,7 @@ spec:
         - "5"
         - -quiet
         - -H
-        - "x-api-key: xxx"        
+        - "x-api-key: xxx"
         - https://api.fazio.apigeeks.net/orders
       nodeSelector:
         cloud.google.com/gke-nodepool: apps

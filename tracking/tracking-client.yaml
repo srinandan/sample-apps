@@ -21,29 +21,32 @@ metadata:
 spec:
   ports:
   - port: 8080
-    name: http   
+    name: http
   selector:
     app: tracking-client
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: tracking-client
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: tracking-client
   template:
     metadata:
       annotations:
         # exlude health check port for envoy filter
         readiness.status.sidecar.istio.io/applicationPorts: "8090"
         # rewrite http probe
-        sidecar.istio.io/rewriteAppHTTPProbers: "true"    
+        sidecar.istio.io/rewriteAppHTTPProbers: "true"
       labels:
         app: tracking-client
         version: v1
     spec:
       containers:
-      - image: gcr.io/nandanks-151422/tracking-client
+      - image: gcr.io/project-id/tracking-client
         imagePullPolicy: IfNotPresent
         name: tracking-client
         ports:
@@ -51,11 +54,11 @@ spec:
         - containerPort: 8090
         env:
           - name: DEBUG
-            value: "true"     
+            value: "true"
           - name: TRACKING
-            value: "tracking.apps.svc.cluster.local:50051"             
+            value: "tracking.apps.svc.cluster.local:50051"
         resources:
           requests:
             cpu: 100m
       nodeSelector:
-        cloud.google.com/gke-nodepool: apps          
+        cloud.google.com/gke-nodepool: apps

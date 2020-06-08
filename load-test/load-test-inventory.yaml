@@ -23,12 +23,15 @@ spec:
   selector:
     app: load-test-inventory
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: load-test-inventory
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: load-test-inventory
   template:
     metadata:
       labels:
@@ -51,7 +54,7 @@ spec:
         - "3"
         - -quiet
         - -H
-        - "x-api-key: xxx"        
+        - "x-api-key: xxx"
         - https://api.fazio.apigeeks.net/items
       nodeSelector:
         cloud.google.com/gke-nodepool: apps

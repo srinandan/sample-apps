@@ -25,12 +25,15 @@ spec:
   selector:
     app: orders
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: orders
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: orders
   template:
     metadata:
       annotations:
@@ -43,7 +46,7 @@ spec:
         version: v1
     spec:
       containers:
-      - image: gcr.io/nandanks-151422/orders
+      - image: gcr.io/project-id/orders
         imagePullPolicy: IfNotPresent
         name: orders
         ports:
@@ -51,7 +54,7 @@ spec:
         - containerPort: 8090
         env:
           - name: INVENTORY
-            value: "http://inventory.apps.svc.cluster.local:8080"             
+            value: "http://inventory.apps.svc.cluster.local:8080"
         resources:
           requests:
             cpu: 100m
@@ -62,4 +65,4 @@ spec:
           initialDelaySeconds: 5
           periodSeconds: 5
       nodeSelector:
-        cloud.google.com/gke-nodepool: apps          
+        cloud.google.com/gke-nodepool: apps

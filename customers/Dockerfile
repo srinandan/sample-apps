@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#docker build -t gcr.io/nandanks-151422/inventory .
-#docker run -d -p 8080:8080 --name inventory -e DEBUG="true" gcr.io/nandanks-151422/inventory
+#docker build -t gcr.io/project-id/inventory .
+#docker run -d -p 8080:8080 --name inventory -e DEBUG="true" gcr.io/project-id/inventory
 FROM golang:latest as builder
 RUN useradd -U app
 ADD . /go/src/customers 
