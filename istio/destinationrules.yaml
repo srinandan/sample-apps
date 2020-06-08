@@ -81,3 +81,17 @@ spec:
         number: 8080
       loadBalancer:
         simple: ROUND_ROBIN
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: client-port
+  namespace: apps
+spec:
+  host: client.apps.svc.cluster.local
+  trafficPolicy:
+    portLevelSettings:
+    - port:
+        number: 8080
+      loadBalancer:
+        simple: ROUND_ROBIN

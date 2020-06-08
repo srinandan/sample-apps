@@ -1,0 +1,44 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: orders-port
+  namespace: apps
+spec:
+  host: orders.apps.svc.cluster.local
+  trafficPolicy:
+    portLevelSettings:
+    - port:
+        number: 8080
+      loadBalancer:
+        simple: ROUND_ROBIN
+    tls:
+      mode: ISTIO_MUTUAL
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: client-port
+  namespace: apps
+spec:
+  host: client.apps.svc.cluster.local
+  trafficPolicy:
+    portLevelSettings:
+    - port:
+        number: 8080
+      loadBalancer:
+        simple: ROUND_ROBIN
+    tls:
+      mode: ISTIO_MUTUAL
+---
+apiVersion: "authentication.istio.io/v1alpha1"
+kind: "Policy"
+metadata:
+  name: "mtls-all"
+  namespace: apps
+spec:
+  targets:
+  - name: client
+  - name: orders
+  peers:
+  - mtls: {}
+---
