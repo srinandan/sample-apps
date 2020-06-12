@@ -18,9 +18,9 @@ metadata:
   name: client
 build:
   googleCloudBuild:
-    projectId: srinandans-apigee
+    projectId: project-id
   artifacts:
-  - image: gcr.io/srinandans-apigee/client
+  - image: gcr.io/project-id/client
 deploy:
   kubectl:
     flags:
