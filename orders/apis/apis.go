@@ -18,6 +18,8 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"strconv"
+	"time"
 
 	"github.com/gorilla/mux"
 
@@ -40,7 +42,7 @@ func GetOrderHandler(w http.ResponseWriter, r *http.Request) {
 	if pos != -1 {
 		common.ResponseHandler(w, order)
 	} else {
-		common.NotFoundHandler(w,"order not found")
+		common.NotFoundHandler(w, "order not found")
 	}
 }
 
@@ -95,6 +97,25 @@ func GetOrderItemsHandler(w http.ResponseWriter, r *http.Request) {
 			items = append(items, item)
 		}
 		common.ResponseHandler(w, items)
+	} else {
+		common.NotFoundHandler(w, "order not found")
+	}
+}
+
+func GetOrderDelayHandler(w http.ResponseWriter, r *http.Request) {
+	//read path variables
+	vars := mux.Vars(r)
+	interval, err := strconv.Atoi(vars["interval"])
+	if err != nil {
+		common.BadRequestHandler(w, err)
+		return
+	}
+
+	time.Sleep(time.Duration(interval) * time.Second)
+
+	order, pos := odr.GetOrder(vars["id"])
+	if pos != -1 {
+		common.ResponseHandler(w, order)
 	} else {
 		common.NotFoundHandler(w, "order not found")
 	}

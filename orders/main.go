@@ -42,6 +42,8 @@ func main() {
 		Methods("GET")
 	r.HandleFunc("/orders/{id}/items", apis.GetOrderItemsHandler).
 		Methods("GET")
+	r.HandleFunc("/orders/{id}/delay/{interval}", apis.GetOrderDelayHandler).
+		Methods("GET")
 	r.HandleFunc("/orders/{id}", apis.DeleteOrderHandler).
 		Methods("DELETE")
 
