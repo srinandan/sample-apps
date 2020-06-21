@@ -70,12 +70,12 @@ func RunServer(port string) error {
 	//server := grpc.NewServer()
 	server := grpc.NewServer(grpc.UnaryInterceptor(unaryInterceptor))
 
-	trackingService, err := service.NewTrackingService()
+	ShipmentServer, err := service.NewShipmentService()
 	if err != nil {
 		return err
 	}
 
-	api.RegisterTrackingServer(server, trackingService)
+	api.RegisterShipmentServer(server, ShipmentServer)
 
 	if err := server.Serve(listen); err != nil {
 		common.Error.Fatalf("failed to serve: %v", err)

@@ -79,7 +79,7 @@ func NewKeyFromHeader(key string) (credentials.PerRPCCredentials, error) {
 	return &trackingAPIKeyCreds{APIKey: key}, nil
 }
 
-func initClient(credType string, cred string) (trackingClient v1.TrackingClient, conn *grpc.ClientConn, err error) {
+func initClient(credType string, cred string) (trackingClient v1.ShipmentClient, conn *grpc.ClientConn, err error) {
 
 	// Set up a connection to the server.
 	if trackingEndpoint == "" {
@@ -101,7 +101,7 @@ func initClient(credType string, cred string) (trackingClient v1.TrackingClient,
 		return nil, nil, fmt.Errorf("did not connect: %v", err)
 	}
 
-	trackingClient = v1.NewTrackingClient(conn)
+	trackingClient = v1.NewShipmentClient(conn)
 
 	return trackingClient, conn, nil
 }
@@ -145,7 +145,7 @@ func ListTrackingDetailsHandler(w http.ResponseWriter, r *http.Request) {
 	defer cancel()
 
 	// Call Create
-	resp, err := trackingClient.ListTrackingDetails(ctx, &empty.Empty{})
+	resp, err := trackingClient.ListTracking(ctx, &empty.Empty{})
 	if err != nil {
 		e, _ := status.FromError(err)
 		if e.Code() == codes.Unavailable {
@@ -157,6 +157,7 @@ func ListTrackingDetailsHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
+
 	m := &jsonpb.Marshaler{}
 	trackingListResponse, err := m.MarshalToString(resp)
 	if err != nil {
@@ -164,7 +165,7 @@ func ListTrackingDetailsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprintf(w, trackingListResponse)
+	fmt.Fprintf(w, string(trackingListResponse))
 }
 
 func GetTrackingDetailsHandler(w http.ResponseWriter, r *http.Request) {
@@ -187,7 +188,7 @@ func GetTrackingDetailsHandler(w http.ResponseWriter, r *http.Request) {
 	defer cancel()
 
 	// Call Create
-	resp, err := trackingClient.GetTrackingDetails(ctx, &v1.TrackingRequest{
+	resp, err := trackingClient.GetTracking(ctx, &v1.GetTrackingRequest{
 		TrackingId: trackingId,
 	})
 	if err != nil {
@@ -209,5 +210,5 @@ func GetTrackingDetailsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprintf(w, trackingResponse)
+	fmt.Fprintf(w, string(trackingResponse))
 }

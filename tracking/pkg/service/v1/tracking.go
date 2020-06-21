@@ -19,23 +19,26 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"time"
 
+	"github.com/golang/protobuf/ptypes"
 	empty "github.com/golang/protobuf/ptypes/empty"
 	v1 "github.com/srinandan/sample-apps/tracking/pkg/api/v1"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type Tracking struct {
-	TrackingId      string `json:"trackingId,omitempty"`
-	Status          string `json:"status,omitempty"`
-	Created         string `json:"created,omitempty"`
-	Updated         string `json:"updated,omitempty"`
-	Signed          string `json:"signed,omitempty"`
-	Weight          string `json:"weight,omitempty"`
-	EstDeliveryDate string `json:"est_delivery_date,omitempty"`
-	Carrier         string `json:"carrier,omitempty"`
+	TrackingId      string    `json:"tracking_id,omitempty"`
+	Status          string    `json:"status,omitempty"`
+	CreateTime      time.Time `json:"create_time,omitempty"`
+	UpdateTime      time.Time `json:"update_time,omitempty"`
+	Signed          string    `json:"signed,omitempty"`
+	Weight          string    `json:"weight,omitempty"`
+	EstDeliveryTime time.Time `json:"est_delivery_time,omitempty"`
+	Carrier         string    `json:"carrier,omitempty"`
 }
 
-var trackingItems = []Tracking{}
+var trackings = []Tracking{}
 
 func ReadTrackingFile() error {
 	trackingBytes, err := ioutil.ReadFile("tracking.json")
@@ -43,7 +46,7 @@ func ReadTrackingFile() error {
 		return err
 	}
 
-	if err = json.Unmarshal(trackingBytes, &trackingItems); err != nil {
+	if err = json.Unmarshal(trackingBytes, &trackings); err != nil {
 		return err
 	}
 
@@ -51,53 +54,58 @@ func ReadTrackingFile() error {
 }
 
 // server is used to implement TrackingServer
-type trackingServer struct {
-	v1.UnimplementedTrackingServer
+type ShipmentServer struct {
+	v1.UnimplementedShipmentServer
 }
 
-func NewTrackingService() (v1.TrackingServer, error) {
+func NewShipmentService() (v1.ShipmentServer, error) {
 	err := ReadTrackingFile()
 	if err != nil {
-		return &trackingServer{}, err
+		return &ShipmentServer{}, err
 	}
 
-	return &trackingServer{}, err
+	return &ShipmentServer{}, err
 }
 
-func (s *trackingServer) GetTrackingDetails(ctx context.Context, req *v1.TrackingRequest) (*v1.TrackingResponse, error) {
-	for _, trackingItem := range trackingItems {
-		if trackingItem.TrackingId == req.TrackingId {
-			return &v1.TrackingResponse{
-				TrackingId:      trackingItem.TrackingId,
-				Status:          trackingItem.Status,
-				Created:         trackingItem.Created,
-				Updated:         trackingItem.Updated,
-				Weight:          trackingItem.Weight,
-				EstDeliveryDate: trackingItem.EstDeliveryDate,
-				Carrier:         trackingItem.Carrier,
+func (s *ShipmentServer) GetTracking(ctx context.Context, req *v1.GetTrackingRequest) (*v1.Tracking, error) {
+	for _, tracking := range trackings {
+		if tracking.TrackingId == req.TrackingId {
+			return &v1.Tracking{
+				TrackingId:      tracking.TrackingId,
+				Status:          tracking.Status,
+				CreateTime:      getTimestamp(tracking.CreateTime),
+				UpdateTime:      getTimestamp(tracking.UpdateTime),
+				Weight:          tracking.Weight,
+				EstDeliveryTime: getTimestamp(tracking.EstDeliveryTime),
+				Carrier:         tracking.Carrier,
 			}, nil
 		}
 	}
-	return &v1.TrackingResponse{}, fmt.Errorf("tracking item not found")
+	return &v1.Tracking{}, fmt.Errorf("tracking item not found")
 }
 
-func (s *trackingServer) ListTrackingDetails(ctx context.Context, empty *empty.Empty) (*v1.TrackingListResponse, error) {
-	trackingListResponse := v1.TrackingListResponse{}
+func (s *ShipmentServer) ListTracking(ctx context.Context, empty *empty.Empty) (*v1.ListTrackingResponse, error) {
+	listTrackingResponse := v1.ListTrackingResponse{}
 
-	if len(trackingItems) == 0 {
-		return &trackingListResponse, fmt.Errorf("tracking items not found")
+	if len(trackings) == 0 {
+		return &listTrackingResponse, fmt.Errorf("tracking items not found")
 	}
 
-	for _, trackingItem := range trackingItems {
-		trackingResponse := v1.TrackingResponse{}
-		trackingResponse.TrackingId = trackingItem.TrackingId
-		trackingResponse.Status = trackingItem.Status
-		trackingResponse.Created = trackingItem.Created
-		trackingResponse.Updated = trackingItem.Updated
-		trackingResponse.Weight = trackingItem.Weight
-		trackingResponse.EstDeliveryDate = trackingItem.EstDeliveryDate
-		trackingResponse.Carrier = trackingItem.Carrier
-		trackingListResponse.TrackingResponse = append(trackingListResponse.TrackingResponse, &trackingResponse)
+	for _, tracking := range trackings {
+		Tracking := v1.Tracking{}
+		Tracking.TrackingId = tracking.TrackingId
+		Tracking.Status = tracking.Status
+		Tracking.CreateTime, _ = ptypes.TimestampProto(tracking.CreateTime)
+		Tracking.UpdateTime, _ = ptypes.TimestampProto(tracking.UpdateTime)
+		Tracking.Weight = tracking.Weight
+		Tracking.EstDeliveryTime, _ = ptypes.TimestampProto(tracking.EstDeliveryTime)
+		Tracking.Carrier = tracking.Carrier
+		listTrackingResponse.Trackings = append(listTrackingResponse.Trackings, &Tracking)
 	}
-	return &trackingListResponse, nil
+	return &listTrackingResponse, nil
+}
+
+func getTimestamp(t time.Time) *timestamppb.Timestamp {
+	ts, _ := ptypes.TimestampProto(t)
+	return ts
 }

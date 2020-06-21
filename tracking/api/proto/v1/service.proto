@@ -16,37 +16,61 @@ syntax = "proto3";
 
 import "google/protobuf/empty.proto";
 import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
 
-package v1;
+package sample_apps.v1;
 
-service Tracking {
-    rpc GetTrackingDetails(TrackingRequest) returns (TrackingResponse) {
+option java_package = "com.sample_apps.v1";
+option java_multiple_files = true;
+option java_outer_classname = "ServiceProto";
+
+//Shipment service provides the ability to track a shipment 
+service Shipment {
+    //GetTracking gets a specific tracking identifier
+    rpc GetTracking(GetTrackingRequest) returns (Tracking) {
         option (google.api.http) = {
-            get: "/v1/tracking/{trackingId}"
-        };        
+            get: "/v1/tracking/{tracking_id}"
+        };
+        //option (google.api.method_signature) = "tracking_id";        
     };
-    rpc ListTrackingDetails(google.protobuf.Empty) returns (TrackingListResponse) {
+    //ListTracking lists all the tracking objects
+    rpc ListTracking(google.protobuf.Empty) returns (ListTrackingResponse) {
         option (google.api.http) = {
             get: "/v1/tracking"
         };        
     };
 }
 
-message TrackingRequest {
-    string trackingId = 1;
+//GetTrackingRequest set a tracking identifier
+message GetTrackingRequest {
+    //tracking_id is the identifier for tracking
+    string tracking_id = 1;
 }
 
-message TrackingResponse {
-    string trackingId = 1;
+//Tracking contains information about a shipment
+message Tracking {
+    //tracking_id is the identifier for tracking
+    string tracking_id = 1;
+    //status provides the current status of the shipment
     string status = 2;
-    string created = 3;
+    //created_time is when the tracking resource was created
+    google.protobuf.Timestamp create_time = 3;
+    //signed is populated when the shipment is delivered
     string signed = 5;
-    string updated = 4;
+    //updated_time is when the resource was last updated
+    google.protobuf.Timestamp update_time = 4;
+    //weight of the shipment
     string weight = 6;
-    string est_delivery_date = 7;
+    //est_delivery_date estimated delivery time for shipment
+    google.protobuf.Timestamp est_delivery_time = 7;
+    //carrier of the shipmemt
     string carrier = 8;
 }
 
-message TrackingListResponse {
-    repeated TrackingResponse trackingResponse = 1;
+//ListTrackingResponse contains a list of tracking information
+message ListTrackingResponse {
+    //trackings contains a repeated list of tracking information
+    repeated Tracking trackings = 1;
+    //next_page_token is used for pagination
+    string next_page_token = 2;
 }
