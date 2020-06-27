@@ -12,13 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: skaffold/v2alpha1
+apiVersion: skaffold/v1beta2
 kind: Config
-metadata:
-  name: sample-apps
 build:
-  googleCloudBuild:
-    projectId: project-id
   artifacts:
   - image: gcr.io/project-id/inventory
     context: inventory
@@ -75,4 +71,19 @@ deploy:
     - tracking/tracking-client.yaml
     - orders-gql/orders-gql.yaml
     - customers/customers.yaml
-    - websockets/server/customers.yaml
+    - websockets/server/websockets.yaml
+# "gcb" profile allows building and pushing the images
+# on Google Container Builder without requiring docker
+# installed on the developer machine. However, note that
+# since GCB does not cache the builds, each build will
+# start from scratch and therefore take a long time.
+#
+# This is not used by default. To use it, run:
+#     skaffold run -p gcb
+profiles:
+- name: gcb
+  build:
+    googleCloudBuild:
+      projectId: project-id
+      diskSizeGb: 100
+      machineType: N1_HIGHCPU_8
