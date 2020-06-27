@@ -57,7 +57,13 @@ build:
     docker:
       cacheFrom: 
         - golang:latest
-        - alpine:latest           
+        - alpine:latest
+  - image: gcr.io/project-id/websockets
+    context: websockets/server
+    docker:
+      cacheFrom: 
+        - golang:latest
+        - alpine:latest                   
 deploy:
   kubectl:
     flags:
@@ -69,3 +75,4 @@ deploy:
     - tracking/tracking-client.yaml
     - orders-gql/orders-gql.yaml
     - customers/customers.yaml
+    - websockets/server/customers.yaml

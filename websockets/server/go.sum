@@ -1,0 +1,5 @@
+github.com/gorilla/websocket v1.4.1 h1:q7AeDBpnBk8AogcD4DSag/Ukw/KV+YhzLj2bP5HvKCM=
+github.com/gorilla/websocket v1.4.1/go.mod h1:YR8l580nyteQvAITg2hZ9XVh4b55+EU/adAjf1fMHhE=
+github.com/srinandan/sample-apps v1.1.1 h1:yo4T9gWb/0pzen8F5N1+nJ+H9DcQ4lNQUjxP6yVMhaY=
+github.com/srinandan/sample-apps/common v0.0.0-20200406212846-6179c5bee78c h1:bhKwOWU6w0IB0AJcXx4gPeAJIJ/Sb8tjc890s2FBgGg=
+github.com/srinandan/sample-apps/common v0.0.0-20200406212846-6179c5bee78c/go.mod h1:MCjG9Kmzl2VeeoBCSbxnGBKzRMIuvHEBMIlpA8SeWV0=

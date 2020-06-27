@@ -20,19 +20,19 @@ echo $3
 
 if [ -z "$1" ]
   then
-    echo "org name is a mandatory parameter. Usage: 'install-oauth-sharedflow {org} {env} {path-to-service-account.json}'"
+    echo "org name is a mandatory parameter. Usage: 'check-preqs.sh {org} {env} {path-to-service-account.json}'"
     exit 1
 fi
 
 if [ -z "$2" ]
   then
-    echo "env name is a mandatory parameter. Usage: 'install-oauth-sharedflow {org} {env} {path-to-service-account.json}'"
+    echo "env name is a mandatory parameter. Usage: 'check-preqs.sh {org} {env} {path-to-service-account.json}'"
     exit 1
 fi
 
 if [ -z "$3" ]
   then
-    echo "service account is a mandatory parameter. Usage: 'install-oauth-sharedflow {org} {env} {path-to-service-account.json}'"
+    echo "service account is a mandatory parameter. Usage: 'check-preqs.sh {org} {env} {path-to-service-account.json}'"
     exit 1
 fi
 

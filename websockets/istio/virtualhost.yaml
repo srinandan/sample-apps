@@ -1,0 +1,17 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: websockets
+  namespace: apps
+spec:
+  hosts:
+  - websockets
+  http:
+  - timeout: 5s  
+    rewrite:
+      authority: websockets.apps.svc.cluster.local:3000   
+    route:
+    - destination:
+        host: websockets.apps.svc.cluster.local
+        port:
+          number: 3000
