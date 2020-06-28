@@ -60,5 +60,13 @@ spec:
         resources:
           requests:
             cpu: 100m
-      nodeSelector:
-        cloud.google.com/gke-nodepool: apps
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - preference:
+              matchExpressions:
+              - key: cloud.google.com/gke-nodepool
+                operator: In
+                values:
+                - apps
+            weight: 100

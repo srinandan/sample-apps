@@ -55,5 +55,13 @@ spec:
             port: 8080
           initialDelaySeconds: 5
           periodSeconds: 5
-      nodeSelector:
-        cloud.google.com/gke-nodepool: apps
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - preference:
+              matchExpressions:
+              - key: cloud.google.com/gke-nodepool
+                operator: In
+                values:
+                - apps
+            weight: 100
