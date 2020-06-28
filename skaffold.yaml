@@ -59,7 +59,13 @@ build:
     docker:
       cacheFrom: 
         - golang:latest
-        - alpine:latest  
+        - alpine:latest
+  - image: client
+    context: client
+    docker:
+      cacheFrom:
+        - golang:latest
+        - alpine:latest
   tagPolicy:
       gitCommit: {}                         
 deploy:
@@ -75,6 +81,7 @@ deploy:
     - orders-gql/orders-gql.yaml
     - customers/customers.yaml
     - websockets/server/websockets.yaml
+    - client/client.yaml
 # "gcb" profile allows building and pushing the images
 # on Google Container Builder without requiring docker
 # installed on the developer machine. However, note that
