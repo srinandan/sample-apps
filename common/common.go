@@ -16,11 +16,19 @@ package common
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"strconv"
+	"time"
+
+	"contrib.go.opencensus.io/exporter/jaeger"
+	"contrib.go.opencensus.io/exporter/stackdriver"
+	"go.opencensus.io/plugin/ocgrpc"
+	"go.opencensus.io/stats/view"
+	"go.opencensus.io/trace"
 )
 
 //log levels, default is error
@@ -165,4 +173,61 @@ func PermissionDeniedHandler(w http.ResponseWriter, err error) {
 	if err := json.NewEncoder(w).Encode(errorMessage); err != nil {
 		Error.Println(err)
 	}
+}
+
+func initStats(exporter *stackdriver.Exporter) {
+	view.SetReportingPeriod(60 * time.Second)
+	view.RegisterExporter(exporter)
+	if err := view.Register(ocgrpc.DefaultServerViews...); err != nil {
+		Info.Println("Error registering default server views")
+	} else {
+		Info.Println("Registered default server views")
+	}
+}
+
+func initJaegerTracing(serviceName string) {
+	svcAddr := os.Getenv("JAEGER_SERVICE_ADDR")
+	if svcAddr == "" {
+		Info.Println("jaeger initialization disabled.")
+		return
+	}
+	// Register the Jaeger exporter to be able to retrieve
+	// the collected spans.
+	exporter, err := jaeger.NewExporter(jaeger.Options{
+		Endpoint: fmt.Sprintf("http://%s", svcAddr),
+		Process: jaeger.Process{
+			ServiceName: serviceName,
+		},
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+	trace.RegisterExporter(exporter)
+	Info.Println("jaeger initialization completed.")
+}
+
+func initStackdriverTracing() {
+	for i := 1; i <= 3; i++ {
+		exporter, err := stackdriver.NewExporter(stackdriver.Options{})
+		if err != nil {
+			Error.Println("failed to initialize Stackdriver exporter: %+v", err)
+		} else {
+			trace.RegisterExporter(exporter)
+			trace.ApplyConfig(trace.Config{DefaultSampler: trace.AlwaysSample()})
+			Info.Println("registered Stackdriver tracing")
+
+			// Register the views to collect server stats.
+			initStats(exporter)
+			return
+		}
+		d := time.Second * 10 * time.Duration(i)
+		Info.Println("sleeping %v to retry initializing Stackdriver exporter", d)
+		time.Sleep(d)
+	}
+	log.Warn("could not initialize Stackdriver exporter after retrying, giving up")
+}
+
+func InitTracing(serviceName string) {
+	initJaegerTracing(serviceName)
+	initStackdriverTracing()
 }
