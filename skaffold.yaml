@@ -59,7 +59,9 @@ build:
     docker:
       cacheFrom: 
         - golang:latest
-        - alpine:latest                   
+        - alpine:latest  
+  tagPolicy:
+      gitCommit: {}                         
 deploy:
   kubectl:
     flags:
@@ -85,6 +87,5 @@ profiles:
 - name: gcb
   build:
     googleCloudBuild:
-      projectId: project-id
       diskSizeGb: 100
       machineType: N1_HIGHCPU_8
