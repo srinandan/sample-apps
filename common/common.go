@@ -210,7 +210,7 @@ func initStackdriverTracing() {
 	for i := 1; i <= 3; i++ {
 		exporter, err := stackdriver.NewExporter(stackdriver.Options{})
 		if err != nil {
-			Error.Println("failed to initialize Stackdriver exporter: %+v", err)
+			Error.Printf("failed to initialize Stackdriver exporter: %+v\n", err)
 		} else {
 			trace.RegisterExporter(exporter)
 			trace.ApplyConfig(trace.Config{DefaultSampler: trace.AlwaysSample()})
@@ -221,10 +221,10 @@ func initStackdriverTracing() {
 			return
 		}
 		d := time.Second * 10 * time.Duration(i)
-		Info.Println("sleeping %v to retry initializing Stackdriver exporter", d)
+		Info.Printf("sleeping %v to retry initializing Stackdriver exporter\n", d)
 		time.Sleep(d)
 	}
-	log.Warn("could not initialize Stackdriver exporter after retrying, giving up")
+	Info.Println("could not initialize Stackdriver exporter after retrying, giving up")
 }
 
 func InitTracing(serviceName string) {
