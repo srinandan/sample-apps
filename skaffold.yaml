@@ -65,6 +65,7 @@ deploy:
     flags:
       global: ["--namespace=apps"]
     manifests:
+    - namespace.yaml
     - inventory/inventory.yaml
     - orders/orders.yaml
     - tracking/tracking.yaml
