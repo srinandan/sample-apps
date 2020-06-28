@@ -41,7 +41,7 @@ spec:
         version: v1
     spec:
       containers:
-      - image: gcr.io/project-id/tracking
+      - image: tracking
         imagePullPolicy: IfNotPresent
         name: tracking
         ports:
@@ -51,7 +51,11 @@ spec:
             value: "true"
         resources:
           requests:
-            cpu: 100m
+            cpu: 50m
+            memory: 128Mi
+          limits:
+            cpu: 50m
+            memory: 128Mi
       affinity:
         nodeAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:

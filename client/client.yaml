@@ -39,12 +39,16 @@ spec:
         version: v1
     spec:
       containers:
-      - image: gcr.io/project-id/client
+      - image: client
         imagePullPolicy: Always
         name: client
         resources:
           requests:
-            cpu: 100m
+            cpu: 50m
+            memory: 128Mi
+          limits:
+            cpu: 50m
+            memory: 128Mi
       affinity:
         nodeAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:

@@ -17,16 +17,24 @@ This repo contains a few sample microservices for experimenting with Apigee.
 ### Prerequisites to build
 
 * kubectl 1.15 or higher
-* docker 19.x or higher
-* [skaffold](https://skaffold.dev/) 1.1.0 or higher (optional)
+* [skaffold](https://skaffold.dev/) 1.12.0
+* docker 19.x or higher (optional)
 
 ### Install steps
 
-These applications can also be installed via [skaffold](https://skaffold.dev/). Modify the [skaffold.yaml](./skaffold.yaml) to set the appropriate project name.
+* Option 1 - Use Cloud Build
+
+PREREQUISITES: Cloud Build service account must have role: "Kubernetes Engine Developer"
 
 ```bash
+export GOOGLE_APPLICATION_CREDENTIALS=my-service-account.json
+skaffold run -p gcb --default-repo=gcr.io/[PROJECT_ID]
+```
 
-skaffold run
+* Option 2 - local docker
+
+```bash
+skaffold run --default-repo=gcr.io/[PROJECT_ID]
 ```
 
 NOTE: `client` and `load-test` are not installed.

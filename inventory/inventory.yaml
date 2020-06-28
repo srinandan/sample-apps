@@ -46,7 +46,7 @@ spec:
         version: v1
     spec:
       containers:
-      - image: gcr.io/project-id/inventory
+      - image: inventory
         imagePullPolicy: IfNotPresent
         name: inventory
         ports:
@@ -54,7 +54,11 @@ spec:
         - containerPort: 8090
         resources:
           requests:
-            cpu: 100m
+            cpu: 50m
+            memory: 128Mi
+          limits:
+            cpu: 50m
+            memory: 128Mi
         livenessProbe:
           httpGet:
             path: /healthz

@@ -41,14 +41,18 @@ spec:
         version: v1
     spec:
       containers:
-      - image: gcr.io/project-id/customers
+      - image: customers
         imagePullPolicy: IfNotPresent
         name: customers
         ports:
         - containerPort: 8080
         resources:
           requests:
-            cpu: 100m
+            cpu: 50m
+            memory: 128Mi
+          limits:
+            cpu: 50m
+            memory: 128Mi
         livenessProbe:
           httpGet:
             path: /healthz
