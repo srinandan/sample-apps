@@ -16,45 +16,45 @@ apiVersion: skaffold/v1beta2
 kind: Config
 build:
   artifacts:
-  - image: gcr.io/project-id/inventory
+  - image: inventory
     context: inventory
     docker:
       cacheFrom: 
         - golang:latest
         - alpine:latest        
-  - image: gcr.io/project-id/orders
+  - image: orders
     context: orders
     docker:
       cacheFrom: 
         - golang:latest
         - alpine:latest        
-  - image: gcr.io/project-id/tracking
+  - image: tracking
     context: tracking
     docker:
       cacheFrom: 
         - golang:latest
         - alpine:latest    
       dockerfile: ./Dockerfile.server
-  - image: gcr.io/project-id/tracking-client
+  - image: tracking-client
     context: tracking
     docker:
       cacheFrom: 
         - golang:latest
         - alpine:latest
       dockerfile: ./Dockerfile.client
-  - image: gcr.io/project-id/orders-gql
+  - image: orders-gql
     context: orders-gql
     docker:
       cacheFrom: 
         - golang:latest
         - alpine:latest   
-  - image: gcr.io/project-id/customers
+  - image: customers
     context: customers
     docker:
       cacheFrom: 
         - golang:latest
         - alpine:latest
-  - image: gcr.io/project-id/websockets
+  - image: websockets
     context: websockets/server
     docker:
       cacheFrom: 
