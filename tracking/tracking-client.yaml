@@ -46,7 +46,7 @@ spec:
         version: v1
     spec:
       containers:
-      - image: gcr.io/project-id/tracking-client
+      - image: tracking-client
         imagePullPolicy: IfNotPresent
         name: tracking-client
         ports:
