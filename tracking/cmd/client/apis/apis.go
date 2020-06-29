@@ -22,6 +22,8 @@ import (
 	"strings"
 	"time"
 
+	"go.opencensus.io/plugin/ocgrpc"
+	"go.opencensus.io/trace"
 	"google.golang.org/grpc"
 
 	"github.com/golang/protobuf/jsonpb"
@@ -89,12 +91,12 @@ func initClient(credType string, cred string) (trackingClient v1.ShipmentClient,
 
 	if credType == "accessToken" {
 		creds, _ := NewTokenFromHeader(cred)
-		conn, err = grpc.Dial(trackingEndpoint, grpc.WithInsecure(), grpc.WithPerRPCCredentials(creds))
+		conn, err = grpc.Dial(trackingEndpoint, grpc.WithInsecure(), grpc.WithPerRPCCredentials(creds), grpc.WithStatsHandler(new(ocgrpc.ClientHandler)))
 	} else if credType == "apiKey" {
 		creds, _ := NewKeyFromHeader(cred)
-		conn, err = grpc.Dial(trackingEndpoint, grpc.WithInsecure(), grpc.WithPerRPCCredentials(creds))
+		conn, err = grpc.Dial(trackingEndpoint, grpc.WithInsecure(), grpc.WithPerRPCCredentials(creds), grpc.WithStatsHandler(new(ocgrpc.ClientHandler)))
 	} else {
-		conn, err = grpc.Dial(trackingEndpoint, grpc.WithInsecure())
+		conn, err = grpc.Dial(trackingEndpoint, grpc.WithInsecure(), grpc.WithStatsHandler(new(ocgrpc.ClientHandler)))
 	}
 
 	if err != nil {
@@ -131,6 +133,13 @@ func getCredential(r *http.Request) (credType string, cred string) {
 
 func ListTrackingDetailsHandler(w http.ResponseWriter, r *http.Request) {
 
+	ctx, rootspan := trace.StartSpan(context.Background(), "ListTrackingDetailsHandler")
+	defer rootspan.End()
+
+	// create child span for backend call
+	ctx, childspan := trace.StartSpan(ctx, "call to tracking server")
+	defer childspan.End()
+
 	credType, cred := getCredential(r)
 	trackingClient, conn, err := initClient(credType, cred)
 
@@ -141,11 +150,11 @@ func ListTrackingDetailsHandler(w http.ResponseWriter, r *http.Request) {
 
 	defer closeClient(conn)
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	childCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	// Call Create
-	resp, err := trackingClient.ListTracking(ctx, &empty.Empty{})
+	resp, err := trackingClient.ListTracking(childCtx, &empty.Empty{})
 	if err != nil {
 		e, _ := status.FromError(err)
 		if e.Code() == codes.Unavailable {
@@ -170,6 +179,13 @@ func ListTrackingDetailsHandler(w http.ResponseWriter, r *http.Request) {
 
 func GetTrackingDetailsHandler(w http.ResponseWriter, r *http.Request) {
 
+	ctx, rootspan := trace.StartSpan(context.Background(), "GetTrackingDetailsHandler")
+	defer rootspan.End()
+
+	// create child span for backend call
+	ctx, childspan := trace.StartSpan(ctx, "call to tracking server")
+	defer childspan.End()
+
 	credType, cred := getCredential(r)
 	trackingClient, conn, err := initClient(credType, cred)
 
@@ -184,11 +200,11 @@ func GetTrackingDetailsHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	trackingId := vars["id"]
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	childCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	// Call Create
-	resp, err := trackingClient.GetTracking(ctx, &v1.GetTrackingRequest{
+	resp, err := trackingClient.GetTracking(childCtx, &v1.GetTrackingRequest{
 		TrackingId: trackingId,
 	})
 	if err != nil {

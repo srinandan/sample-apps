@@ -21,6 +21,7 @@ import (
 	"os"
 	"os/signal"
 
+	"go.opencensus.io/plugin/ocgrpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 
@@ -68,7 +69,7 @@ func RunServer(port string) error {
 
 	// register service
 	//server := grpc.NewServer()
-	server := grpc.NewServer(grpc.UnaryInterceptor(unaryInterceptor))
+	server := grpc.NewServer(grpc.UnaryInterceptor(unaryInterceptor), grpc.StatsHandler(&ocgrpc.ServerHandler{}))
 
 	ShipmentServer, err := service.NewShipmentService()
 	if err != nil {

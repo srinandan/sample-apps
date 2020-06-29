@@ -24,6 +24,7 @@ import (
 	"github.com/golang/protobuf/ptypes"
 	empty "github.com/golang/protobuf/ptypes/empty"
 	v1 "github.com/srinandan/sample-apps/tracking/pkg/api/v1"
+	"go.opencensus.io/trace"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -68,6 +69,9 @@ func NewShipmentService() (v1.ShipmentServer, error) {
 }
 
 func (s *ShipmentServer) GetTracking(ctx context.Context, req *v1.GetTrackingRequest) (*v1.Tracking, error) {
+	ctx, span := trace.StartSpan(ctx, "GetTracking")
+	defer span.End()
+
 	for _, tracking := range trackings {
 		if tracking.TrackingId == req.TrackingId {
 			return &v1.Tracking{
@@ -81,10 +85,14 @@ func (s *ShipmentServer) GetTracking(ctx context.Context, req *v1.GetTrackingReq
 			}, nil
 		}
 	}
+
 	return &v1.Tracking{}, fmt.Errorf("tracking item not found")
 }
 
 func (s *ShipmentServer) ListTracking(ctx context.Context, empty *empty.Empty) (*v1.ListTrackingResponse, error) {
+	ctx, span := trace.StartSpan(ctx, "ListTracking")
+	defer span.End()
+
 	listTrackingResponse := v1.ListTrackingResponse{}
 
 	if len(trackings) == 0 {

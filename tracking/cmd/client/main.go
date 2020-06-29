@@ -21,18 +21,22 @@ import (
 	"github.com/gorilla/mux"
 	common "github.com/srinandan/sample-apps/common"
 	apis "github.com/srinandan/sample-apps/tracking/cmd/client/apis"
+	"github.com/srinandan/sample-apps/tracking/cmd/client/app"
 
 	"net/http"
 	"os"
 	"os/signal"
 	"time"
+
+	"go.opencensus.io/plugin/ochttp"
+	"go.opencensus.io/plugin/ochttp/propagation/tracecontext"
 )
 
 func main() {
 	var wait time.Duration
 
-	//initialize logging
-	common.InitLog()
+	//initialize app
+	app.Initialize()
 
 	r := mux.NewRouter()
 	r.HandleFunc("/healthz", common.HealthHandler).
@@ -44,13 +48,18 @@ func main() {
 
 	common.Info.Println("Starting server - ", common.GetAddress())
 
+	och := &ochttp.Handler{
+		Handler:     r,
+		Propagation: &tracecontext.HTTPFormat{},
+	}
+
 	//the following code is from gorilla mux samples
 	srv := &http.Server{
 		Addr:         common.GetAddress(),
 		WriteTimeout: time.Second * 15,
 		ReadTimeout:  time.Second * 15,
 		IdleTimeout:  time.Second * 60,
-		Handler:      r,
+		Handler:      och, //r,
 	}
 
 	go func() {

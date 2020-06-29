@@ -15,6 +15,8 @@
 package app
 
 import (
+	"os"
+
 	common "github.com/srinandan/sample-apps/common"
 	odr "github.com/srinandan/sample-apps/orders/odr"
 )
@@ -23,6 +25,13 @@ import (
 func Initialize() {
 	//init logging
 	common.InitLog()
+	//init tracing
+	if os.Getenv("DISABLE_TRACING") == "" {
+		common.Info.Println("Tracing enabled.")
+		go common.InitTracing("orders")
+	} else {
+		common.Info.Println("Tracing disabled.")
+	}
 	//ReadOrdersFile
 	if err := odr.ReadOrdersFile(); err != nil {
 		common.Error.Println("error reading orders file ", err)

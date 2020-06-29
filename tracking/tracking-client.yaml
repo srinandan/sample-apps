@@ -57,9 +57,17 @@ spec:
             value: "true"
           - name: TRACKING
             value: "tracking.apps.svc.cluster.local:50051"
+        # - name: DISABLE_TRACING
+        #   value: "1"
+        # - name: JAEGER_SERVICE_ADDR
+        #   value: "jaeger-collector:14268"            
         resources:
           requests:
-            cpu: 100m
+            cpu: 50m
+            memory: 128Mi
+          limits:
+            cpu: 50m
+            memory: 128Mi
       affinity:
         nodeAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:

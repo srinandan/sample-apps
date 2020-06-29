@@ -15,6 +15,8 @@
 package app
 
 import (
+	"os"
+
 	common "github.com/srinandan/sample-apps/common"
 	items "github.com/srinandan/sample-apps/inventory/items"
 )
@@ -23,6 +25,13 @@ import (
 func Initialize() {
 	//init logging
 	common.InitLog()
+	//init tracing
+	if os.Getenv("DISABLE_TRACING") == "" {
+		common.Info.Println("Tracing enabled.")
+		go common.InitTracing("inventory")
+	} else {
+		common.Info.Println("Tracing disabled.")
+	}
 	//ReadInventoryFile
 	if err := items.ReadInventoryFile(); err != nil {
 		common.Error.Println("error reading inventory file ", err)

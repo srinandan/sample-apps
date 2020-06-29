@@ -15,44 +15,65 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
 	"net/http"
+	"os"
+	"time"
 
 	"github.com/gorilla/websocket"
+	"github.com/srinandan/sample-apps/common"
+	"go.opencensus.io/plugin/ochttp"
 )
 
 var upgrader = websocket.Upgrader{}
 
 func main() {
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "index.html")
-	})
-
-	http.HandleFunc("/v1/ws", func(w http.ResponseWriter, r *http.Request) {
-		var conn, _ = upgrader.Upgrade(w, r, nil)
-		go func(conn *websocket.Conn) {
-			for {
-				mType, msg, err := conn.ReadMessage()
-				if err != nil {
-					fmt.Println(err)
-					conn.Close()
-					break
-				} else {
-					fmt.Println("Received message: ", string(msg))
-					reply := "Replying to: '" + string(msg) + "' with 'hello'"
-					conn.WriteMessage(mType, []byte(reply))
-				}
-			}
-		}(conn)
-	})
-
-	http.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
-		json.NewEncoder(w).Encode(map[string]bool{"ok": true})
-	})
-
-	err := http.ListenAndServe(":3000", nil)
-	if err != nil {
-		fmt.Println("Error starting: ", err)
+	//init logging
+	common.InitLog()
+	//init tracing
+	if os.Getenv("DISABLE_TRACING") == "" {
+		common.Info.Println("Tracing enabled.")
+		go common.InitTracing("orders")
+	} else {
+		common.Info.Println("Tracing disabled.")
 	}
+
+	mux := http.NewServeMux()
+	mux.HandleFunc("/v1/ws", wsResponse)
+	mux.HandleFunc("/healthz", common.HealthHandler)
+
+	och := &ochttp.Handler{
+		Handler: mux,
+	}
+
+	//the following code is from gorilla mux samples
+	srv := &http.Server{
+		Addr:         "0.0.0.0:3000",
+		WriteTimeout: time.Second * 15,
+		ReadTimeout:  time.Second * 15,
+		IdleTimeout:  time.Second * 60,
+		Handler:      och,
+	}
+
+	err := srv.ListenAndServe()
+	if err != nil {
+		common.Error.Println("Error starting: ", err)
+	}
+}
+
+func wsResponse(w http.ResponseWriter, r *http.Request) {
+	var conn, _ = upgrader.Upgrade(w, r, nil)
+	go func(conn *websocket.Conn) {
+		for {
+			mType, msg, err := conn.ReadMessage()
+			if err != nil {
+				common.Error.Println(err)
+				conn.Close()
+				break
+			} else {
+				common.Info.Println("Received message: ", string(msg))
+				reply := "Replying to: '" + string(msg) + "' with 'hello'"
+				conn.WriteMessage(mType, []byte(reply))
+			}
+		}
+	}(conn)
 }

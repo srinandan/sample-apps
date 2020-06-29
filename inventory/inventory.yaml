@@ -52,6 +52,13 @@ spec:
         ports:
         - containerPort: 8080
         - containerPort: 8090
+        env:
+          - name: DEBUG
+            value: "false" #set to true to enable debug
+        # - name: DISABLE_TRACING
+        #   value: "1"
+        # - name: JAEGER_SERVICE_ADDR
+        #   value: "jaeger-collector:14268"
         resources:
           requests:
             cpu: 50m

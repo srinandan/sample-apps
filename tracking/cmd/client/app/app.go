@@ -12,29 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//go run cmd/server/main.go
-package main
+package app
 
 import (
-	"fmt"
 	"os"
 
-	"github.com/srinandan/sample-apps/common"
-	grpc "github.com/srinandan/sample-apps/tracking/pkg/protocol/grpc"
+	common "github.com/srinandan/sample-apps/common"
 )
 
-func main() {
-	//initialize logging
+//Initialize logging, context, sec mgr and kms
+func Initialize() {
+	//init logging
 	common.InitLog()
 	//init tracing
 	if os.Getenv("DISABLE_TRACING") == "" {
 		common.Info.Println("Tracing enabled.")
-		go common.InitTracing("tracking")
+		go common.InitTracing("tracking-client")
 	} else {
 		common.Info.Println("Tracing disabled.")
-	}
-	if err := grpc.RunServer(common.GetgRPCPort()); err != nil {
-		fmt.Fprintf(os.Stderr, "%v\n", err)
-		os.Exit(1)
 	}
 }

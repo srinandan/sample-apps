@@ -49,6 +49,13 @@ spec:
         name: websockets
         ports:
         - containerPort: 3000
+        env:
+          - name: DEBUG
+            value: "false" #set to true to enable debug
+        # - name: DISABLE_TRACING
+        #   value: "1"
+        # - name: JAEGER_SERVICE_ADDR
+        #   value: "jaeger-collector:14268"        
         livenessProbe:
           httpGet:
             path: /healthz
