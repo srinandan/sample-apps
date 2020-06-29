@@ -28,7 +28,7 @@ PREREQUISITES: Cloud Build service account must have role: "Kubernetes Engine De
 
 ```bash
 export GOOGLE_APPLICATION_CREDENTIALS=my-service-account.json
-skaffold run -p gcb --default-repo=gcr.io/[PROJECT_ID]
+skaffold run -p gcb --default-repo=gcr.io/$PROJECT_ID
 ```
 
 * Option 2 - local docker
@@ -38,6 +38,14 @@ skaffold run --default-repo=gcr.io/[PROJECT_ID]
 ```
 
 NOTE: `client` and `load-test` are not installed.
+
+#### Installing a single application
+
+```bash
+skaffold run -p gcb --default-repo=gcr.io/$PROJECT_ID -f skaffold-{appname}.yaml
+```
+
+where {appname} can be orders, inventory, tracking, customers or websockets
 
 ### Skaffold Errors
 
