@@ -56,5 +56,13 @@ spec:
         - -H
         - "x-api-key: xxx"
         - https://api.fazio.apigeeks.net/orders
-      nodeSelector:
-        cloud.google.com/gke-nodepool: apps
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - preference:
+              matchExpressions:
+              - key: cloud.google.com/gke-nodepool
+                operator: In
+                values:
+                - apps
+            weight: 100
