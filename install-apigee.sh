@@ -24,7 +24,7 @@ fi
 apigeecli developers create -o $1 -n apps@sample.com -u faziodev -f fazio -s user -a $3
 RESULT=$?
 if [ $RESULT -ne 0 ]; then
-  echo "failed to import api proxy bundle"
+  echo "failed to create developer"
   exit 1
 fi
 
@@ -77,22 +77,6 @@ if [ $RESULT -ne 0 ]; then
 fi
 
 # websockets app
-# zip the bundle
-cd websockets && zip -r ../websockets.zip apiproxy && cd ..
-RESULT=$?
-if [ $RESULT -ne 0 ]; then
-  echo "failed to zip bundle"
-  exit 1
-fi
-
-# import the api proxy bundle
-apigeecli apis create -o $1 -n websockets -p websockets.zip -a $3
-RESULT=$?
-if [ $RESULT -ne 0 ]; then
-  echo "failed to import api proxy bundle"
-  exit 1
-fi
-
 # create an api product
 apigeecli products create -o $1 -f auto -n websocket_product -m "Websockets Product" -e $2 -p websockets -d "A sample products for websockets"
 RESULT=$?
