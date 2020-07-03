@@ -53,6 +53,8 @@ spec:
         - containerPort: 8080
         - containerPort: 8090
         env:
+          - name: GOOGLE_APPLICATION_CREDENTIALS
+            value: /etc/secret/client_secret.json #ensure the file name matches the kubectl secret
           - name: DEBUG
             value: "true"
           - name: TRACKING
@@ -68,6 +70,15 @@ spec:
           limits:
             cpu: 50m
             memory: 128Mi
+        volumeMounts:
+          - mountPath: /etc/secret
+            name: svc-account-volume
+            readOnly: true
+      volumes:
+      - name: svc-account-volume
+        secret:
+          defaultMode: 420
+          secretName: google-auth-svc-account            
       affinity:
         nodeAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:

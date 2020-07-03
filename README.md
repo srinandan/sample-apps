@@ -20,6 +20,12 @@ This repo contains a few sample microservices for experimenting with Apigee.
 * [skaffold](https://skaffold.dev/) 1.12.0
 * docker 19.x or higher (optional)
 
+### Create a Kubernetes Secret
+
+```bash
+./create-secret.sh
+```
+
 ### Install steps
 
 * Option 1 - Use Cloud Build
