@@ -31,12 +31,15 @@ import (
 	"github.com/lestrrat/go-jwx/jwa"
 	"github.com/lestrrat/go-jwx/jwt"
 	"github.com/srinandan/sample-apps/common"
-	types "github.com/srinandan/samples-apps/google-auth-sidecar/types"
+	types "github.com/srinandan/sample-apps/google-auth-sidecar/types"
 )
 
 var serviceAccount = types.ServiceAccount{}
 
 func getPrivateKey() (interface{}, error) {
+	if serviceAccount == (types.ServiceAccount{}) {
+		return nil, fmt.Errorf("serviceAccount is nil")
+	}
 	pemPrivateKey := fmt.Sprintf("%v", serviceAccount.PrivateKey)
 	block, _ := pem.Decode([]byte(pemPrivateKey))
 	privKey, err := x509.ParsePKCS8PrivateKey(block.Bytes)
@@ -59,6 +62,7 @@ func ReadServiceAccount() (err error) {
 		common.Error.Println("parsing error")
 		return err
 	}
+
 	return nil
 }
 

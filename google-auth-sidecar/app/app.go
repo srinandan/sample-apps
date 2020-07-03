@@ -17,8 +17,8 @@ package clientapp
 import (
 	"os"
 
-	token "github.com/srinandan/google-auth-sidecar/token"
 	"github.com/srinandan/sample-apps/common"
+	token "github.com/srinandan/sample-apps/google-auth-sidecar/token"
 )
 
 //Initialize logging, context, sec mgr and kms
