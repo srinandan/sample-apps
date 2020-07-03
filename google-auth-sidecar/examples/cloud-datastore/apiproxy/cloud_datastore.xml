@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+ Copyright 2020 Google LLC
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<APIProxy revision="1" name="cloud_datastore">
+    <Basepaths>/data</Basepaths>
+    <ConfigurationVersion majorVersion="4" minorVersion="0"/>
+    <CreatedAt>1575867090874</CreatedAt>
+    <CreatedBy>defaultUser</CreatedBy>
+    <Description>This proxy fetches data from Google Cloud datastore</Description>
+    <DisplayName>cloud_datastore</DisplayName>
+    <LastModifiedAt>1575916979288</LastModifiedAt>
+    <LastModifiedBy>defaultUser</LastModifiedBy>
+    <ManifestVersion>SHA-512:7aaacf3b02513692aa4eaf57b5ffc904fbeeec0dc3572e83ac8f0da05a82b0ca11e529c9a3b6dcda15a431ce172faa3d48a6e3a949332f6537f626e29b6a1f18</ManifestVersion>
+    <Policies>
+        <Policy>Get-Access-Token</Policy>
+        <Policy>Parse-Access-Token</Policy>
+        <Policy>Set-Access-Token</Policy>
+    </Policies>
+    <ProxyEndpoints>
+        <ProxyEndpoint>default</ProxyEndpoint>
+    </ProxyEndpoints>
+    <Resources>
+        <Resource>jsc://parse-access-token.js</Resource>
+    </Resources>
+    <Spec></Spec>
+    <TargetServers/>
+    <TargetEndpoints>
+        <TargetEndpoint>default</TargetEndpoint>
+    </TargetEndpoints>
+</APIProxy>

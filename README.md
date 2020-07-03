@@ -10,6 +10,7 @@ This repo contains a few sample microservices for experimenting with Apigee.
 * [Orders GraphQL](./orders-gql) - A graphQL implementation of the `orders` and `inventory` service.
 * [Customers](./customers) - To demonstrate the use of Cloud DLP (https://cloud.google.com/dlp/)
 * [Websockets](./websockets) - To demostrate websockets via Apigee runtime
+* [Google Auth Service](./google-auth-sidecar) - Obtain a Google OAuth token to call Google APIs
 * [Load Test](./load-test) - A [fortio](https://github.com/fortio/fortio) based load test application. For deployment in kubernetes
 
 ## Installation
@@ -20,7 +21,7 @@ This repo contains a few sample microservices for experimenting with Apigee.
 * [skaffold](https://skaffold.dev/) 1.12.0
 * docker 19.x or higher (optional)
 
-### Create a Kubernetes Secret
+### Create a Kubernetes Secret with Google Service Account
 
 ```bash
 ./create-secret.sh
@@ -40,7 +41,7 @@ skaffold run -p gcb --default-repo=gcr.io/$PROJECT_ID
 * Option 2 - local docker
 
 ```bash
-skaffold run --default-repo=gcr.io/[PROJECT_ID]
+skaffold run --default-repo=gcr.io/$PROJECT_ID
 ```
 
 NOTE: `client` and `load-test` are not installed.

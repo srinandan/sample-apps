@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+ Copyright 2020 Google LLC
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<Manifest name="manifest">
+    <Policies>
+        <VersionInfo resourceName="Get-Access-Token" version="SHA-512:00eaf7da1f31236ee52357301bc28110af86dd48dc15ebe012b6ee0fffe390d77a5bf11df7c2921ef4234a7b3fe19dd5c475ec7769f22f5bd28ba0b3285f6e91"/>
+        <VersionInfo resourceName="Parse-Access-Token" version="SHA-512:13b4b8f6f382b354abd82f8c1adf97a28715de70fe37008f0542758ee6b28d0b472f486c0a9016e4658423171810f48331de4903a6c4cdc9ce1cc33e90070573"/>
+        <VersionInfo resourceName="Set-Access-Token" version="SHA-512:4ee129fa946759d4749abb3c60fb310ea8bf16a07ce76e2467ba8b515e24ebb5f8819328af335c4b321a7de55e8bd7bedc4925cbbd1688c94d87d4d4bdabbb04"/>
+    </Policies>
+    <ProxyEndpoints>
+        <VersionInfo resourceName="default" version="SHA-512:c60fce10a468524ba6e382d254bb66f566a1873ff2f0105f124f11db048272f6d39dc078c41820f9b2fa15fe193afc3ff02a59b3abf03bc1b405826ca21b8068"/>
+    </ProxyEndpoints>
+    <Resources>
+        <VersionInfo resourceName="jsc://parse-access-token.js" version="SHA-512:e7b10ce8f8f6922163727d7b911bf6897b8d1c211bd44065ccc9ca941e5e2b7a75b4d9f874b707bdd140227302da8bcc795e6d6605e39fd93684d2e3db4d8fab"/>
+    </Resources>
+    <SharedFlows/>
+    <TargetEndpoints>
+        <VersionInfo resourceName="default" version="SHA-512:d1553224646b218fbe313cfbf9e7a9bba6c8e95175dcc07f0d72828b1097f04056da5882ee58fa23185802ee3a34ac1fdcfe088eede1a1cd768dd399375d61ea"/>
+    </TargetEndpoints>
+</Manifest>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+ Copyright 2020 Google LLC
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<ServiceCallout async="false" continueOnError="false" enabled="true" name="Send-Log">
+    <DisplayName>Send Log</DisplayName>
+    <Properties/>
+    <Request clearPayload="true">
+        <Set>
+            <Headers>
+                <Header name="Accept">application/json</Header>
+                <Header name="Authorization">Bearer {accessToken}</Header>
+            </Headers>
+            <Verb>POST</Verb>
+            <Payload contentType="application/json">
+                    {
+                      "logName": "projects/{project-id}/logs/syslog",
+                      "resource": {
+                        "type": "global",
+                        "labels": {
+                          "project-id": "{project-id}"
+                        }
+                      },
+                      "entries": [
+                        {
+                          "jsonPayload": {
+                            {logPayload}
+                          }
+                        }
+                      ]
+                    }
+            </Payload>
+        </Set>
+        <IgnoreUnresolvedVariables>false</IgnoreUnresolvedVariables>
+    </Request>
+    <Response>logResponse</Response>
+    <HTTPTargetConnection>
+        <Properties/>
+        <URL>https://logging.googleapis.com/v2/entries:write</URL>
+    </HTTPTargetConnection>
+</ServiceCallout>
