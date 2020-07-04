@@ -1,0 +1,18 @@
+<APIProxy revision="4" name="orders">
+    <DisplayName></DisplayName>
+    <Description></Description>
+    <CreatedAt>1592071612820</CreatedAt>
+    <LastModifiedAt>1592071612820</LastModifiedAt>
+    <BasePaths>/orders</BasePaths>
+    <Policies>
+        <Policy>Verify-API-Key-1</Policy>
+    </Policies>
+    <ProxyEndpoints>
+        <ProxyEndpoint>default</ProxyEndpoint>
+    </ProxyEndpoints>
+    <Resources></Resources>
+    <TargetServers></TargetServers>
+    <TargetEndpoints>
+        <TargetEndpoint>default</TargetEndpoint>
+    </TargetEndpoints>
+</APIProxy>
