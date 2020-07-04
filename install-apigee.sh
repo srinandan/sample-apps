@@ -28,75 +28,14 @@ if [ $RESULT -ne 0 ]; then
   exit 1
 fi
 
-# create a inventory product
-apigeecli products create -o $1 -f auto -n inventory_product -m "Inventory Product" -e $2 -p inventory -d "A product for inventory app" -a $3
-RESULT=$?
-if [ $RESULT -ne 0 ]; then
-  echo "failed to create product"
-  exit 1
-fi
+# install orders
+./orders/install-orders.sh
 
-# create inventory app
-apigeecli apps create -o $1 -n inventory_app -p inventory_product -e apps@sample.com -a $3
-RESULT=$?
-if [ $RESULT -ne 0 ]; then
-  echo "failed to create app"
-  exit 1
-fi
+# install inventory
+./inventory/install-inventory.sh
 
-# create orders product
-apigeecli products create -o $1 -f auto -n orders_product -m "Orders Product" -e $2 -p orders -d "A product for orders app" -a $3
-RESULT=$?
-if [ $RESULT -ne 0 ]; then
-  echo "failed to create product"
-  exit 1
-fi
+# install tracking
+./tracking/install-tracking.sh
 
-# create orders app
-apigeecli apps create -o $1 -n orders_app -p orders_product -e apps@sample.com -a $3
-RESULT=$?
-if [ $RESULT -ne 0 ]; then
-  echo "failed to create app"
-  exit 1
-fi
-
-# create tracking product
-apigeecli products create -o $1 -f auto -n tracking_product -m "Tracking Product" -e $2 -p tracking -d "A product for tracking app" -a $3
-RESULT=$?
-if [ $RESULT -ne 0 ]; then
-  echo "failed to create product"
-  exit 1
-fi
-
-# create orders app
-apigeecli apps create -o $1 -n tracking_app -p tracking_product -e apps@sample.com -a $3
-RESULT=$?
-if [ $RESULT -ne 0 ]; then
-  echo "failed to create app"
-  exit 1
-fi
-
-# websockets app
-# create an api product
-apigeecli products create -o $1 -f auto -n websocket_product -m "Websockets Product" -e $2 -p websockets -d "A sample products for websockets"
-RESULT=$?
-if [ $RESULT -ne 0 ]; then
-  echo "failed to create an api product"
-  exit 1
-fi
-
-# create a developer
-apigeecli developers create -o $1 -n websocket-dev@sample.com -u websocket-dev -f sample -s user
-RESULT=$?
-if [ $RESULT -ne 0 ]; then
-  echo "failed to create developer"
-  exit 1
-fi
-
-# create a sample app
-apigeecli apps create -o $1 -n websocket-app -p websocket_product -e websocket-dev@sample.com
-RESULT=$?
-if [ $RESULT -ne 0 ]; then
-  echo "failed to create developer app"
-  exit 1
-fi
+# install websockets
+./websockets/install-websockets.sh
