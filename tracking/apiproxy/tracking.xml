@@ -1,0 +1,18 @@
+<APIProxy revision="2" name="tracking">
+    <DisplayName></DisplayName>
+    <Description></Description>
+    <CreatedAt>1578113465905</CreatedAt>
+    <LastModifiedAt>1578113473120</LastModifiedAt>
+    <BasePaths>/tracking</BasePaths>
+    <Policies>
+        <Policy>Verify-API-Key-1</Policy>
+    </Policies>
+    <ProxyEndpoints>
+        <ProxyEndpoint>default</ProxyEndpoint>
+    </ProxyEndpoints>
+    <Resources></Resources>
+    <TargetServers></TargetServers>
+    <TargetEndpoints>
+        <TargetEndpoint>default</TargetEndpoint>
+    </TargetEndpoints>
+</APIProxy>
