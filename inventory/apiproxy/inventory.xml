@@ -1,0 +1,18 @@
+<APIProxy revision="2" name="inventory">
+    <DisplayName></DisplayName>
+    <Description></Description>
+    <CreatedAt>1578113423440</CreatedAt>
+    <LastModifiedAt>1578113423440</LastModifiedAt>
+    <BasePaths>/items</BasePaths>
+    <Policies>
+        <Policy>Verify-API-Key-1</Policy>
+    </Policies>
+    <ProxyEndpoints>
+        <ProxyEndpoint>default</ProxyEndpoint>
+    </ProxyEndpoints>
+    <Resources></Resources>
+    <TargetServers></TargetServers>
+    <TargetEndpoints>
+        <TargetEndpoint>default</TargetEndpoint>
+    </TargetEndpoints>
+</APIProxy>
