@@ -13,13 +13,14 @@
 # limitations under the License.
 
 FROM golang:latest as builder
-RUN useradd -U app
+RUN groupadd -g 2000 app && useradd -m -u 2001 -g app app
 ADD . /go/src/websocket 
 WORKDIR /go/src/websocket
 COPY . /go/src/websocket
 ENV GO111MODULE=on
 RUN go mod download
 RUN CGO_ENABLED=0 GOOS=linux go build -a -ldflags '-w -extldflags "-static"' -o /go/bin/websocket
+RUN chown -R app:0 /go
 
 #without these certificates, we cannot verify the JWT token
 FROM alpine:latest as certs
@@ -29,7 +30,7 @@ FROM scratch
 WORKDIR /
 COPY --from=builder /go/bin/websocket .
 COPY --from=builder /go/src/websocket/index.html .
-COPY --from=builder /etc/passwd /etc/passwd
+COPY --from=builder /etc/passwd /etc/group /etc/shadow /etc/
 COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER app
 EXPOSE 3000

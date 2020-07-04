@@ -15,13 +15,14 @@
 #docker build -t gcr.io/project-id/inventory .
 #docker run -d -p 8080:8080 --name inventory -e DEBUG="true" gcr.io/project-id/inventory
 FROM golang:latest as builder
-RUN useradd -U app
+RUN groupadd -g 2000 app && useradd -m -u 2001 -g app app
 ADD . /go/src/inventory 
 WORKDIR /go/src/inventory
 COPY . /go/src/inventory
 ENV GO111MODULE=on
 RUN go mod download
 RUN CGO_ENABLED=0 GOOS=linux go build -a -ldflags '-w -extldflags "-static"' -o /go/bin/inventory
+RUN chown -R app:0 /go
 
 #without these certificates, we cannot verify the JWT token
 FROM alpine:latest as certs
@@ -31,7 +32,7 @@ FROM scratch
 WORKDIR /
 COPY --from=builder /go/bin/inventory .
 COPY --from=builder /go/src/inventory/items.json .
-COPY --from=builder /etc/passwd /etc/passwd
+COPY --from=builder /etc/passwd /etc/group /etc/shadow /etc/
 COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER app
 CMD ["./inventory"]
