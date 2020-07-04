@@ -27,7 +27,7 @@ This repo contains a few sample microservices for experimenting with Apigee.
 ./create-secret.sh
 ```
 
-### Install steps
+### Install Sample Apps
 
 * Option 1 - Use Cloud Build
 
@@ -53,6 +53,19 @@ skaffold run -p gcb --default-repo=gcr.io/$PROJECT_ID -f skaffold-{appname}.yaml
 ```
 
 where {appname} can be orders, inventory, tracking, customers or websockets
+
+## Install Apigee components
+
+### Prerequisites
+
+* [apigeecli](https://github.com/srinandan/apigeecli)
+
+### Installation Script
+
+```bash
+./install-apigee.sh
+```
+
 
 ### Skaffold Errors
 
