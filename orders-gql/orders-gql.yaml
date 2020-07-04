@@ -53,6 +53,14 @@ spec:
             value: "true"
           - name: ORDERS
             value: "http://orders.apps.svc.cluster.local:8080"
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 2001
+          runAsGroup: 2000
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
         resources:
           requests:
             cpu: 50m
@@ -68,7 +76,8 @@ spec:
       - name: svc-account-volume
         secret:
           defaultMode: 420
-          secretName: google-auth-svc-account            
+          secretName: google-auth-svc-account
+          optional: true
       affinity:
         nodeAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:

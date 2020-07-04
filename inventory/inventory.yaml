@@ -61,6 +61,14 @@ spec:
         #   value: "1"
         # - name: JAEGER_SERVICE_ADDR
         #   value: "jaeger-collector:14268"
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 2001
+          runAsGroup: 2000
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
         resources:
           requests:
             cpu: 50m
@@ -72,7 +80,7 @@ spec:
           httpGet:
             path: /healthz
             port: 8090
-          initialDelaySeconds: 5
+          initialDelaySeconds: 20
           periodSeconds: 5
         volumeMounts:
           - mountPath: /etc/secret
@@ -82,7 +90,8 @@ spec:
       - name: svc-account-volume
         secret:
           defaultMode: 420
-          secretName: google-auth-svc-account          
+          secretName: google-auth-svc-account
+          optional: true
       affinity:
         nodeAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
