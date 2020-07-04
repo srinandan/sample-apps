@@ -1,0 +1,16 @@
+<APIProxy revision="1" name="customers">
+    <DisplayName></DisplayName>
+    <Description></Description>
+    <CreatedAt>1578684060741</CreatedAt>
+    <LastModifiedAt>1578684060741</LastModifiedAt>
+    <BasePaths>/customers</BasePaths>
+    <Policies></Policies>
+    <ProxyEndpoints>
+        <ProxyEndpoint>default</ProxyEndpoint>
+    </ProxyEndpoints>
+    <Resources></Resources>
+    <TargetServers></TargetServers>
+    <TargetEndpoints>
+        <TargetEndpoint>default</TargetEndpoint>
+    </TargetEndpoints>
+</APIProxy>
