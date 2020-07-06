@@ -16,11 +16,6 @@
 #kubectl create secret -n apigee generic google-auth-sidecar-svc-account --from-file client_secret.json
 
 apiVersion: v1
-kind: Namespace
-metadata:
-  name: apps
----
-apiVersion: v1
 kind: Service
 metadata:
   name: google-auth-sidecar
@@ -30,6 +25,7 @@ spec:
   ports:
   - port: 8080
     name: http
+    targetPort: 8080
   selector:
     app: google-auth-sidecar
 ---
@@ -44,6 +40,11 @@ spec:
       app: google-auth-sidecar
   template:
     metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
+        readiness.status.sidecar.istio.io/applicationPorts: "8080"
+        readiness.status.sidecar.istio.io/initialDelaySeconds: "20"
+        sidecar.istio.io/rewriteAppHTTPProbers: "true"
       labels:
         app: google-auth-sidecar
         version: v1
@@ -62,10 +63,14 @@ spec:
           periodSeconds: 5
         securityContext:
           runAsNonRoot: true
-          runAsUser: 2001
-          runAsGroup: 2000
+          runAsUser: 20001
+          runAsGroup: 20000
           allowPrivilegeEscalation: false
           capabilities:
+            # https://istio.io/latest/docs/ops/deployment/requirements/
+            add:
+              - NET_ADMIN
+              - NET_RAW
             drop:
               - ALL
         resources:
@@ -84,6 +89,8 @@ spec:
           - mountPath: /etc/secret
             name: svc-account-volume
             readOnly: true
+      #serviceAccount: app-sa
+      #serviceAccountName: app-sa
       volumes:
       - name: svc-account-volume
         secret:
