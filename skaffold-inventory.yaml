@@ -30,6 +30,8 @@ deploy:
       global: ["--namespace=apps"]
     manifests:
     - namespace.yaml
+    - restricted-policy.yaml
+    #- app-policy.yaml.yaml
     - inventory/inventory.yaml
 # "gcb" profile allows building and pushing the images
 # on Google Container Builder without requiring docker

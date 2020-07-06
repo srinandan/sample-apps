@@ -38,6 +38,8 @@ deploy:
       global: ["--namespace=apps"]
     manifests:
     - namespace.yaml
+    - restricted-policy.yaml
+    #- app-policy.yaml.yaml
     - tracking/tracking.yaml
     - tracking/tracking-client.yaml
 # "gcb" profile allows building and pushing the images

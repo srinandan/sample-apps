@@ -29,13 +29,15 @@ build:
         - golang:latest
         - alpine:latest
   tagPolicy:
-      gitCommit: {}                         
+      gitCommit: {} 
 deploy:
   kubectl:
     flags:
       global: ["--namespace=apps"]
     manifests:
     - namespace.yaml
+    - restricted-policy.yaml
+    #- app-policy.yaml.yaml
     - orders/orders.yaml
     - orders-gql/orders-gql.yaml
 # "gcb" profile allows building and pushing the images
