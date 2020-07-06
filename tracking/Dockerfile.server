@@ -1,17 +1,15 @@
 #docker build -f Dockerfile.server -t gcr.io/project-id/tracking .
 #docker run -d -p 50051:50051 --name tracking gcr.io/project-id/tracking
 FROM golang:latest as builder
-RUN groupadd -g 2000 app && useradd -m -u 2001 -g app app
 ADD ./api /go/src/tracking/api
 ADD ./cmd/server /go/src/tracking/cmd/server
 ADD ./pkg /go/src/tracking/pkg
 COPY go.mod go.sum tracking.json /go/src/tracking/
 WORKDIR /go/src/tracking
-
+RUN groupadd -r -g 20000 app && useradd -M -u 20001 -g 0 -r -c "Default app user" app && chown -R 20001:0 /go
 ENV GO111MODULE=on
 RUN go mod download
-RUN CGO_ENABLED=0 GOOS=linux go build -a -ldflags '-w -extldflags "-static"' -o /go/bin/tracking /go/src/tracking/cmd/server/main.go
-RUN chown -R app:0 /go
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -a -ldflags='-s -w -extldflags "-static"' -o /go/bin/tracking /go/src/tracking/cmd/server/main.go
 
 #without these certificates, we cannot verify the JWT token
 FROM alpine:latest as certs
@@ -23,5 +21,6 @@ COPY --from=builder /go/bin/tracking .
 COPY --from=builder /go/src/tracking/tracking.json .
 COPY --from=builder /etc/passwd /etc/group /etc/shadow /etc/
 COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER app
+USER 20001
+EXPOSE 50051
 CMD ["./tracking"]
