@@ -32,7 +32,7 @@ deploy:
       global: ["--namespace=apps"]
     manifests:
     - namespace.yaml
-    - restricted-policy.yaml
+    #- restricted-policy.yaml
     #- app-policy.yaml.yaml
     - google-auth-sidecar/google-auth-sidecar.yaml
 # "gcb" profile allows building and pushing the images

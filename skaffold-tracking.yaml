@@ -38,7 +38,7 @@ deploy:
       global: ["--namespace=apps"]
     manifests:
     - namespace.yaml
-    - restricted-policy.yaml
+    #- restricted-policy.yaml
     #- app-policy.yaml.yaml
     - tracking/tracking.yaml
     - tracking/tracking-client.yaml

@@ -30,7 +30,7 @@ deploy:
       global: ["--namespace=apps"]
     manifests:
     - namespace.yaml
-    - restricted-policy.yaml
+    #- restricted-policy.yaml
     #- app-policy.yaml.yaml
     - websockets/server/websockets.yaml
 # "gcb" profile allows building and pushing the images

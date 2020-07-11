@@ -19,6 +19,7 @@ metadata:
    annotations:
      seccomp.security.alpha.kubernetes.io/defaultProfileName:  'runtime/default'
      seccomp.security.alpha.kubernetes.io/allowedProfileNames: 'runtime/default'
+     seccomp.security.alpha.kubernetes.io/pod: 'runtime/default'
 spec:
   readOnlyRootFilesystem: false #set to true later
   allowPrivilegeEscalation: false
