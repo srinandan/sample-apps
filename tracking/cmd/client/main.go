@@ -39,6 +39,8 @@ func main() {
 	app.Initialize()
 
 	r := mux.NewRouter()
+	r.Use(common.Middleware())
+
 	r.HandleFunc("/healthz", common.HealthHandler).
 		Methods("GET")
 	r.HandleFunc("/tracking", apis.ListTrackingDetailsHandler).

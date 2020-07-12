@@ -28,6 +28,7 @@ import (
 	"time"
 
 	"go.opencensus.io/plugin/ochttp"
+	"go.opencensus.io/plugin/ochttp/propagation/tracecontext"
 )
 
 func main() {
@@ -36,6 +37,8 @@ func main() {
 	app.Initialize()
 
 	r := mux.NewRouter()
+	r.Use(common.Middleware())
+
 	r.HandleFunc("/items", apis.ListInventoryHandler).
 		Methods("GET")
 	r.HandleFunc("/items", apis.CreateInventoryHandler).
@@ -48,7 +51,8 @@ func main() {
 	common.Info.Println("Starting server - ", common.GetAddress())
 
 	och := &ochttp.Handler{
-		Handler: r,
+		Handler:     r,
+		Propagation: &tracecontext.HTTPFormat{},
 	}
 
 	//the following code is from gorilla mux samples

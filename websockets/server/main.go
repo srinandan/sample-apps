@@ -22,6 +22,7 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/srinandan/sample-apps/common"
 	"go.opencensus.io/plugin/ochttp"
+	"go.opencensus.io/plugin/ochttp/propagation/tracecontext"
 )
 
 var upgrader = websocket.Upgrader{}
@@ -42,7 +43,8 @@ func main() {
 	mux.HandleFunc("/healthz", common.HealthHandler)
 
 	och := &ochttp.Handler{
-		Handler: mux,
+		Handler:     mux,
+		Propagation: &tracecontext.HTTPFormat{},
 	}
 
 	//the following code is from gorilla mux samples
