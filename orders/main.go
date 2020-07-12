@@ -28,6 +28,7 @@ import (
 	"time"
 
 	"go.opencensus.io/plugin/ochttp"
+	"go.opencensus.io/plugin/ochttp/propagation/tracecontext"
 )
 
 func main() {
@@ -36,6 +37,8 @@ func main() {
 	app.Initialize()
 
 	r := mux.NewRouter()
+	r.Use(common.Middleware())
+
 	r.HandleFunc("/orders", apis.ListOrdersHandler).
 		Methods("GET")
 	r.HandleFunc("/orders", apis.CreateOrderHandler).
@@ -52,7 +55,8 @@ func main() {
 	common.Info.Println("Starting server - ", common.GetAddress())
 
 	och := &ochttp.Handler{
-		Handler: r,
+		Handler:     r,
+		Propagation: &tracecontext.HTTPFormat{},
 	}
 
 	//the following code is from gorilla mux samples
@@ -103,7 +107,7 @@ func main() {
 	defer cancel()
 	// Doesn't block if no connections, but will otherwise wait
 	// until the timeout deadline.
-	srv.Shutdown(ctx)
+	_ = srv.Shutdown(ctx)
 
 	common.Info.Println("Shutting down")
 
