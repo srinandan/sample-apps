@@ -20,22 +20,27 @@ if [ $RESULT -ne 0 ]; then
   exit 1
 fi
 
-# create a sample developer
-apigeecli developers create -o $1 -n apps@sample.com -u faziodev -f fazio -s user -a $3
+
+apigeecli developers get -o $1 -n apps@sample.com
 RESULT=$?
 if [ $RESULT -ne 0 ]; then
-  echo "failed to create developer"
-  exit 1
+  # create a sample developer
+  apigeecli developers create -o $1 -n apps@sample.com -u faziodev -f fazio -s user -a $3
+  RESULT=$?
+  if [ $RESULT -ne 0 ]; then
+    echo "failed to create developer"
+    exit 1
+  fi
 fi
 
 # install orders
-./orders/install-orders.sh
+cd orders && ./install-orders.sh $1 $2 $3 && cd ..
 
 # install inventory
-./inventory/install-inventory.sh
+cd inventory &&  ./install-inventory.sh  $1 $2 $3  && cd ..
 
 # install tracking
-./tracking/install-tracking.sh
+cd tracking && ./install-tracking.sh  $1 $2 $3 && cd ..
 
 # install websockets
-./websockets/install-websockets.sh
+cd  websockets && ./install-websockets.sh $1 $2 $3  && cd ..

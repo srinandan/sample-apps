@@ -12,18 +12,17 @@
 
 proxy_name=tracking
 
-# zip the bundle
-zip -r $proxy_name.zip apiproxy
-RESULT=$?
-if [ $RESULT -ne 0 ]; then
-  echo "failed to zip bundle"
-  exit 1
-fi
-
 # check if proxy exists
 apigeecli apis get -o $1 -n $proxy_name
 RESULT=$?
 if [ $RESULT -ne 0 ]; then
+    # zip the bundle
+    zip -r $proxy_name.zip apiproxy
+    RESULT=$?
+    if [ $RESULT -ne 0 ]; then
+      echo "failed to zip bundle"
+      exit 1
+    fi
     # import api proxy
     apigeecli apis create -o $1 -p ${proxy_name}.zip -n $proxy_name
     RESULT=$?
