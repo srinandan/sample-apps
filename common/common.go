@@ -26,7 +26,9 @@ import (
 
 	"contrib.go.opencensus.io/exporter/jaeger"
 	"contrib.go.opencensus.io/exporter/stackdriver"
+	"github.com/gorilla/mux"
 	"go.opencensus.io/plugin/ocgrpc"
+	"go.opencensus.io/plugin/ochttp"
 	"go.opencensus.io/stats/view"
 	"go.opencensus.io/trace"
 )
@@ -113,7 +115,7 @@ func GetgRPCHealthPort() string {
 
 //HealthHandler handles kubernetes healthchecks
 func HealthHandler(w http.ResponseWriter, r *http.Request) {
-	json.NewEncoder(w).Encode(map[string]bool{"ok": true})
+	_ = json.NewEncoder(w).Encode(map[string]bool{"ok": true})
 }
 
 func ErrorHandler(w http.ResponseWriter, err error) {
@@ -230,4 +232,38 @@ func initStackdriverTracing() {
 func InitTracing(serviceName string) {
 	initJaegerTracing(serviceName)
 	initStackdriverTracing()
+}
+
+func Middleware() mux.MiddlewareFunc {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+			route := mux.CurrentRoute(req)
+			span := trace.FromContext(req.Context())
+
+			if route == nil || span == nil {
+				next.ServeHTTP(w, req)
+
+				return
+			}
+
+			if name := getRouteName(route, req); name != "" {
+				span.SetName(name)
+				ochttp.SetRoute(req.Context(), name)
+			}
+
+			next.ServeHTTP(w, req)
+		})
+	}
+}
+
+func getRouteName(route *mux.Route, req *http.Request) string {
+	name := route.GetName()
+	if name == "" {
+		name, _ = route.GetPathTemplate()
+		if name != "" {
+			name = req.Method + " " + name
+		}
+	}
+
+	return name
 }
