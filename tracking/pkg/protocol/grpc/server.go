@@ -21,38 +21,39 @@ import (
 	"os"
 	"os/signal"
 
-	"go.opencensus.io/plugin/ocgrpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 
 	common "github.com/srinandan/sample-apps/common"
 	api "github.com/srinandan/sample-apps/tracking/pkg/api/v1"
 	service "github.com/srinandan/sample-apps/tracking/pkg/service/v1"
+
+	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
 )
 
-func unaryInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
+//look for tokens
+func authorize(ctx context.Context) (context.Context, error) {
 	md, ok := metadata.FromIncomingContext(ctx)
 	if !ok {
-		return nil, fmt.Errorf("error get ctx")
+		return ctx, fmt.Errorf("error getting ctx")
 	}
 
-	if len(md["authorization"]) > 0 {
-		if md["authorization"][0] != "" {
-			common.Info.Println("Access token is ", md["authorization"][0])
+	if len(md["authorization"]) == 0 && len(md["x-api-key"]) == 0 {
+		common.Info.Println("no auth used")
+	} else {
+		if len(md["authorization"]) > 0 {
+			if md["authorization"][0] != "" {
+				common.Info.Println("Access token is ", md["authorization"][0])
+			}
+		}
+
+		if len(md["x-api-key"]) > 0 {
+			if md["x-api-key"][0] != "" {
+				common.Info.Println("api key is ", md["x-api-key"][0])
+			}
 		}
 	}
-
-	if len(md["x-api-key"]) > 0 {
-		if md["x-api-key"][0] != "" {
-			common.Info.Println("api key is ", md["x-api-key"][0])
-		}
-	}
-
-	m, err := handler(ctx, req)
-	if err != nil {
-		common.Error.Println("RPC failed with error %v", err)
-	}
-	return m, err
+	return ctx, nil
 }
 
 // RunServer runs gRPC service to publish tracking service
@@ -67,9 +68,14 @@ func RunServer(port string) error {
 		return err
 	}
 
-	// register service
-	//server := grpc.NewServer()
-	server := grpc.NewServer(grpc.UnaryInterceptor(unaryInterceptor), grpc.StatsHandler(&ocgrpc.ServerHandler{}))
+	server := grpc.NewServer(
+		grpc.UnaryInterceptor(
+			grpc_auth.UnaryServerInterceptor(authorize),
+		),
+		grpc.StreamInterceptor(
+			grpc_auth.StreamServerInterceptor(authorize),
+		),
+	)
 
 	ShipmentServer, err := service.NewShipmentService()
 	if err != nil {

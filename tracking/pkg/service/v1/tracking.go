@@ -18,13 +18,16 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"time"
 
 	"github.com/golang/protobuf/ptypes"
 	empty "github.com/golang/protobuf/ptypes/empty"
+	"github.com/srinandan/sample-apps/common"
 	v1 "github.com/srinandan/sample-apps/tracking/pkg/api/v1"
 	"go.opencensus.io/trace"
+	"google.golang.org/grpc/metadata"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -69,7 +72,7 @@ func NewShipmentService() (v1.ShipmentServer, error) {
 }
 
 func (s *ShipmentServer) GetTracking(ctx context.Context, req *v1.GetTrackingRequest) (*v1.Tracking, error) {
-	ctx, span := trace.StartSpan(ctx, "GetTracking")
+	_, span := trace.StartSpan(ctx, "GetTracking")
 	defer span.End()
 
 	for _, tracking := range trackings {
@@ -90,7 +93,7 @@ func (s *ShipmentServer) GetTracking(ctx context.Context, req *v1.GetTrackingReq
 }
 
 func (s *ShipmentServer) ListTracking(ctx context.Context, empty *empty.Empty) (*v1.ListTrackingResponse, error) {
-	ctx, span := trace.StartSpan(ctx, "ListTracking")
+	_, span := trace.StartSpan(ctx, "ListTracking")
 	defer span.End()
 
 	listTrackingResponse := v1.ListTrackingResponse{}
@@ -113,7 +116,72 @@ func (s *ShipmentServer) ListTracking(ctx context.Context, empty *empty.Empty) (
 	return &listTrackingResponse, nil
 }
 
+func (s *ShipmentServer) NotifyTracking(svr v1.Shipment_NotifyTrackingServer) error {
+
+	ctx := svr.Context()
+
+	getCreds(svr)
+
+	for {
+		select {
+		case <-ctx.Done():
+			return ctx.Err()
+		default:
+		}
+
+		req, err := svr.Recv()
+		if err == io.EOF {
+			return nil
+		}
+
+		if err != nil {
+			common.Error.Printf("Error receiving %v", err)
+			continue
+		}
+
+		for _, tracking := range trackings {
+			if tracking.TrackingId == req.TrackingId {
+				response := &v1.Tracking{
+					TrackingId:      tracking.TrackingId,
+					Status:          tracking.Status,
+					CreateTime:      getTimestamp(tracking.CreateTime),
+					UpdateTime:      getTimestamp(tracking.UpdateTime),
+					Weight:          tracking.Weight,
+					EstDeliveryTime: getTimestamp(tracking.EstDeliveryTime),
+					Carrier:         tracking.Carrier,
+				}
+				if err := svr.Send(response); err != nil {
+					common.Error.Printf("Error sending %v", err)
+				}
+			}
+		}
+	}
+}
+
 func getTimestamp(t time.Time) *timestamppb.Timestamp {
 	ts, _ := ptypes.TimestampProto(t)
 	return ts
+}
+
+func getCreds(svr v1.Shipment_NotifyTrackingServer) {
+	md, ok := metadata.FromIncomingContext(svr.Context())
+	if !ok {
+		common.Error.Println("error getting ctx")
+	}
+
+	if len(md["authorization"]) == 0 && len(md["x-api-key"]) == 0 {
+		common.Info.Println("no auth used")
+	} else {
+		if len(md["authorization"]) > 0 {
+			if md["authorization"][0] != "" {
+				common.Info.Println("Access token is ", md["authorization"][0])
+			}
+		}
+
+		if len(md["x-api-key"]) > 0 {
+			if md["x-api-key"][0] != "" {
+				common.Info.Println("api key is ", md["x-api-key"][0])
+			}
+		}
+	}
 }

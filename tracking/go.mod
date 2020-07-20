@@ -10,6 +10,7 @@ require (
 	github.com/gogo/protobuf v1.3.1
 	github.com/golang/protobuf v1.4.2
 	github.com/gorilla/mux v1.7.4
+	github.com/grpc-ecosystem/go-grpc-middleware v1.2.0
 	github.com/grpc-ecosystem/grpc-gateway v1.14.4 // indirect
 	github.com/srinandan/sample-apps/common v0.0.0-20200712033117-cd5616816157
 	github.com/srinandan/sample-apps/orders v0.0.0-20200628190929-3bc311989550

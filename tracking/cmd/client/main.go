@@ -47,6 +47,8 @@ func main() {
 		Methods("GET")
 	r.HandleFunc("/tracking/{id}", apis.GetTrackingDetailsHandler).
 		Methods("GET")
+	r.HandleFunc("/tracking/notification/{id}", apis.NotifyTrackingDetailsHandler).
+		Methods("GET")
 
 	common.Info.Println("Starting server - ", common.GetAddress())
 
@@ -101,9 +103,13 @@ func main() {
 	// Create a deadline to wait for.
 	ctx, cancel := context.WithTimeout(context.Background(), wait)
 	defer cancel()
+
+	//close connection
+	apis.CloseStreamClient()
+
 	// Doesn't block if no connections, but will otherwise wait
 	// until the timeout deadline.
-	srv.Shutdown(ctx)
+	_ = srv.Shutdown(ctx)
 
 	common.Info.Println("Shutting down")
 

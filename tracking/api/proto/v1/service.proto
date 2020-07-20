@@ -39,6 +39,12 @@ service Shipment {
             get: "/v1/tracking"
         };        
     };
+    //NotifyTracking for testing streaming
+    rpc NotifyTracking(stream GetTrackingRequest) returns (stream Tracking) {
+        option (google.api.http) = {
+            get: "/v1/tracking/notification/{tracking_id}"
+        };
+    };
 }
 
 //GetTrackingRequest set a tracking identifier
