@@ -96,6 +96,8 @@ spec:
         secret:
           defaultMode: 420
           secretName: google-auth-svc-account   
+      imagePullSecrets:
+       - name: gcrsecret      
       affinity:
         nodeAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
