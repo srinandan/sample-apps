@@ -15,11 +15,13 @@
 package main
 
 import (
+	"crypto/tls"
 	"fmt"
 	"log"
 	"net/url"
 	"os"
 	"os/signal"
+	"strconv"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -35,6 +37,8 @@ func main() {
 	var err error
 	var c *websocket.Conn
 	var resp *http.Response
+	var skipVerify bool
+	var d websocket.Dialer
 
 	endpoint := os.Getenv("ENDPOINT")
 	if endpoint == "" {
@@ -57,6 +61,13 @@ func main() {
 	scheme := "ws"
 	if enableTLS != "" {
 		scheme = "wss"
+		skipVerifyEnv := os.Getenv("SKIP_VERIFY")
+		skipVerify, _ = strconv.ParseBool(skipVerifyEnv)
+		if skipVerify {
+			d = websocket.Dialer{TLSClientConfig: &tls.Config{InsecureSkipVerify: true}}
+		} else {
+			d = websocket.Dialer{}
+		}
 	}
 
 	fmt.Println("websocket-client version " + Version + ", Git: " + Git)
@@ -75,11 +86,11 @@ func main() {
 		q := u.Query()
 		q.Set("apikey", apiKey)
 		u.RawQuery = q.Encode()
-		c, resp, err = websocket.DefaultDialer.Dial(u.String(), http.Header{"x-api-key": {apiKey}})
+		c, resp, err = d.Dial(u.String(), http.Header{"x-api-key": {apiKey}})
 	} else if token != "" {
-		c, resp, err = websocket.DefaultDialer.Dial(u.String(), http.Header{"Authorization": {token}})
+		c, resp, err = d.Dial(u.String(), http.Header{"Authorization": {token}})
 	} else {
-		c, resp, err = websocket.DefaultDialer.Dial(u.String(), nil)
+		c, resp, err = d.Dial(u.String(), nil)
 	}
 
 	if err != nil {
