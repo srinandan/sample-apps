@@ -31,7 +31,7 @@ if [ $RESULT -ne 0 ]; then
         exit 1
     fi
     # deploy api proxy
-    apigeecli apis deploy -o $1 -e $2 -n $proxy_name v1
+    apigeecli apis deploy -o $1 -e $2 -n $proxy_name -v 1
     RESULT=$?
     if [ $RESULT -ne 0 ]; then
         echo "failed to deploy proxy"
