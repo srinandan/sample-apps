@@ -105,18 +105,23 @@ func GetOrderItemsHandler(w http.ResponseWriter, r *http.Request) {
 func GetOrderDelayHandler(w http.ResponseWriter, r *http.Request) {
 	//read path variables
 	vars := mux.Vars(r)
-	interval, err := strconv.Atoi(vars["interval"])
+	interval, err := strconv.ParseInt(vars["interval"], 10, 64)
 	if err != nil {
 		common.BadRequestHandler(w, err)
 		return
 	}
 
-	time.Sleep(time.Duration(interval) * time.Second)
+	stop := make(chan bool, 1)
+	go func() {
+		time.Sleep(time.Duration(interval) * time.Second)
+		order, pos := odr.GetOrder(vars["id"])
+		if pos != -1 {
+			common.ResponseHandler(w, order)
+		} else {
+			common.NotFoundHandler(w, "order not found")
+		}
+		stop <- true
+	}()
 
-	order, pos := odr.GetOrder(vars["id"])
-	if pos != -1 {
-		common.ResponseHandler(w, order)
-	} else {
-		common.NotFoundHandler(w, "order not found")
-	}
+	<-stop
 }
