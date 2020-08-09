@@ -28,7 +28,7 @@ builds:
     ldflags:
     - -s -w -a -extldflags "-static" -X main.Version={{.Tag}} -X main.Git={{.Commit}}
     hooks:
-      post: /bin/sh compress.sh
+      post: upx "{{ .Path }}"
 archives:
   - id: websocket-client
     format: zip
