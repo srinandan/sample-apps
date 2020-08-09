@@ -16,12 +16,12 @@ package main
 
 import (
 	"crypto/tls"
+	"flag"
 	"fmt"
 	"log"
 	"net/url"
 	"os"
 	"os/signal"
-	"strconv"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -32,37 +32,58 @@ import (
 //Version
 var Version, Git string
 
+func usage() {
+	fmt.Println("")
+	fmt.Println("websocket-client version ", Version)
+	fmt.Println("")
+	fmt.Println("Usage: websocker-client --endpoint=<endpoint> --path=<path>")
+	fmt.Println("")
+	fmt.Println("Options:")
+	fmt.Println("endpoint    = hostname or ip of websocket server; default=localhost:3000")
+	fmt.Println("path        = api path for the websocket app; default=/v1/ws")
+	fmt.Println("token       = OAuth Bearer token")
+	fmt.Println("apikey      = API Key")
+	fmt.Println("hostHeader  = Set the host header")
+	fmt.Println("tls         = Enable or disable tls; default=false")
+	fmt.Println("skipVerify  = Skip verification of server cert; default=false")
+}
+
 func main() {
+
+	var endpoint, apiKey, hostHeader, apiPath, token string
+	var enableTLS, skipVerify, help bool
+
+	flag.StringVar(&endpoint, "endpoint", "localhost:3000", "Websocket endpoint")
+	flag.StringVar(&apiPath, "path", "/v1/ws", "Websocket path")
+	flag.StringVar(&token, "token", "", "OAuth Bearer Token")
+	flag.StringVar(&apiKey, "apikey", "", "API Key")
+	flag.StringVar(&hostHeader, "hostHeader", "", "Set a host header")
+	flag.BoolVar(&enableTLS, "tls", false, "TLS Enable/disable")
+	flag.BoolVar(&skipVerify, "skipVerify", false, "SKip TLS verification")
+	flag.BoolVar(&help, "help", false, "Display usage")
+
+	// Parse commandline parameters
+	flag.Parse()
+
+	if help {
+		usage()
+		os.Exit(0)
+	}
 
 	var err error
 	var c *websocket.Conn
 	var resp *http.Response
-	var skipVerify bool
 	var d websocket.Dialer
+	var headers = http.Header{}
 
-	endpoint := os.Getenv("ENDPOINT")
-	if endpoint == "" {
-		endpoint = "localhost:3000"
+	if hostHeader != "" {
+		headers.Add("Host", hostHeader)
 	}
 
-	apiKey := os.Getenv("API_KEY")
-
-	apiPath := os.Getenv("API_PATH")
-	if apiPath == "" {
-		apiPath = "/v1/ws"
-	}
-
-	token := os.Getenv("TOKEN")
-	if token != "" {
-		token = "Bearer " + token
-	}
-
-	enableTLS := os.Getenv("TLS")
 	scheme := "ws"
-	if enableTLS != "" {
+
+	if enableTLS {
 		scheme = "wss"
-		skipVerifyEnv := os.Getenv("SKIP_VERIFY")
-		skipVerify, _ = strconv.ParseBool(skipVerifyEnv)
 		if skipVerify {
 			d = websocket.Dialer{TLSClientConfig: &tls.Config{InsecureSkipVerify: true}}
 		} else {
@@ -74,6 +95,7 @@ func main() {
 	fmt.Println("Endpoint: " + scheme + "://" + endpoint + apiPath)
 	fmt.Println("api_key: " + apiKey)
 	fmt.Println("token: " + token)
+	fmt.Println("skipVerify certificate: ", skipVerify)
 
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt)
@@ -86,12 +108,12 @@ func main() {
 		q := u.Query()
 		q.Set("apikey", apiKey)
 		u.RawQuery = q.Encode()
-		c, resp, err = d.Dial(u.String(), http.Header{"x-api-key": {apiKey}})
+		headers.Add("x-api-key", apiKey)
 	} else if token != "" {
-		c, resp, err = d.Dial(u.String(), http.Header{"Authorization": {token}})
-	} else {
-		c, resp, err = d.Dial(u.String(), nil)
+		headers.Add("Authorization", token)
 	}
+
+	c, resp, err = d.Dial(u.String(), headers)
 
 	if err != nil {
 		if resp != nil {
