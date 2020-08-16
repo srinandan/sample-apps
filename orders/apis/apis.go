@@ -31,7 +31,7 @@ import (
 func ListOrdersHandler(w http.ResponseWriter, r *http.Request) {
 	orders := odr.ListOrders()
 
-	common.ResponseHandler(w, orders)
+	common.ResponseHandler(w, orders, false)
 }
 
 func GetOrderHandler(w http.ResponseWriter, r *http.Request) {
@@ -40,7 +40,7 @@ func GetOrderHandler(w http.ResponseWriter, r *http.Request) {
 	order, pos := odr.GetOrder(vars["id"])
 
 	if pos != -1 {
-		common.ResponseHandler(w, order)
+		common.ResponseHandler(w, order, false)
 	} else {
 		common.NotFoundHandler(w, "order not found")
 	}
@@ -69,7 +69,7 @@ func CreateOrderHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	common.ResponseHandler(w, order)
+	common.ResponseHandler(w, order, false)
 }
 
 func DeleteOrderHandler(w http.ResponseWriter, r *http.Request) {
@@ -81,7 +81,7 @@ func DeleteOrderHandler(w http.ResponseWriter, r *http.Request) {
 		common.NotFoundHandler(w, "order not found")
 		return
 	} else {
-		common.ResponseHandler(w, map[string]string{"msg": vars["key"] + " is deleted"})
+		common.ResponseHandler(w, map[string]string{"msg": vars["key"] + " is deleted"}, false)
 	}
 }
 
@@ -96,7 +96,7 @@ func GetOrderItemsHandler(w http.ResponseWriter, r *http.Request) {
 			item, _ := odr.GetOrderItem(lineItem.LineItemId)
 			items = append(items, item)
 		}
-		common.ResponseHandler(w, items)
+		common.ResponseHandler(w, items, false)
 	} else {
 		common.NotFoundHandler(w, "order not found")
 	}
@@ -116,7 +116,7 @@ func GetOrderDelayHandler(w http.ResponseWriter, r *http.Request) {
 		time.Sleep(time.Duration(interval) * time.Second)
 		order, pos := odr.GetOrder(vars["id"])
 		if pos != -1 {
-			common.ResponseHandler(w, order)
+			common.ResponseHandler(w, order, false)
 		} else {
 			common.NotFoundHandler(w, "order not found")
 		}

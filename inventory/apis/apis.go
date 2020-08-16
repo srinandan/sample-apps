@@ -29,7 +29,7 @@ import (
 func ListInventoryHandler(w http.ResponseWriter, r *http.Request) {
 	items := items.ListItems()
 
-	common.ResponseHandler(w, items)
+	common.ResponseHandler(w, items, false)
 }
 
 func GetInventoryHandler(w http.ResponseWriter, r *http.Request) {
@@ -38,7 +38,7 @@ func GetInventoryHandler(w http.ResponseWriter, r *http.Request) {
 	item, pos := items.GetItem(vars["id"])
 
 	if pos != -1 {
-		common.ResponseHandler(w, item)
+		common.ResponseHandler(w, item, false)
 	} else {
 		common.NotFoundHandler(w, "item not found")
 	}
@@ -63,7 +63,7 @@ func CreateInventoryHandler(w http.ResponseWriter, r *http.Request) {
 
 	item = items.CreateItem(item)
 
-	common.ResponseHandler(w, item)
+	common.ResponseHandler(w, item, false)
 }
 
 func DeleteInventoryHandler(w http.ResponseWriter, r *http.Request) {
@@ -75,6 +75,6 @@ func DeleteInventoryHandler(w http.ResponseWriter, r *http.Request) {
 		common.NotFoundHandler(w, "item not found")
 		return
 	} else {
-		common.ResponseHandler(w, map[string]string{"msg": vars["key"] + " is deleted"})
+		common.ResponseHandler(w, map[string]string{"msg": vars["key"] + " is deleted"}, false)
 	}
 }

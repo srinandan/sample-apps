@@ -12,23 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package apis
+package app
 
 import (
-	"net/http"
+	"os"
 
 	common "github.com/srinandan/sample-apps/common"
-	token "github.com/srinandan/sample-apps/google-auth-sidecar/token"
+	ks "github.com/srinandan/sample-apps/keyservice/ks"
 )
 
-//TokenHandler handles GET /tokens
-func TokenHandler(w http.ResponseWriter, r *http.Request) {
-	accessToken, err := token.GenerateAccessToken()
-
-	if err != nil {
-		common.ErrorHandler(w, err)
-		return
+//Initialize logging, context, sec mgr and kms
+func Initialize() {
+	//init logging
+	common.InitLog()
+	//init tracing
+	if os.Getenv("DISABLE_TRACING") == "" {
+		common.Info.Println("Tracing enabled.")
+		go common.InitTracing("orders")
+	} else {
+		common.Info.Println("Tracing disabled.")
 	}
-
-	common.ResponseHandler(w, accessToken, false)
+	//ReadFiles
+	if err := ks.ReadFiles(); err != nil {
+		common.Error.Println("error reading files ", err)
+	}
 }

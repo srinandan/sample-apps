@@ -29,7 +29,7 @@ import (
 func ListCustomerHandler(w http.ResponseWriter, r *http.Request) {
 	customers := data.ListCustomers()
 
-	common.ResponseHandler(w, customers)
+	common.ResponseHandler(w, customers, false)
 }
 
 func GetCustomerHandler(w http.ResponseWriter, r *http.Request) {
@@ -38,7 +38,7 @@ func GetCustomerHandler(w http.ResponseWriter, r *http.Request) {
 	customer, pos := data.GetCustomer(vars["id"])
 
 	if pos != -1 {
-		common.ResponseHandler(w, customer)
+		common.ResponseHandler(w, customer, false)
 	} else {
 		common.NotFoundHandler(w, "customer not found")
 	}
@@ -62,7 +62,7 @@ func CreateCustomerHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	customer = data.CreateCustomer(customer)
-	common.ResponseHandler(w, customer)
+	common.ResponseHandler(w, customer, false)
 }
 
 func DeleteCustomerHandler(w http.ResponseWriter, r *http.Request) {
@@ -74,6 +74,6 @@ func DeleteCustomerHandler(w http.ResponseWriter, r *http.Request) {
 		common.NotFoundHandler(w, "customer not found")
 		return
 	} else {
-		common.ResponseHandler(w, map[string]string{"msg": vars["key"] + " is deleted"})
+		common.ResponseHandler(w, map[string]string{"msg": vars["key"] + " is deleted"}, false)
 	}
 }
