@@ -159,14 +159,14 @@ func BadRequestHandler(w http.ResponseWriter, err error) {
 func ResponseHandler(w http.ResponseWriter, response interface{}, text bool) {
 	if !text {
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+		w.WriteHeader(http.StatusOK)
+
+		if err := json.NewEncoder(w).Encode(response); err != nil {
+			Error.Println(err)
+		}		
 	} else {
 		w.Header().Set("Content-Type", "text/plain; charset=UTF-8")
-	}
-
-	w.WriteHeader(http.StatusOK)
-
-	if err := json.NewEncoder(w).Encode(response); err != nil {
-		Error.Println(err)
+		w.Write([]byte(response))
 	}
 }
 
