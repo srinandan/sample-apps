@@ -156,8 +156,13 @@ func BadRequestHandler(w http.ResponseWriter, err error) {
 }
 
 //ResponseHandler returns a 200 when the response is successful
-func ResponseHandler(w http.ResponseWriter, response interface{}) {
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+func ResponseHandler(w http.ResponseWriter, response interface{}, text bool) {
+	if !text {
+		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	} else {
+		w.Header().Set("Content-Type", "text/plain; charset=UTF-8")
+	}
+
 	w.WriteHeader(http.StatusOK)
 
 	if err := json.NewEncoder(w).Encode(response); err != nil {
