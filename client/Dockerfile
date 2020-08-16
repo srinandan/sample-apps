@@ -15,7 +15,7 @@
 FROM alpine
 
 RUN apk add --update \
-    curl \
+    curl openssl \
     && rm -rf /var/cache/apk/
 
 COPY entrypoint.sh /
