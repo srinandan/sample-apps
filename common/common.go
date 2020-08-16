@@ -166,7 +166,9 @@ func ResponseHandler(w http.ResponseWriter, response interface{}, text bool) {
 		}		
 	} else {
 		w.Header().Set("Content-Type", "text/plain; charset=UTF-8")
-		w.Write([]byte(response))
+		if str, ok := response.(string); ok {
+			w.Write([]byte(str))
+		}
 	}
 }
 
