@@ -81,6 +81,7 @@ spec:
             cpu: 50m
             memory: 128Mi
           limits:
+            ephemeral-storage: 5000Ki
             cpu: 50m
             memory: 128Mi
         livenessProbe:
