@@ -1,0 +1,17 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: daily-cleanup
+  namespace: apps 
+spec:
+  schedule: "0 0 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: daily-cleanup-sa
+          containers:
+          - name: daily-cleanup
+            image: gcr.io/srinandans-apigee/daily-cleanup
+            imagePullPolicy: Always
+          restartPolicy: OnFailure
