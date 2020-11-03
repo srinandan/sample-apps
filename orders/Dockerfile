@@ -15,7 +15,7 @@
 #docker build -t gcr.io/project-id/orders .
 #docker run -d -p 8080:8080 --name orders -e DEBUG="true" gcr.io/project-id/orders
 FROM golang:latest as builder
-ADD . /go/src/orders 
+ 
 WORKDIR /go/src/orders
 COPY . /go/src/orders
 RUN groupadd -r -g 20000 app && useradd -M -u 20001 -g 0 -r -c "Default app user" app && chown -R 20001:0 /go
