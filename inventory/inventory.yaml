@@ -45,7 +45,9 @@ spec:
       labels:
         app: inventory
         version: v1
+        managed-by: apigee
     spec:
+      serviceAccountName: apps    
       containers:
       - image: inventory
         imagePullPolicy: IfNotPresent

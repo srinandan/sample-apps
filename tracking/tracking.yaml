@@ -43,7 +43,9 @@ spec:
       labels:
         app: tracking
         version: v1
+        managed-by: apigee
     spec:
+      serviceAccountName: apps    
       containers:
       - image: tracking
         imagePullPolicy: IfNotPresent

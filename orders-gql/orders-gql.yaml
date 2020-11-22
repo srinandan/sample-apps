@@ -44,7 +44,9 @@ spec:
       labels:
         app: orders-gql
         version: v1
+        managed-by: apigee
     spec:
+      serviceAccountName: apps    
       containers:
       - image: orders-gql
         imagePullPolicy: IfNotPresent

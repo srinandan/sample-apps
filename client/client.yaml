@@ -38,6 +38,7 @@ spec:
         app: client
         version: v1
     spec:
+      serviceAccountName: apps    
       containers:
       - image: client
         imagePullPolicy: Always

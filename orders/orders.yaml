@@ -44,8 +44,10 @@ spec:
         sidecar.istio.io/rewriteAppHTTPProbers: "true"
       labels:
         app: orders
+        managed-by: apigee
         version: v1
     spec:
+      serviceAccountName: apps
       containers:
         - image: orders
           imagePullPolicy: IfNotPresent
@@ -63,7 +65,7 @@ spec:
           # - name: DISABLE_TRACING
           #   value: "1"
           # - name: JAEGER_SERVICE_ADDR
-          #   value: "jaeger-collector:14268"               
+          #   value: "jaeger-collector:14268"  
           securityContext:
             runAsNonRoot: true
             runAsUser: 20001

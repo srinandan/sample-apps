@@ -32,6 +32,7 @@ deploy:
       global: ["--namespace=apps"]
     manifests:
     - namespace.yaml
+    - serviceaccount.yaml
     #- restricted-policy.yaml
     #- app-policy.yaml.yaml
     - google-auth-sidecar/google-auth-sidecar.yaml

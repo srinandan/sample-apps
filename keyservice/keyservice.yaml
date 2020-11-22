@@ -46,6 +46,7 @@ spec:
         app: keyservice
         version: v1
     spec:
+      serviceAccountName: apps    
       containers:
         - image: keyservice
           imagePullPolicy: IfNotPresent

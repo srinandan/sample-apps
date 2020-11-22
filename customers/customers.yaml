@@ -45,7 +45,9 @@ spec:
       labels:
         app: customers
         version: v1
+        managed-by: apigee
     spec:
+      serviceAccountName: apps    
       containers:
       - image: customers
         imagePullPolicy: IfNotPresent

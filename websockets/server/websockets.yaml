@@ -44,7 +44,9 @@ spec:
       labels:
         app: websockets
         version: v1
+        managed-by: apigee
     spec:
+      serviceAccountName: apps    
       containers:
       - image: websockets
         imagePullPolicy: IfNotPresent
@@ -65,7 +67,7 @@ spec:
             path: /healthz
             port: 3000
           initialDelaySeconds: 20
-          periodSeconds: 5
+          periodSeconds: 5  
         securityContext:
           runAsNonRoot: true
           runAsUser: 20001

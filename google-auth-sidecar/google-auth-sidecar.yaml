@@ -49,6 +49,7 @@ spec:
         app: google-auth-sidecar
         version: v1
     spec:
+      serviceAccountName: apps    
       containers:
       - image: gcr.io/project-id/google-auth-sidecar
         imagePullPolicy: Always
