@@ -32,7 +32,7 @@ import (
 var orders = []types.Order{}
 
 func ReadOrdersFile() error {
-	orderListBytes, err := ioutil.ReadFile("orders.json")
+	orderListBytes, err := Asset("../data/orders.json")
 	if err != nil {
 		return err
 	}

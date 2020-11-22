@@ -30,7 +30,6 @@ RUN apk --update add ca-certificates
 FROM scratch
 WORKDIR /
 COPY --from=builder /go/bin/orders .
-COPY --from=builder /go/src/orders/orders.json .
 COPY --from=builder /etc/passwd /etc/group /etc/shadow /etc/
 COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 USER 20001
