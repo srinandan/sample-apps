@@ -5,9 +5,13 @@ metadata:
   namespace: apps 
 spec:
   schedule: "0 0 * * *"
+  concurrencyPolicy: Forbid
   jobTemplate:
     spec:
       template:
+        metadata:
+          annotations:
+            sidecar.istio.io/inject: "false"
         spec:
           serviceAccountName: daily-cleanup-sa
           containers:
