@@ -1,0 +1,14 @@
+{
+  "operationConfigs": [
+    {
+      "apiSource": "tracking",
+      "operations": [
+        {
+          "resource": "/",
+          "methods": []
+        }
+      ]
+    }
+  ],
+  "operationConfigType": "proxy"
+}

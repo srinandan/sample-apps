@@ -1,0 +1,14 @@
+{
+  "operationConfigs": [
+    {
+      "apiSource": "inventory",
+      "operations": [
+        {
+          "resource": "/",
+          "methods": []
+        }
+      ]
+    }
+  ],
+  "operationConfigType": "proxy"
+}
