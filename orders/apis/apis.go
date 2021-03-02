@@ -17,6 +17,7 @@ package apis
 import (
 	"encoding/json"
 	"io/ioutil"
+	"math/rand"
 	"net/http"
 	"strconv"
 	"time"
@@ -114,6 +115,30 @@ func GetOrderDelayHandler(w http.ResponseWriter, r *http.Request) {
 	stop := make(chan bool, 1)
 	go func() {
 		time.Sleep(time.Duration(interval) * time.Second)
+		order, pos := odr.GetOrder(vars["id"])
+		if pos != -1 {
+			common.ResponseHandler(w, order, false)
+		} else {
+			common.NotFoundHandler(w, "order not found")
+		}
+		stop <- true
+	}()
+
+	<-stop
+}
+
+func GetOrderRandomizedDelayHandler(w http.ResponseWriter, r *http.Request) {
+	//read path variables
+	vars := mux.Vars(r)
+
+	min := 50
+	max := 75
+
+	interval := rand.Intn(max-min) + min
+	stop := make(chan bool, 1)
+
+	go func() {
+		time.Sleep(time.Duration(interval) * time.Millisecond)
 		order, pos := odr.GetOrder(vars["id"])
 		if pos != -1 {
 			common.ResponseHandler(w, order, false)
