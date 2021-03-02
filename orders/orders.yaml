@@ -96,7 +96,7 @@ spec:
             - mountPath: /etc/secret
               name: svc-account-volume
               readOnly: true
-      #NOTE: This is not working with Istio. If using Istio, comment these lines
+      #NOTE: This is not working with Istio. If not using Istio, comment these lines
       #serviceAccount: app-sa
       #serviceAccountName: app-sa
       volumes:
@@ -117,3 +117,23 @@ spec:
                     values:
                       - apps
               weight: 100
+---
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: orders
+  namespace: apps
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: orders
+  minReplicas: 1
+  maxReplicas: 25
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50              
