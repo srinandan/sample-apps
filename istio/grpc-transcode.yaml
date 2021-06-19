@@ -1,0 +1,36 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: tracking-transcode
+  namespace: apps
+spec:
+  workloadSelector:
+    labels:
+      app: tracking
+  configPatches:
+
+  - applyTo: HTTP_FILTER
+    match:
+      #proxy:
+      #  proxyVersion: '^1\.(8|1\d).*'
+      context: SIDECAR_INBOUND
+      listener:
+        filterChain:
+          filter:
+            name: envoy.http_connection_manager
+            subFilter:
+              name: envoy.router
+
+    patch:
+      operation: INSERT_BEFORE
+      value:
+        name: envoy.filters.http.grpc_json_transcoder
+        typed_config:
+          "@type": type.googleapis.com/envoy.extensions.filters.http.grpc_json_transcoder.v3.GrpcJsonTranscoder
+          proto_descriptor: "/proto/service.pb"
+          services: ["sample_apps.v1.Shipment"]
+          print_options:
+            add_whitespace: true
+            always_print_primitive_fields: true
+            always_print_enums_as_ints: false
+            preserve_proto_field_names: false

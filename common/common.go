@@ -163,13 +163,14 @@ func ResponseHandler(w http.ResponseWriter, response interface{}, text bool) {
 
 		if err := json.NewEncoder(w).Encode(response); err != nil {
 			Error.Println(err)
-		}		
+		}
 	} else {
 		w.Header().Set("Content-Type", "text/plain; charset=UTF-8")
 		if str, ok := response.(string); ok {
 			w.Write([]byte(str))
 		}
 	}
+	//w.(http.Flusher).Flush()
 }
 
 func PermissionDeniedHandler(w http.ResponseWriter, err error) {

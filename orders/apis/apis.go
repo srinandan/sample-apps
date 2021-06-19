@@ -138,15 +138,20 @@ func GetOrderRandomizedDelayHandler(w http.ResponseWriter, r *http.Request) {
 	stop := make(chan bool, 1)
 
 	go func() {
-		time.Sleep(time.Duration(interval) * time.Millisecond)
-		order, pos := odr.GetOrder(vars["id"])
-		if pos != -1 {
-			common.ResponseHandler(w, order, false)
-		} else {
-			common.NotFoundHandler(w, "order not found")
+		for {
+			select {
+			case <-stop:
+				return
+			case <-time.After(time.Duration(interval) * time.Millisecond):
+				order, pos := odr.GetOrder(vars["id"])
+				if pos != -1 {
+					common.ResponseHandler(w, order, false)
+				} else {
+					common.NotFoundHandler(w, "order not found")
+				}
+				stop <- true
+			}
 		}
-		stop <- true
 	}()
-
 	<-stop
 }
