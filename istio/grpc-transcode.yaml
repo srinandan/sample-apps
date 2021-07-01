@@ -1,3 +1,43 @@
+## k create configmap tracking-proto -n apps --from-file=service.pb
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+ name: tracking
+spec:
+ selector:
+   matchLabels:
+     app: tracking 
+ template:
+   metadata:
+     annotations:
+       readiness.status.sidecar.istio.io/applicationPorts: '50051'
+       readiness.status.sidecar.istio.io/initialDelaySeconds: '20'
+       sidecar.istio.io/userVolume: '[{"name": "tracking-proto","configMap": {"defaultMode": 420,"name": "tracking-proto"}}]'
+       sidecar.istio.io/userVolumeMount: '[{"name": "tracking-proto", "mountPath": "/proto", "readonly": true}]'
+     labels:
+       app: tracking
+       version: v1
+       managed-by: apigee
+   spec:
+     serviceAccountName: apps
+     containers:
+     - image: tracking
+       imagePullPolicy: IfNotPresent
+       name: tracking
+       ports:
+       - containerPort: 50051
+       volumeMounts:
+         - mountPath: /etc/secret
+           name: svc-account-volume
+           readOnly: true 
+     volumes:
+     - name: svc-account-volume
+       secret:
+         defaultMode: 420
+         secretName: google-auth-svc-account
+         optional: true
+---
 apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
