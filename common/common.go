@@ -245,6 +245,9 @@ func InitTracing(serviceName string) {
 func Middleware() mux.MiddlewareFunc {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+
+			printHeaders (req.Header)
+			
 			route := mux.CurrentRoute(req)
 			span := trace.FromContext(req.Context())
 
@@ -274,4 +277,10 @@ func getRouteName(route *mux.Route, req *http.Request) string {
 	}
 
 	return name
+}
+
+func printHeaders (headers http.Request.Header) {
+	for _, header := range headers {
+		Info.Println(name, value)
+	}
 }
