@@ -280,7 +280,6 @@ func getRouteName(route *mux.Route, req *http.Request) string {
 }
 
 func printHeaders(req *http.Request) {
-	for name, value := range req.Header {
-		Info.Println(name, value)
-	}
+	headerBytes, _ := json.Marshal(req.Header)
+	Info.Println(string(headerBytes))
 }
