@@ -22,6 +22,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"contrib.go.opencensus.io/exporter/jaeger"
@@ -281,5 +282,8 @@ func getRouteName(route *mux.Route, req *http.Request) string {
 
 func printHeaders(req *http.Request) {
 	headerBytes, _ := json.Marshal(req.Header)
-	Info.Println(string(headerBytes))
+	//don't print kubernetes probe
+	if !strings.Contains(req.Header.Get("User-Agent"), "kube-probe") {
+		Info.Println(string(headerBytes))
+	}
 }
