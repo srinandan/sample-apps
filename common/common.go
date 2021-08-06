@@ -84,7 +84,7 @@ func GetHealthAddress() string {
 	if port == "" {
 		return address + defaultHealthPort
 	}
-	return defaultHealthPort + port
+	return address + port
 }
 
 //GetAddress returns the REST API port for the server to listen to
