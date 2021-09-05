@@ -97,4 +97,4 @@ profiles:
   build:
     googleCloudBuild:
       diskSizeGb: 100
-      machineType: N1_HIGHCPU_8
+      machineType: N1_HIGHCPU_16
