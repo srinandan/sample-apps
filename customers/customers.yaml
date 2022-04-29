@@ -38,10 +38,12 @@ spec:
   template:
     metadata:
       annotations:
-        sidecar.istio.io/inject: "true"
         readiness.status.sidecar.istio.io/applicationPorts: "8080"
         readiness.status.sidecar.istio.io/initialDelaySeconds: "20"
         sidecar.istio.io/rewriteAppHTTPProbers: "true"    
+        proxy.istio.io/config: |
+          envoyAccessLogService: 
+            address: apigee-remote-service-envoy.apigee.svc.cluster.local:5000
       labels:
         app: customers
         version: v1
