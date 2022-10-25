@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//go run cmd/server/main.go
+// go run cmd/server/main.go
 package main
 
 import (
@@ -26,14 +26,8 @@ import (
 func main() {
 	//initialize logging
 	common.InitLog()
-	//init tracing
-	if os.Getenv("DISABLE_TRACING") == "" {
-		common.Info.Println("Tracing enabled.")
-		go common.InitTracing("tracking")
-	} else {
-		common.Info.Println("Tracing disabled.")
-	}
-	if err := grpc.RunServer(common.GetgRPCPort()); err != nil {
+
+	if err := grpc.RunServer(common.GetgRPCPort(), common.GetAddress()); err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		os.Exit(1)
 	}

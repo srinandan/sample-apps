@@ -18,12 +18,16 @@ import (
 	"context"
 	"fmt"
 	"net"
+	"net/http"
 	"os"
 	"os/signal"
+	"time"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/metadata"
 
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	common "github.com/srinandan/sample-apps/common"
 	api "github.com/srinandan/sample-apps/tracking/pkg/api/v1"
 	service "github.com/srinandan/sample-apps/tracking/pkg/service/v1"
@@ -31,7 +35,12 @@ import (
 	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
 )
 
-//look for tokens
+const maxMsgSize = 1024 * 1024
+const timeoutValue = 15 * time.Second
+
+var DISABLE_APISERVER = os.Getenv("DISABLE_APISERVER")
+
+// look for tokens
 func authorize(ctx context.Context) (context.Context, error) {
 	md, ok := metadata.FromIncomingContext(ctx)
 	if !ok {
@@ -56,19 +65,23 @@ func authorize(ctx context.Context) (context.Context, error) {
 	return ctx, nil
 }
 
-// RunServer runs gRPC service to publish tracking service
-func RunServer(port string) error {
+// RunServer runs gRPC and REST endpoints for the tracking service
+func RunServer(grpcPort string, restAddress string) error {
 
-	ctx := context.Background()
+	var wait time.Duration
+	var apiServer *http.Server
 
-	common.Info.Println("Starting server on port ", port)
+	ctx, cancel := context.WithTimeout(context.Background(), timeoutValue)
+	defer cancel()
 
-	listen, err := net.Listen("tcp", ":"+port)
+	common.Info.Println("Starting server on port ", grpcPort)
+
+	listen, err := net.Listen("tcp", ":"+grpcPort)
 	if err != nil {
 		return err
 	}
 
-	server := grpc.NewServer(
+	grpcServer := grpc.NewServer(
 		grpc.UnaryInterceptor(
 			grpc_auth.UnaryServerInterceptor(authorize),
 		),
@@ -82,27 +95,70 @@ func RunServer(port string) error {
 		return err
 	}
 
-	api.RegisterShipmentServer(server, ShipmentServer)
+	//register shipment server
+	api.RegisterShipmentServer(grpcServer, ShipmentServer)
 
-	if err := server.Serve(listen); err != nil {
-		common.Error.Fatalf("failed to serve: %v", err)
+	//start gRPC server
+	go func() {
+		if err := grpcServer.Serve(listen); err != nil {
+			common.Error.Fatalf("failed to serve: %v", err)
+		}
+	}()
+
+	if DISABLE_APISERVER != "true" {
+		gwmux := runtime.NewServeMux()
+
+		conn, err := grpc.DialContext(
+			ctx,
+			"0.0.0.0:"+grpcPort,
+			grpc.WithBlock(),
+			grpc.WithTransportCredentials(insecure.NewCredentials()),
+			grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(maxMsgSize), grpc.MaxCallSendMsgSize(maxMsgSize)),
+		)
+
+		if err != nil {
+			common.Error.Println(err)
+			return err
+		}
+
+		err = api.RegisterShipmentHandler(ctx, gwmux, conn)
+		if err != nil {
+			common.Error.Println(err)
+			return err
+		}
+
+		common.Info.Println("Starting API server on port ", common.GetAddress())
+		apiServer := &http.Server{
+			Addr:         restAddress,
+			WriteTimeout: timeoutValue,
+			ReadTimeout:  timeoutValue,
+			IdleTimeout:  time.Second * 60,
+			Handler:      gwmux,
+		}
+		go func() {
+			if err := apiServer.ListenAndServe(); err != nil {
+				common.Error.Println(err)
+			}
+		}()
+
 	}
 
 	// graceful shutdown
 	c := make(chan os.Signal, 1)
+	// We'll accept graceful shutdowns when quit via SIGINT (Ctrl+C)
+	// SIGKILL, SIGQUIT or SIGTERM (Ctrl+/) will not be caught.
 	signal.Notify(c, os.Interrupt)
-	go func() {
-		for range c {
-			// sig is a ^C, handle it
-			common.Info.Println("shutting down gRPC server...")
-
-			server.GracefulStop()
-
-			<-ctx.Done()
-		}
-	}()
-
-	// start gRPC server
-	common.Info.Println("starting gRPC server...")
-	return server.Serve(listen)
+	// Block until we receive our signal.
+	<-c
+	// Create a deadline to wait for.
+	ctxDeadline, cancelDeadline := context.WithTimeout(context.Background(), wait)
+	defer cancelDeadline()
+	// Doesn't block if no connections, but will otherwise wait
+	// until the timeout deadline.
+	grpcServer.GracefulStop()
+	if DISABLE_APISERVER != "true" && apiServer != nil {
+		err = apiServer.Shutdown(ctxDeadline)
+	}
+	common.Info.Println("Shutting down")
+	return err
 }

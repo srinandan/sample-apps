@@ -23,8 +23,6 @@ import (
 	"strings"
 	"time"
 
-	"go.opencensus.io/plugin/ocgrpc"
-	"go.opencensus.io/trace"
 	"google.golang.org/grpc"
 
 	"github.com/golang/protobuf/jsonpb"
@@ -40,7 +38,7 @@ import (
 	v1 "github.com/srinandan/sample-apps/tracking/pkg/api/v1"
 )
 
-//endpoint to reach the tracking service
+// endpoint to reach the tracking service
 var trackingEndpoint = os.Getenv("TRACKING")
 
 const tokenType = "Bearer"
@@ -98,12 +96,12 @@ func initClient(r *http.Request) (trackingClient v1.ShipmentClient, conn *grpc.C
 
 	if credType == "accessToken" {
 		creds, _ := NewTokenFromHeader(cred)
-		conn, err = grpc.Dial(trackingEndpoint, grpc.WithInsecure(), grpc.WithPerRPCCredentials(creds), grpc.WithStatsHandler(new(ocgrpc.ClientHandler)))
+		conn, err = grpc.Dial(trackingEndpoint, grpc.WithInsecure(), grpc.WithPerRPCCredentials(creds)))
 	} else if credType == "apiKey" {
 		creds, _ := NewKeyFromHeader(cred)
-		conn, err = grpc.Dial(trackingEndpoint, grpc.WithInsecure(), grpc.WithPerRPCCredentials(creds), grpc.WithStatsHandler(new(ocgrpc.ClientHandler)))
+		conn, err = grpc.Dial(trackingEndpoint, grpc.WithInsecure(), grpc.WithPerRPCCredentials(creds)))
 	} else {
-		conn, err = grpc.Dial(trackingEndpoint, grpc.WithInsecure(), grpc.WithStatsHandler(new(ocgrpc.ClientHandler)))
+		conn, err = grpc.Dial(trackingEndpoint, grpc.WithInsecure()))
 	}
 
 	if err != nil {
@@ -179,13 +177,6 @@ func getCredential(r *http.Request) (credType string, cred string) {
 
 func ListTrackingDetailsHandler(w http.ResponseWriter, r *http.Request) {
 
-	ctx, rootspan := trace.StartSpan(context.Background(), "ListTrackingDetailsHandler")
-	defer rootspan.End()
-
-	// create child span for backend call
-	_, childspan := trace.StartSpan(ctx, "call to tracking server")
-	defer childspan.End()
-
 	trackingClient, conn, err := initClient(r)
 
 	if err != nil {
@@ -223,13 +214,6 @@ func ListTrackingDetailsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetTrackingDetailsHandler(w http.ResponseWriter, r *http.Request) {
-
-	ctx, rootspan := trace.StartSpan(context.Background(), "GetTrackingDetailsHandler")
-	defer rootspan.End()
-
-	// create child span for backend call
-	_, childspan := trace.StartSpan(ctx, "call to tracking server")
-	defer childspan.End()
 
 	trackingClient, conn, err := initClient(r)
 

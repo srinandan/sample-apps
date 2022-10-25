@@ -1,0 +1,19 @@
+FROM golang:latest as builder
+
+ADD ./cmd /go/src/tracking/cmd
+ADD ./pkg /go/src/tracking/pkg
+ADD go.mod /go/src/tracking
+ADD go.sum /go/src/tracking
+
+WORKDIR /go/src/tracking
+
+ENV GO111MODULE=on
+RUN go mod download
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -a -ldflags='-s -w -extldflags "-static"' -o /go/bin/tracking /go/src/byoc/server/main.go
+
+FROM gcr.io/distroless/static-debian11
+COPY --from=builder /go/bin/tracking /
+EXPOSE 50051
+EXPOSE 8080
+
+CMD ["/tracking"]

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//go run cmd/client/main.go
+// go run cmd/client/main.go
 package main
 
 import (
@@ -27,9 +27,6 @@ import (
 	"os"
 	"os/signal"
 	"time"
-
-	"go.opencensus.io/plugin/ochttp"
-	"go.opencensus.io/plugin/ochttp/propagation/tracecontext"
 )
 
 func main() {
@@ -52,18 +49,13 @@ func main() {
 
 	common.Info.Println("Starting server - ", common.GetAddress())
 
-	och := &ochttp.Handler{
-		Handler:     r,
-		Propagation: &tracecontext.HTTPFormat{},
-	}
-
 	//the following code is from gorilla mux samples
 	srv := &http.Server{
 		Addr:         common.GetAddress(),
 		WriteTimeout: time.Second * 15,
 		ReadTimeout:  time.Second * 15,
 		IdleTimeout:  time.Second * 60,
-		Handler:      och, //r,
+		Handler:      r,
 	}
 
 	go func() {

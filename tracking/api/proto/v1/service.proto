@@ -20,6 +20,7 @@ import "google/protobuf/timestamp.proto";
 
 package sample_apps.v1;
 
+option go_package = "api/v1";
 option java_package = "com.sample_apps.v1";
 option java_multiple_files = true;
 option java_outer_classname = "ServiceProto";
@@ -41,9 +42,7 @@ service Shipment {
     };
     //NotifyTracking for testing streaming
     rpc NotifyTracking(stream GetTrackingRequest) returns (stream Tracking) {
-        option (google.api.http) = {
-            get: "/v1/tracking/notification/{tracking_id}"
-        };
+
     };
 }
 
