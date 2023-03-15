@@ -11,6 +11,6 @@ require (
 	github.com/gorilla/mux v1.7.4
 	github.com/srinandan/sample-apps/common v0.0.0-20200816042855-160be8bb7e36
 	go.opencensus.io v0.22.4
-	golang.org/x/text v0.3.8 // indirect
+	golang.org/x/net v0.7.0 // indirect
 	google.golang.org/genproto v0.0.0-20200815001618-f69a88009b70 // indirect
 )
