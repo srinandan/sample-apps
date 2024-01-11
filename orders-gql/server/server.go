@@ -30,7 +30,7 @@ func main() {
 
 	common.InitLog()
 
-	//ReadOrdersFile
+	// ReadOrdersFile
 	if err := odr.ReadOrdersFile(); err != nil {
 		common.Error.Println("error reading orders file ", err)
 	}

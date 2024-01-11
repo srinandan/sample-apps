@@ -21,17 +21,17 @@ import (
 	token "github.com/srinandan/sample-apps/google-auth-sidecar/token"
 )
 
-//Initialize logging, context, sec mgr and kms
+// Initialize logging, context, sec mgr and kms
 func Initialize() {
-	//init logging
+	// init logging
 	common.InitLog()
-	//init tracing
+	// init tracing
 	if os.Getenv("DISABLE_TRACING") == "" {
 		common.Info.Println("Tracing enabled.")
 		go common.InitTracing("orders")
 	} else {
 		common.Info.Println("Tracing disabled.")
-	} //ReadServiceAccount
+	} // ReadServiceAccount
 	if err := token.ReadServiceAccount(); err != nil {
 		common.Error.Fatalln("error reading service account ", err)
 	}

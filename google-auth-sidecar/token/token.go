@@ -71,7 +71,6 @@ func generateJWT() (string, error) {
 	const scope = "https://www.googleapis.com/auth/cloud-platform"
 
 	privKey, err := getPrivateKey()
-
 	if err != nil {
 		return "", err
 	}
@@ -94,7 +93,7 @@ func generateJWT() (string, error) {
 	return string(payload), nil
 }
 
-//GenerateAccessToken generates a Google OAuth access token
+// GenerateAccessToken generates a Google OAuth access token
 func GenerateAccessToken() (types.OAuthAccessToken, error) {
 	const tokenEndpoint = "https://www.googleapis.com/oauth2/v4/token"
 	const grantType = "urn:ietf:params:oauth:grant-type:jwt-bearer"

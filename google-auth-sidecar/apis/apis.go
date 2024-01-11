@@ -21,10 +21,9 @@ import (
 	token "github.com/srinandan/sample-apps/google-auth-sidecar/token"
 )
 
-//TokenHandler handles GET /tokens
+// TokenHandler handles GET /tokens
 func TokenHandler(w http.ResponseWriter, r *http.Request) {
 	accessToken, err := token.GenerateAccessToken()
-
 	if err != nil {
 		common.ErrorHandler(w, err)
 		return

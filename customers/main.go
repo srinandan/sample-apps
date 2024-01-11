@@ -16,19 +16,16 @@ package main
 
 import (
 	"context"
-
-	"github.com/gorilla/mux"
-	common "github.com/srinandan/sample-apps/common"
-	apis "github.com/srinandan/sample-apps/customers/apis"
-	app "github.com/srinandan/sample-apps/customers/app"
-
 	"net/http"
 	"os"
 	"os/signal"
 	"time"
 
-	"go.opencensus.io/plugin/ochttp"
-	"go.opencensus.io/plugin/ochttp/propagation/tracecontext"
+	common "internal/common"
+
+	"github.com/gorilla/mux"
+	apis "github.com/srinandan/sample-apps/customers/apis"
+	app "github.com/srinandan/sample-apps/customers/app"
 )
 
 func main() {
@@ -52,18 +49,13 @@ func main() {
 
 	common.Info.Println("Starting server - ", common.GetAddress())
 
-	och := &ochttp.Handler{
-		Handler:     r,
-		Propagation: &tracecontext.HTTPFormat{},
-	}
-
-	//the following code is from gorilla mux samples
+	// the following code is from gorilla mux samples
 	srv := &http.Server{
 		Addr:         common.GetAddress(),
 		WriteTimeout: time.Second * 15,
 		ReadTimeout:  time.Second * 15,
 		IdleTimeout:  time.Second * 60,
-		Handler:      och, //r,
+		Handler:      r,
 	}
 
 	go func() {

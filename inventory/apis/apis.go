@@ -21,8 +21,9 @@ import (
 
 	"github.com/gorilla/mux"
 
-	common "github.com/srinandan/sample-apps/common"
-	types "github.com/srinandan/sample-apps/common/types"
+	common "internal/common"
+	types "internal/datatypes"
+
 	items "github.com/srinandan/sample-apps/inventory/items"
 )
 
@@ -33,7 +34,7 @@ func ListInventoryHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetInventoryHandler(w http.ResponseWriter, r *http.Request) {
-	//read path variables
+	// read path variables
 	vars := mux.Vars(r)
 	item, pos := items.GetItem(vars["id"])
 
@@ -45,7 +46,7 @@ func GetInventoryHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateInventoryHandler(w http.ResponseWriter, r *http.Request) {
-	//read the body
+	// read the body
 	itemBytes, err := ioutil.ReadAll(r.Body)
 	defer r.Body.Close()
 
@@ -67,7 +68,7 @@ func CreateInventoryHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteInventoryHandler(w http.ResponseWriter, r *http.Request) {
-	//read path variables
+	// read path variables
 	vars := mux.Vars(r)
 	err := items.DeleteItem(vars["id"])
 

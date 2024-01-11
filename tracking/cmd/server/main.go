@@ -19,12 +19,13 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/srinandan/sample-apps/common"
+	"internal/common"
+
 	grpc "github.com/srinandan/sample-apps/tracking/pkg/protocol/grpc"
 )
 
 func main() {
-	//initialize logging
+	// initialize logging
 	common.InitLog()
 
 	if err := grpc.RunServer(common.GetgRPCPort(), common.GetAddress()); err != nil {

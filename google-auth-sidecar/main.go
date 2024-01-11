@@ -17,16 +17,15 @@ package main
 import (
 	"context"
 	"log"
+	"net/http"
+	"os"
+	"os/signal"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/srinandan/sample-apps/common"
 	apis "github.com/srinandan/sample-apps/google-auth-sidecar/apis"
 	app "github.com/srinandan/sample-apps/google-auth-sidecar/app"
-
-	"net/http"
-	"os"
-	"os/signal"
-	"time"
 
 	"go.opencensus.io/plugin/ochttp"
 )
@@ -48,13 +47,13 @@ func main() {
 		Handler: r,
 	}
 
-	//the following code is from gorilla mux samples
+	// the following code is from gorilla mux samples
 	srv := &http.Server{
 		Addr:         common.GetAddress(),
 		WriteTimeout: time.Second * 15,
 		ReadTimeout:  time.Second * 15,
 		IdleTimeout:  time.Second * 60,
-		Handler:      och, //r,
+		Handler:      och, // r,
 	}
 
 	go func() {

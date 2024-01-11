@@ -22,10 +22,10 @@ import (
 	"strconv"
 	"time"
 
-	types "github.com/srinandan/sample-apps/common/types"
+	types "internal/datatypes"
 )
 
-//Items
+// Items
 var items = []types.Item{}
 
 func ReadInventoryFile() error {

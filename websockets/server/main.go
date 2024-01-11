@@ -16,44 +16,30 @@ package main
 
 import (
 	"net/http"
-	"os"
 	"time"
 
+	common "internal/common"
+
 	"github.com/gorilla/websocket"
-	"github.com/srinandan/sample-apps/common"
-	"go.opencensus.io/plugin/ochttp"
-	"go.opencensus.io/plugin/ochttp/propagation/tracecontext"
 )
 
 var upgrader = websocket.Upgrader{}
 
 func main() {
-	//init logging
+	// init logging
 	common.InitLog()
-	//init tracing
-	if os.Getenv("DISABLE_TRACING") == "" {
-		common.Info.Println("Tracing enabled.")
-		go common.InitTracing("orders")
-	} else {
-		common.Info.Println("Tracing disabled.")
-	}
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/v1/ws", wsResponse)
 	mux.HandleFunc("/healthz", common.HealthHandler)
 
-	och := &ochttp.Handler{
-		Handler:     mux,
-		Propagation: &tracecontext.HTTPFormat{},
-	}
-
-	//the following code is from gorilla mux samples
+	// the following code is from gorilla mux samples
 	srv := &http.Server{
 		Addr:         "0.0.0.0:3000",
 		WriteTimeout: time.Second * 15,
 		ReadTimeout:  time.Second * 15,
 		IdleTimeout:  time.Second * 60,
-		Handler:      och,
+		Handler:      mux,
 	}
 
 	err := srv.ListenAndServe()
@@ -63,7 +49,7 @@ func main() {
 }
 
 func wsResponse(w http.ResponseWriter, r *http.Request) {
-	var conn, _ = upgrader.Upgrade(w, r, nil)
+	conn, _ := upgrader.Upgrade(w, r, nil)
 	go func(conn *websocket.Conn) {
 		for {
 			mType, msg, err := conn.ReadMessage()

@@ -30,7 +30,6 @@ func getIntPtr(i int) *int {
 }
 
 func GetOrder(ctx context.Context, id string) (*models.Order, error) {
-
 	o, _ := odr.GetOrder(id)
 
 	order := &models.Order{}

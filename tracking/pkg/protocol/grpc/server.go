@@ -27,16 +27,19 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/metadata"
 
+	common "internal/common"
+
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	common "github.com/srinandan/sample-apps/common"
 	api "github.com/srinandan/sample-apps/tracking/pkg/api/v1"
 	service "github.com/srinandan/sample-apps/tracking/pkg/service/v1"
 
 	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
 )
 
-const maxMsgSize = 1024 * 1024
-const timeoutValue = 15 * time.Second
+const (
+	maxMsgSize   = 1024 * 1024
+	timeoutValue = 15 * time.Second
+)
 
 var DISABLE_APISERVER = os.Getenv("DISABLE_APISERVER")
 
@@ -67,7 +70,6 @@ func authorize(ctx context.Context) (context.Context, error) {
 
 // RunServer runs gRPC and REST endpoints for the tracking service
 func RunServer(grpcPort string, restAddress string) error {
-
 	var wait time.Duration
 	var apiServer *http.Server
 
@@ -95,10 +97,10 @@ func RunServer(grpcPort string, restAddress string) error {
 		return err
 	}
 
-	//register shipment server
+	// register shipment server
 	api.RegisterShipmentServer(grpcServer, ShipmentServer)
 
-	//start gRPC server
+	// start gRPC server
 	go func() {
 		if err := grpcServer.Serve(listen); err != nil {
 			common.Error.Fatalf("failed to serve: %v", err)
@@ -115,7 +117,6 @@ func RunServer(grpcPort string, restAddress string) error {
 			grpc.WithTransportCredentials(insecure.NewCredentials()),
 			grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(maxMsgSize), grpc.MaxCallSendMsgSize(maxMsgSize)),
 		)
-
 		if err != nil {
 			common.Error.Println(err)
 			return err

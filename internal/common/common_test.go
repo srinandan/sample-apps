@@ -17,14 +17,13 @@ package common
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"os"
 	"os/signal"
 	"testing"
+	"time"
 
 	"github.com/gorilla/mux"
-
-	"net/http"
-	"time"
 
 	"go.opencensus.io/plugin/ochttp"
 	"go.opencensus.io/plugin/ochttp/propagation/tracecontext"
@@ -46,13 +45,13 @@ func TestCommon(t *testing.T) {
 		Propagation: &tracecontext.HTTPFormat{},
 	}
 
-	//the following code is from gorilla mux samples
+	// the following code is from gorilla mux samples
 	srv := &http.Server{
 		Addr:         GetAddress(),
 		WriteTimeout: time.Second * 15,
 		ReadTimeout:  time.Second * 15,
 		IdleTimeout:  time.Second * 60,
-		Handler:      och, //r,
+		Handler:      och, // r,
 	}
 
 	go func() {

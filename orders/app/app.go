@@ -15,25 +15,17 @@
 package app
 
 import (
-	"os"
+	common "internal/common"
 
-	common "github.com/srinandan/sample-apps/common"
-	odr "github.com/srinandan/sample-apps/orders/odr"
+	data "ordersdata"
 )
 
-//Initialize logging, context, sec mgr and kms
+// Initialize logging, context, sec mgr and kms
 func Initialize() {
-	//init logging
+	// init logging
 	common.InitLog()
-	//init tracing
-	if os.Getenv("DISABLE_TRACING") == "" {
-		common.Info.Println("Tracing enabled.")
-		go common.InitTracing("orders")
-	} else {
-		common.Info.Println("Tracing disabled.")
-	}
-	//ReadOrdersFile
-	if err := odr.ReadOrdersFile(); err != nil {
+	// ReadOrdersFile
+	if err := data.ReadOrdersFile(); err != nil {
 		common.Error.Println("error reading orders file ", err)
 	}
 }

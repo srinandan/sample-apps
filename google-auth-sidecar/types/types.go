@@ -14,7 +14,7 @@
 
 package types
 
-//ServiceAccount holds the fields of a google service account
+// ServiceAccount holds the fields of a google service account
 type ServiceAccount struct {
 	Type                string `json:"type,omitempty"`
 	ProjectID           string `json:"project_id,omitempty"`
@@ -28,7 +28,7 @@ type ServiceAccount struct {
 	ClientCertURL       string `json:"client_x509_cert_url,omitempty"`
 }
 
-//OAuthAccessToken is a structure to hold OAuth response
+// OAuthAccessToken is a structure to hold OAuth response
 type OAuthAccessToken struct {
 	AccessToken string `json:"access_token,omitempty"`
 	ExpiresIn   int    `json:"expires_in,omitempty"`

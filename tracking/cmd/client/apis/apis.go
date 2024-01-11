@@ -23,6 +23,7 @@ import (
 	"strings"
 	"time"
 
+	"go.opencensus.io/plugin/ocgrpc"
 	"google.golang.org/grpc"
 
 	"github.com/golang/protobuf/jsonpb"
@@ -33,20 +34,25 @@ import (
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/status"
 
+	common "internal/common"
+
 	empty "github.com/golang/protobuf/ptypes/empty"
-	common "github.com/srinandan/sample-apps/common"
 	v1 "github.com/srinandan/sample-apps/tracking/pkg/api/v1"
 )
 
 // endpoint to reach the tracking service
 var trackingEndpoint = os.Getenv("TRACKING")
 
-const tokenType = "Bearer"
-const authorizationHeader = "Authorization"
-const apiKeyHeader = "x-api-key"
+const (
+	tokenType           = "Bearer"
+	authorizationHeader = "Authorization"
+	apiKeyHeader        = "x-api-key"
+)
 
-var streamTrackingClient v1.ShipmentClient
-var streamConn *grpc.ClientConn
+var (
+	streamTrackingClient v1.ShipmentClient
+	streamConn           *grpc.ClientConn
+)
 
 type trackingOAuthCreds struct {
 	AccessToken string
@@ -85,7 +91,6 @@ func NewKeyFromHeader(key string) (credentials.PerRPCCredentials, error) {
 }
 
 func initClient(r *http.Request) (trackingClient v1.ShipmentClient, conn *grpc.ClientConn, err error) {
-
 	credType, cred := getCredential(r)
 
 	// Set up a connection to the server.
@@ -96,12 +101,12 @@ func initClient(r *http.Request) (trackingClient v1.ShipmentClient, conn *grpc.C
 
 	if credType == "accessToken" {
 		creds, _ := NewTokenFromHeader(cred)
-		conn, err = grpc.Dial(trackingEndpoint, grpc.WithInsecure(), grpc.WithPerRPCCredentials(creds)))
+		conn, err = grpc.Dial(trackingEndpoint, grpc.WithInsecure(), grpc.WithPerRPCCredentials(creds))
 	} else if credType == "apiKey" {
 		creds, _ := NewKeyFromHeader(cred)
-		conn, err = grpc.Dial(trackingEndpoint, grpc.WithInsecure(), grpc.WithPerRPCCredentials(creds)))
+		conn, err = grpc.Dial(trackingEndpoint, grpc.WithInsecure(), grpc.WithPerRPCCredentials(creds))
 	} else {
-		conn, err = grpc.Dial(trackingEndpoint, grpc.WithInsecure()))
+		conn, err = grpc.Dial(trackingEndpoint, grpc.WithInsecure())
 	}
 
 	if err != nil {
@@ -114,7 +119,6 @@ func initClient(r *http.Request) (trackingClient v1.ShipmentClient, conn *grpc.C
 }
 
 func initStreamClient(r *http.Request) (err error) {
-
 	if streamConn == nil || streamConn.GetState() != connectivity.Ready {
 		credType, cred := getCredential(r)
 
@@ -157,7 +161,7 @@ func CloseStreamClient() {
 }
 
 func getCredential(r *http.Request) (credType string, cred string) {
-	//get access token
+	// get access token
 	if authHeaderValue := r.Header.Get(authorizationHeader); authHeaderValue != "" {
 		splitToken := strings.Split(authHeaderValue, tokenType)
 		if len(splitToken) > 1 {
@@ -176,9 +180,7 @@ func getCredential(r *http.Request) (credType string, cred string) {
 }
 
 func ListTrackingDetailsHandler(w http.ResponseWriter, r *http.Request) {
-
 	trackingClient, conn, err := initClient(r)
-
 	if err != nil {
 		common.ErrorHandler(w, err)
 		return
@@ -214,9 +216,7 @@ func ListTrackingDetailsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetTrackingDetailsHandler(w http.ResponseWriter, r *http.Request) {
-
 	trackingClient, conn, err := initClient(r)
-
 	if err != nil {
 		common.ErrorHandler(w, err)
 		return
@@ -224,7 +224,7 @@ func GetTrackingDetailsHandler(w http.ResponseWriter, r *http.Request) {
 
 	defer closeClient(conn)
 
-	//read path variables
+	// read path variables
 	vars := mux.Vars(r)
 	trackingId := vars["id"]
 
@@ -258,14 +258,13 @@ func GetTrackingDetailsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func NotifyTrackingDetailsHandler(w http.ResponseWriter, r *http.Request) {
-
 	err := initStreamClient(r)
 	if err != nil {
 		common.ErrorHandler(w, err)
 		return
 	}
 
-	//read path variables
+	// read path variables
 	vars := mux.Vars(r)
 	trackingId := vars["id"]
 
@@ -277,7 +276,7 @@ func NotifyTrackingDetailsHandler(w http.ResponseWriter, r *http.Request) {
 
 	done := make(chan bool)
 
-	//go routine to send request
+	// go routine to send request
 	go func() {
 		req := &v1.GetTrackingRequest{
 			TrackingId: trackingId,
@@ -292,7 +291,7 @@ func NotifyTrackingDetailsHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}()
 
-	//go routine to receive requests
+	// go routine to receive requests
 	go func() {
 		for {
 			resp, err := stream.Recv()

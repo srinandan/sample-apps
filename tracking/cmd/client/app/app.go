@@ -15,20 +15,11 @@
 package app
 
 import (
-	"os"
-
-	common "github.com/srinandan/sample-apps/common"
+	common "internal/common"
 )
 
-//Initialize logging, context, sec mgr and kms
+// Initialize logging, context, sec mgr and kms
 func Initialize() {
-	//init logging
+	// init logging
 	common.InitLog()
-	//init tracing
-	if os.Getenv("DISABLE_TRACING") == "" {
-		common.Info.Println("Tracing enabled.")
-		go common.InitTracing("tracking-client")
-	} else {
-		common.Info.Println("Tracing disabled.")
-	}
 }

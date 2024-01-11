@@ -15,24 +15,16 @@
 package app
 
 import (
-	"os"
+	common "internal/common"
 
-	common "github.com/srinandan/sample-apps/common"
 	customers "github.com/srinandan/sample-apps/customers/datastore"
 )
 
-//Initialize logging, context, sec mgr and kms
+// Initialize logging, context, sec mgr and kms
 func Initialize() {
-	//init logging
+	// init logging
 	common.InitLog()
-	//init tracing
-	if os.Getenv("DISABLE_TRACING") == "" {
-		common.Info.Println("Tracing enabled.")
-		go common.InitTracing("tracking-client")
-	} else {
-		common.Info.Println("Tracing disabled.")
-	}
-	//Read Customer File
+	// Read Customer File
 	if err := customers.ReadFile(); err != nil {
 		common.Error.Println("error reading inventory file ", err)
 	}

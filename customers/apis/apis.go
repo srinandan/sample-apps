@@ -21,8 +21,9 @@ import (
 
 	"github.com/gorilla/mux"
 
-	common "github.com/srinandan/sample-apps/common"
-	types "github.com/srinandan/sample-apps/common/types"
+	common "internal/common"
+	types "internal/datatypes"
+
 	data "github.com/srinandan/sample-apps/customers/datastore"
 )
 
@@ -33,7 +34,7 @@ func ListCustomerHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetCustomerHandler(w http.ResponseWriter, r *http.Request) {
-	//read path variables
+	// read path variables
 	vars := mux.Vars(r)
 	customer, pos := data.GetCustomer(vars["id"])
 
@@ -45,7 +46,7 @@ func GetCustomerHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateCustomerHandler(w http.ResponseWriter, r *http.Request) {
-	//read the body
+	// read the body
 	customerBytes, err := ioutil.ReadAll(r.Body)
 	defer r.Body.Close()
 
@@ -66,7 +67,7 @@ func CreateCustomerHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteCustomerHandler(w http.ResponseWriter, r *http.Request) {
-	//read path variables
+	// read path variables
 	vars := mux.Vars(r)
 	err := data.DeleteCustomer(vars["id"])
 

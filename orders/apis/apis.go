@@ -22,11 +22,13 @@ import (
 	"strconv"
 	"time"
 
+	types "internal/datatypes"
+
+	odr "ordersdata"
+
 	"github.com/gorilla/mux"
 
-	common "github.com/srinandan/sample-apps/common"
-	types "github.com/srinandan/sample-apps/common/types"
-	odr "github.com/srinandan/sample-apps/orders/odr"
+	common "internal/common"
 )
 
 func ListOrdersHandler(w http.ResponseWriter, r *http.Request) {
@@ -36,7 +38,7 @@ func ListOrdersHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetOrderHandler(w http.ResponseWriter, r *http.Request) {
-	//read path variables
+	// read path variables
 	vars := mux.Vars(r)
 	order, pos := odr.GetOrder(vars["id"])
 
@@ -48,7 +50,7 @@ func GetOrderHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateOrderHandler(w http.ResponseWriter, r *http.Request) {
-	//read the body
+	// read the body
 	orderBytes, err := ioutil.ReadAll(r.Body)
 	defer r.Body.Close()
 
@@ -74,7 +76,7 @@ func CreateOrderHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteOrderHandler(w http.ResponseWriter, r *http.Request) {
-	//read path variables
+	// read path variables
 	vars := mux.Vars(r)
 	err := odr.DeleteOrder(vars["id"])
 
@@ -87,7 +89,7 @@ func DeleteOrderHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetOrderItemsHandler(w http.ResponseWriter, r *http.Request) {
-	//read path variables
+	// read path variables
 	vars := mux.Vars(r)
 	order, pos := odr.GetOrder(vars["id"])
 
@@ -104,7 +106,7 @@ func GetOrderItemsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetOrderDelayHandler(w http.ResponseWriter, r *http.Request) {
-	//read path variables
+	// read path variables
 	vars := mux.Vars(r)
 	interval, err := strconv.ParseInt(vars["interval"], 10, 64)
 	if err != nil {
@@ -128,7 +130,7 @@ func GetOrderDelayHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetOrderRandomizedDelayHandler(w http.ResponseWriter, r *http.Request) {
-	//read path variables
+	// read path variables
 	vars := mux.Vars(r)
 
 	min := 50

@@ -19,17 +19,16 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"net/http"
 	"net/url"
 	"os"
 	"os/signal"
 	"time"
 
 	"github.com/gorilla/websocket"
-
-	"net/http"
 )
 
-//Version
+// Version
 var Version, Git string
 
 func usage() {
@@ -49,11 +48,10 @@ func usage() {
 }
 
 func main() {
-
 	var endpoint, apiKey, hostHeader, apiPath, token string
 	var enableTLS, skipVerify, help bool
 
-	flag.StringVar(&endpoint, "endpoint", "localhost:3000", "Websocket endpoint")
+	flag.StringVar(&endpoint, "endpoint", "0.0.0.0:3000", "Websocket endpoint")
 	flag.StringVar(&apiPath, "path", "/v1/ws", "Websocket path")
 	flag.StringVar(&token, "token", "", "OAuth Bearer Token")
 	flag.StringVar(&apiKey, "apikey", "", "API Key")
@@ -74,7 +72,7 @@ func main() {
 	var c *websocket.Conn
 	var resp *http.Response
 	var d websocket.Dialer
-	var headers = http.Header{}
+	headers := http.Header{}
 
 	if hostHeader != "" {
 		headers.Add("Host", hostHeader)

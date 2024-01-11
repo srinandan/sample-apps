@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package odr
+package ordersdata
 
 import (
 	"encoding/json"
@@ -24,15 +24,15 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/srinandan/sample-apps/common"
-	types "github.com/srinandan/sample-apps/common/types"
+	common "internal/common"
+	types "internal/datatypes"
 )
 
-//Orders
+// Orders
 var orders = []types.Order{}
 
 func ReadOrdersFile() error {
-	orderListBytes, err := Asset("../data/orders.json")
+	orderListBytes, err := Asset("../db/orders.json")
 	if err != nil {
 		return err
 	}
@@ -67,8 +67,8 @@ func getId() string {
 }
 
 func getInventoryEndpoint() string {
-	//endpoint to reach the inventory service
-	var inventoryEndpoint = os.Getenv("INVENTORY")
+	// endpoint to reach the inventory service
+	inventoryEndpoint := os.Getenv("INVENTORY")
 
 	if inventoryEndpoint == "" {
 		return "http://inventory.apps.svc.cluster.local:8080"
@@ -78,7 +78,6 @@ func getInventoryEndpoint() string {
 }
 
 func GetOrderItem(id string) (types.Item, error) {
-
 	var req *http.Request
 
 	item := types.Item{}

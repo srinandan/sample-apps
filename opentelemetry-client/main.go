@@ -20,11 +20,10 @@ import (
 	"go.opentelemetry.io/otel/trace"
 )
 
-//Version
+// Version
 var Version string
 
 func invokeMessage(endpoint string, apikey string, enableTLS bool, skipVerify bool) error {
-
 	var transport *http.Transport
 
 	if enableTLS {
@@ -61,7 +60,6 @@ func invokeMessage(endpoint string, apikey string, enableTLS bool, skipVerify bo
 
 		return err
 	}(ctx)
-
 	if err != nil {
 		return err
 	}
@@ -79,15 +77,14 @@ func usage() {
 	fmt.Println("")
 	fmt.Println("Options:")
 	fmt.Println("endpoint    = hostname or ip of websocket server; default=http://localhost:8080/test1")
-	//fmt.Println("project     = project id to publish stackdriver trace")
-	//fmt.Println("token       = OAuth Bearer token")
+	// fmt.Println("project     = project id to publish stackdriver trace")
+	// fmt.Println("token       = OAuth Bearer token")
 	fmt.Println("traceType   = 0 = stdout, 1 = zipkin; default = 0")
 	fmt.Println("apikey      = API Key")
 	fmt.Println("skipVerify  = Skip verification of server cert; default=false")
 }
 
 func main() {
-
 	var err error
 
 	common.InitLog()
@@ -104,14 +101,14 @@ func main() {
 		}
 	}()
 
-	var endpoint, apiKey string //token
+	var endpoint, apiKey string // token
 	var enableTLS, skipVerify, help bool
 	var traceType int
 	var u *url.URL
 
 	flag.StringVar(&endpoint, "endpoint", "http://localhost:8080/test1", "API endpoint")
-	//flag.StringVar(&projectid, "project", "gcp-project", "GCP Project")
-	//flag.StringVar(&token, "token", "", "OAuth Bearer Token")
+	// flag.StringVar(&projectid, "project", "gcp-project", "GCP Project")
+	// flag.StringVar(&token, "token", "", "OAuth Bearer Token")
 	flag.StringVar(&apiKey, "apikey", "", "API Key")
 	flag.IntVar(&traceType, "traceType", 0, "Trace exporter type: 0 = stdout, 1 = zipkin; default = 0")
 	flag.BoolVar(&skipVerify, "skipVerify", false, "SKip TLS verification")

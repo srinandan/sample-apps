@@ -17,22 +17,22 @@ package main
 
 import (
 	"context"
-
-	"github.com/gorilla/mux"
-	common "github.com/srinandan/sample-apps/common"
-	apis "github.com/srinandan/sample-apps/tracking/cmd/client/apis"
-	"github.com/srinandan/sample-apps/tracking/cmd/client/app"
-
 	"net/http"
 	"os"
 	"os/signal"
 	"time"
+
+	common "internal/common"
+
+	"github.com/gorilla/mux"
+	apis "github.com/srinandan/sample-apps/tracking/cmd/client/apis"
+	"github.com/srinandan/sample-apps/tracking/cmd/client/app"
 )
 
 func main() {
 	var wait time.Duration
 
-	//initialize app
+	// initialize app
 	app.Initialize()
 
 	r := mux.NewRouter()
@@ -49,7 +49,7 @@ func main() {
 
 	common.Info.Println("Starting server - ", common.GetAddress())
 
-	//the following code is from gorilla mux samples
+	// the following code is from gorilla mux samples
 	srv := &http.Server{
 		Addr:         common.GetAddress(),
 		WriteTimeout: time.Second * 15,
@@ -96,7 +96,7 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), wait)
 	defer cancel()
 
-	//close connection
+	// close connection
 	apis.CloseStreamClient()
 
 	// Doesn't block if no connections, but will otherwise wait

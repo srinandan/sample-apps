@@ -103,7 +103,6 @@ func invokeMessage(projectid string, endpoint string, apikey string) {
 }
 
 func main() {
-
 	projectid := os.Getenv("projectid")
 	endpoint := os.Getenv("endpoint")
 	apikey := os.Getenv("apikey")

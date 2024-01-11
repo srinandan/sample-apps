@@ -22,10 +22,10 @@ import (
 	"strconv"
 	"time"
 
-	types "github.com/srinandan/sample-apps/common/types"
+	types "internal/datatypes"
 )
 
-//Customers
+// Customers
 var customers = []types.Customer{}
 
 func ReadFile() error {

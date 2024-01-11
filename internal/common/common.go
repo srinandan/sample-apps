@@ -16,31 +16,23 @@ package common
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"strconv"
 	"strings"
-	"time"
 
-	"contrib.go.opencensus.io/exporter/jaeger"
-	"contrib.go.opencensus.io/exporter/stackdriver"
 	"github.com/gorilla/mux"
-	"go.opencensus.io/plugin/ocgrpc"
-	"go.opencensus.io/plugin/ochttp"
-	"go.opencensus.io/stats/view"
-	"go.opencensus.io/trace"
 )
 
-//log levels, default is error
+// log levels, default is error
 var (
 	Info  *log.Logger
 	Error *log.Logger
 )
 
-//ErrorMessage hold the return value when there is an error
+// ErrorMessage hold the return value when there is an error
 type ErrorMessage struct {
 	StatusCode int    `json:"status_code,omitempty"`
 	Message    string `json:"message,omitempty"`
@@ -48,18 +40,22 @@ type ErrorMessage struct {
 
 var errorMessage = ErrorMessage{StatusCode: http.StatusInternalServerError}
 
-//Address to start server
+// Address to start server
 const address = "0.0.0.0:"
 
-const defaultPort = "8080"
-const defaultHealthPort = "8090"
+const (
+	defaultPort       = "8080"
+	defaultHealthPort = "8090"
+)
 
-const defaultgRPCPort = "50051"
-const defaultgRPCHealthPort = "5000"
+const (
+	defaultgRPCPort       = "50051"
+	defaultgRPCHealthPort = "5000"
+)
 
-//InitLog function initializes the logger objects
+// InitLog function initializes the logger objects
 func InitLog() {
-	var infoHandle = ioutil.Discard
+	infoHandle := ioutil.Discard
 
 	debug, _ := strconv.ParseBool(os.Getenv("DEBUG"))
 
@@ -78,7 +74,7 @@ func InitLog() {
 		log.Ldate|log.Ltime|log.Lshortfile)
 }
 
-//GetHealthAddress returns the healthcheck port
+// GetHealthAddress returns the healthcheck port
 func GetHealthAddress() string {
 	port := os.Getenv("HEALTH_PORT")
 	if port == "" {
@@ -87,7 +83,7 @@ func GetHealthAddress() string {
 	return address + port
 }
 
-//GetAddress returns the REST API port for the server to listen to
+// GetAddress returns the REST API port for the server to listen to
 func GetAddress() string {
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -96,7 +92,7 @@ func GetAddress() string {
 	return address + port
 }
 
-//GetgRPCPort returns the gRPC port for the server to listen to
+// GetgRPCPort returns the gRPC port for the server to listen to
 func GetgRPCPort() string {
 	port := os.Getenv("GRPC_PORT")
 	if port == "" {
@@ -105,7 +101,7 @@ func GetgRPCPort() string {
 	return port
 }
 
-//GetgRPCHealthPort returns the gRPC port for the server to listen to
+// GetgRPCHealthPort returns the gRPC port for the server to listen to
 func GetgRPCHealthPort() string {
 	port := os.Getenv("GRPC_HEALTH_PORT")
 	if port == "" {
@@ -114,7 +110,7 @@ func GetgRPCHealthPort() string {
 	return port
 }
 
-//HealthHandler handles kubernetes healthchecks
+// HealthHandler handles kubernetes healthchecks
 func HealthHandler(w http.ResponseWriter, r *http.Request) {
 	_ = json.NewEncoder(w).Encode(map[string]bool{"ok": true})
 }
@@ -130,7 +126,7 @@ func ErrorHandler(w http.ResponseWriter, err error) {
 	}
 }
 
-//NotFoundHandler returns a 404 when an entity is not found
+// NotFoundHandler returns a 404 when an entity is not found
 func NotFoundHandler(w http.ResponseWriter, msg string) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusNotFound)
@@ -143,7 +139,7 @@ func NotFoundHandler(w http.ResponseWriter, msg string) {
 	}
 }
 
-//BadRequestHandler returns a 400 when the client sends an incorrect payload
+// BadRequestHandler returns a 400 when the client sends an incorrect payload
 func BadRequestHandler(w http.ResponseWriter, err error) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusBadRequest)
@@ -156,7 +152,7 @@ func BadRequestHandler(w http.ResponseWriter, err error) {
 	}
 }
 
-//ResponseHandler returns a 200 when the response is successful
+// ResponseHandler returns a 200 when the response is successful
 func ResponseHandler(w http.ResponseWriter, response interface{}, text bool) {
 	if !text {
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
@@ -171,7 +167,7 @@ func ResponseHandler(w http.ResponseWriter, response interface{}, text bool) {
 			w.Write([]byte(str))
 		}
 	}
-	//w.(http.Flusher).Flush()
+	// w.(http.Flusher).Flush()
 }
 
 func PermissionDeniedHandler(w http.ResponseWriter, err error) {
@@ -186,83 +182,10 @@ func PermissionDeniedHandler(w http.ResponseWriter, err error) {
 	}
 }
 
-func initStats(exporter *stackdriver.Exporter) {
-	view.SetReportingPeriod(60 * time.Second)
-	view.RegisterExporter(exporter)
-	if err := view.Register(ocgrpc.DefaultServerViews...); err != nil {
-		Info.Println("Error registering default server views")
-	} else {
-		Info.Println("Registered default server views")
-	}
-}
-
-func initJaegerTracing(serviceName string) {
-	svcAddr := os.Getenv("JAEGER_SERVICE_ADDR")
-	if svcAddr == "" {
-		Info.Println("jaeger initialization disabled.")
-		return
-	}
-	// Register the Jaeger exporter to be able to retrieve
-	// the collected spans.
-	exporter, err := jaeger.NewExporter(jaeger.Options{
-		Endpoint: fmt.Sprintf("http://%s", svcAddr),
-		Process: jaeger.Process{
-			ServiceName: serviceName,
-		},
-	})
-	if err != nil {
-		log.Fatal(err)
-	}
-	trace.RegisterExporter(exporter)
-	Info.Println("jaeger initialization completed.")
-}
-
-func initStackdriverTracing() {
-	for i := 1; i <= 3; i++ {
-		exporter, err := stackdriver.NewExporter(stackdriver.Options{})
-		if err != nil {
-			Error.Printf("failed to initialize Stackdriver exporter: %+v\n", err)
-		} else {
-			trace.RegisterExporter(exporter)
-			trace.ApplyConfig(trace.Config{DefaultSampler: trace.AlwaysSample()})
-			Info.Println("registered Stackdriver tracing")
-
-			// Register the views to collect server stats.
-			initStats(exporter)
-			return
-		}
-		d := time.Second * 10 * time.Duration(i)
-		Info.Printf("sleeping %v to retry initializing Stackdriver exporter\n", d)
-		time.Sleep(d)
-	}
-	Info.Println("could not initialize Stackdriver exporter after retrying, giving up")
-}
-
-func InitTracing(serviceName string) {
-	initJaegerTracing(serviceName)
-	initStackdriverTracing()
-}
-
 func Middleware() mux.MiddlewareFunc {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-
 			printHeaders(req)
-
-			route := mux.CurrentRoute(req)
-			span := trace.FromContext(req.Context())
-
-			if route == nil || span == nil {
-				next.ServeHTTP(w, req)
-
-				return
-			}
-
-			if name := getRouteName(route, req); name != "" {
-				span.SetName(name)
-				ochttp.SetRoute(req.Context(), name)
-			}
-
 			next.ServeHTTP(w, req)
 		})
 	}
@@ -282,7 +205,7 @@ func getRouteName(route *mux.Route, req *http.Request) string {
 
 func printHeaders(req *http.Request) {
 	headerBytes, _ := json.Marshal(req.Header)
-	//don't print kubernetes probe
+	// don't print kubernetes probe
 	if !strings.Contains(req.Header.Get("User-Agent"), "kube-probe") {
 		Info.Println(string(headerBytes))
 	}

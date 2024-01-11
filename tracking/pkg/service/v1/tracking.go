@@ -22,9 +22,10 @@ import (
 	"io/ioutil"
 	"time"
 
+	"internal/common"
+
 	"github.com/golang/protobuf/ptypes"
 	empty "github.com/golang/protobuf/ptypes/empty"
-	"github.com/srinandan/sample-apps/common"
 	v1 "github.com/srinandan/sample-apps/tracking/pkg/api/v1"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -71,7 +72,6 @@ func NewShipmentService() (v1.ShipmentServer, error) {
 }
 
 func (s *ShipmentServer) GetTracking(ctx context.Context, req *v1.GetTrackingRequest) (*v1.Tracking, error) {
-
 	for _, tracking := range trackings {
 		if tracking.TrackingId == req.TrackingId {
 			return &v1.Tracking{
@@ -90,7 +90,6 @@ func (s *ShipmentServer) GetTracking(ctx context.Context, req *v1.GetTrackingReq
 }
 
 func (s *ShipmentServer) ListTracking(ctx context.Context, empty *empty.Empty) (*v1.ListTrackingResponse, error) {
-
 	listTrackingResponse := v1.ListTrackingResponse{}
 
 	if len(trackings) == 0 {
@@ -112,7 +111,6 @@ func (s *ShipmentServer) ListTracking(ctx context.Context, empty *empty.Empty) (
 }
 
 func (s *ShipmentServer) NotifyTracking(svr v1.Shipment_NotifyTrackingServer) error {
-
 	ctx := svr.Context()
 
 	getCreds(svr)

@@ -28,7 +28,7 @@ import (
 	types "github.com/srinandan/sample-apps/common/types"
 )
 
-//Orders
+// Orders
 var orders = []types.Order{}
 
 func ReadOrdersFile() error {
@@ -67,8 +67,8 @@ func getId() string {
 }
 
 func getInventoryEndpoint() string {
-	//endpoint to reach the inventory service
-	var inventoryEndpoint = os.Getenv("INVENTORY")
+	// endpoint to reach the inventory service
+	inventoryEndpoint := os.Getenv("INVENTORY")
 
 	if inventoryEndpoint == "" {
 		return "http://inventory.apps.svc.cluster.local:8080"
@@ -78,7 +78,6 @@ func getInventoryEndpoint() string {
 }
 
 func GetOrderItem(id string) (types.Item, error) {
-
 	var req *http.Request
 
 	item := types.Item{}
