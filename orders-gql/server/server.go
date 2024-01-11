@@ -17,8 +17,9 @@ package main
 import (
 	"net/http"
 
+	common "internal/common"
+
 	"github.com/99designs/gqlgen/handler"
-	common "github.com/srinandan/sample-apps/common"
 	gql "github.com/srinandan/sample-apps/orders-gql/gql"
 	"github.com/srinandan/sample-apps/orders-gql/odr"
 	resolvers "github.com/srinandan/sample-apps/orders-gql/resolvers"
