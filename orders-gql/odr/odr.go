@@ -24,8 +24,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/srinandan/sample-apps/common"
-	types "github.com/srinandan/sample-apps/common/types"
+	"internal/common"
+	types "internal/datatypes"
 )
 
 // Orders
