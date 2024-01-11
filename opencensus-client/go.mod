@@ -8,7 +8,7 @@ require (
 	github.com/aws/aws-sdk-go v1.38.7 // indirect
 	github.com/census-instrumentation/opencensus-proto v0.3.0 // indirect
 	go.opencensus.io v0.23.0
-	golang.org/x/net v0.7.0 // indirect
+	golang.org/x/net v0.17.0 // indirect
 	golang.org/x/oauth2 v0.0.0-20210323180902-22b0adad7558 // indirect
 	google.golang.org/api v0.43.0 // indirect
 	google.golang.org/genproto v0.0.0-20210325224202-eed09b1b5210 // indirect
