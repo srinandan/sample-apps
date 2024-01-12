@@ -24,7 +24,7 @@ import (
 	common "internal/common"
 	types "internal/datatypes"
 
-	data "github.com/srinandan/sample-apps/customers/datastore"
+	data "customersdata"
 )
 
 func ListCustomerHandler(w http.ResponseWriter, r *http.Request) {

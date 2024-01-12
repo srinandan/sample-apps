@@ -46,7 +46,7 @@ spec:
         version: v1
         managed-by: apigee
     spec:
-      serviceAccountName: apps    
+      serviceAccountName: apps
       containers:
       - image: orders-gql
         imagePullPolicy: IfNotPresent
@@ -54,24 +54,11 @@ spec:
         ports:
         - containerPort: 8080
         env:
-          - name: GOOGLE_APPLICATION_CREDENTIALS
-            value: /etc/secret/client_secret.json #ensure the file name matches the kubectl secret
-          - name: DEBUG
-            value: "true"
           - name: ORDERS
             value: "http://orders.apps.svc.cluster.local:8080"
         securityContext:
           runAsNonRoot: true
-          runAsUser: 20001
-          runAsGroup: 20000
           allowPrivilegeEscalation: false
-          capabilities:
-            # https://istio.io/latest/docs/ops/deployment/requirements/
-            add:
-              - NET_ADMIN
-              - NET_RAW
-            drop:
-              - ALL
         resources:
           requests:
             cpu: 50m
@@ -85,28 +72,24 @@ spec:
             path: /healthz
             port: 8080
           initialDelaySeconds: 20
-          periodSeconds: 5            
-        volumeMounts:
-          - mountPath: /etc/secret
-            name: svc-account-volume
-            readOnly: true
-      #serviceAccount: app-sa
-      #serviceAccountName: app-sa
-      volumes:
-      - name: svc-account-volume
-        secret:
-          defaultMode: 420
-          secretName: google-auth-svc-account
-          optional: true
-      imagePullSecrets:
-       - name: gcrsecret      
-      affinity:
-        nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - preference:
-              matchExpressions:
-              - key: cloud.google.com/gke-nodepool
-                operator: In
-                values:
-                - apps
-            weight: 100
+          periodSeconds: 5
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: orders-gql
+  namespace: apps
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: orders-gql
+  minReplicas: 1
+  maxReplicas: 25
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50

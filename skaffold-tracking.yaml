@@ -17,21 +17,21 @@ kind: Config
 build:
   artifacts:
   - image: tracking
-    context: tracking
+    context: .
     docker:
-      cacheFrom: 
-        - golang:latest
-        - alpine:latest    
-      dockerfile: ./Dockerfile.server
+      dockerfile: ./tracking/Dockerfile.server
+      cacheFrom:
+        - golang:1.21
+        - gcr.io/distroless/static-debian11:nonroot
   - image: tracking-client
-    context: tracking
+    context: .
     docker:
-      cacheFrom: 
-        - golang:latest
-        - alpine:latest
-      dockerfile: ./Dockerfile.client
+      dockerfile: ./tracking/Dockerfile.client
+      cacheFrom:
+        - golang:1.21
+        - gcr.io/distroless/static-debian11:nonroot
   tagPolicy:
-      gitCommit: {}                         
+      gitCommit: {}
 deploy:
   kubectl:
     flags:

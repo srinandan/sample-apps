@@ -17,13 +17,14 @@ kind: Config
 build:
   artifacts:
   - image: websockets
-    context: websockets/server
+    context: .
     docker:
-      cacheFrom: 
-        - golang:latest
-        - alpine:latest
+      dockerfile: ./websockets/Dockerfile
+      cacheFrom:
+        - golang:1.21
+        - gcr.io/distroless/static-debian11:nonroot
   tagPolicy:
-      gitCommit: {}                         
+      gitCommit: {}
 deploy:
   kubectl:
     flags:

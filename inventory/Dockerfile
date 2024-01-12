@@ -14,26 +14,39 @@
 
 #docker build -t gcr.io/project-id/inventory .
 #docker run -d -p 8080:8080 --name inventory -e DEBUG="true" gcr.io/project-id/inventory
-FROM golang:latest as builder
-ADD . /go/src/inventory 
+
+FROM golang:1.21 as builder
+
+ARG TAG
+ARG COMMIT
+
+ADD inventory/apis /go/src/inventory/apis
+ADD inventory/app /go/src/inventory/app
+ADD inventory/data /go/src/inventory/data
+ADD inventory/db /go/src/inventory/db
+ADD internal/common /go/src/internal/common
+ADD internal/datatypes /go/src/internal/datatypes
+
+COPY inventory/main.go /go/src/inventory/main.go
+COPY inventory/go.mod inventory/go.sum /go/src/inventory/
+
 WORKDIR /go/src/inventory
-COPY . /go/src/inventory
-RUN groupadd -r -g 20000 app && useradd -M -u 20001 -g 0 -r -c "Default app user" app && chown -R 20001:0 /go
+
 ENV GO111MODULE=on
+RUN go mod tidy
 RUN go mod download
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath  -a -ldflags '-s -w -extldflags "-static"' -o /go/bin/inventory
+RUN date +%FT%H:%I:%M+%Z > /tmp/date
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -buildvcs=true -a -gcflags='all="-l"' -ldflags='-s -w -extldflags "-static" -X main.version='${TAG}' -X main.commit='${COMMIT}' -X main.date='$(cat /tmp/date) -o /go/bin/inventory /go/src/inventory/main.go
 
-#without these certificates, we cannot verify the JWT token
-FROM alpine:latest as certs
-RUN apk --update add ca-certificates
+FROM gcr.io/distroless/static-debian11:nonroot
+LABEL org.opencontainers.image.url='https://github.com/srinandan/sample-apps/inventory' \
+    org.opencontainers.image.documentation='https://github.com/srinandan/sample-apps' \
+    org.opencontainers.image.source='https://github.com/srinandan/sample-apps/inventory' \
+    org.opencontainers.image.vendor='Google LLC' \
+    org.opencontainers.image.licenses='Apache-2.0' \
+    org.opencontainers.image.description='A set of sample microservices'
 
-FROM scratch
-WORKDIR /
-COPY --from=builder /go/bin/inventory .
-COPY --from=builder /go/src/inventory/items.json .
-COPY --from=builder /etc/passwd /etc/group /etc/shadow /etc/
-COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 20001
+COPY --from=builder /go/bin/inventory /
 EXPOSE 8080
 EXPOSE 8090
-CMD ["./inventory"]
+CMD [ "/inventory" ]

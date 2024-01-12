@@ -24,11 +24,11 @@ import (
 	common "internal/common"
 	types "internal/datatypes"
 
-	items "github.com/srinandan/sample-apps/inventory/items"
+	data "inventorydata"
 )
 
 func ListInventoryHandler(w http.ResponseWriter, r *http.Request) {
-	items := items.ListItems()
+	items := data.ListItems()
 
 	common.ResponseHandler(w, items, false)
 }
@@ -36,7 +36,7 @@ func ListInventoryHandler(w http.ResponseWriter, r *http.Request) {
 func GetInventoryHandler(w http.ResponseWriter, r *http.Request) {
 	// read path variables
 	vars := mux.Vars(r)
-	item, pos := items.GetItem(vars["id"])
+	item, pos := data.GetItem(vars["id"])
 
 	if pos != -1 {
 		common.ResponseHandler(w, item, false)
@@ -62,7 +62,7 @@ func CreateInventoryHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	item = items.CreateItem(item)
+	item = data.CreateItem(item)
 
 	common.ResponseHandler(w, item, false)
 }
@@ -70,7 +70,7 @@ func CreateInventoryHandler(w http.ResponseWriter, r *http.Request) {
 func DeleteInventoryHandler(w http.ResponseWriter, r *http.Request) {
 	// read path variables
 	vars := mux.Vars(r)
-	err := items.DeleteItem(vars["id"])
+	err := data.DeleteItem(vars["id"])
 
 	if err != nil {
 		common.NotFoundHandler(w, "item not found")

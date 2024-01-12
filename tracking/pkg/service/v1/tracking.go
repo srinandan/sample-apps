@@ -19,7 +19,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"time"
 
 	"internal/common"
@@ -45,7 +44,7 @@ type Tracking struct {
 var trackings = []Tracking{}
 
 func ReadTrackingFile() error {
-	trackingBytes, err := ioutil.ReadFile("tracking.json")
+	trackingBytes, err := Asset("../../../db/tracking.json")
 	if err != nil {
 		return err
 	}

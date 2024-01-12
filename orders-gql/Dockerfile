@@ -14,24 +14,39 @@
 
 #docker build -t gcr.io/project-id/orders-gql .
 #docker run -d -p 8080:8080 --name orders-gql -e DEBUG="true" gcr.io/project-id/orders-gql
-FROM golang:latest as builder
-ADD . /go/src/orders-gql 
+FROM golang:1.21 as builder
+
+ARG TAG
+ARG COMMIT
+
+ADD orders-gql/app /go/src/orders-gql/app
+ADD orders-gql/data /go/src/orders-gql/data
+ADD orders-gql/gql /go/src/orders-gql/gql
+ADD orders-gql/models /go/src/orders-gql/models
+ADD orders-gql/odr /go/src/orders-gql/odr
+ADD orders-gql/resolvers /go/src/orders-gql/resolvers
+ADD orders-gql/server /go/src/orders-gql/server
+ADD internal/common /go/src/internal/common
+ADD internal/datatypes /go/src/internal/datatypes
+
+COPY orders-gql/go.mod orders-gql/go.sum /go/src/orders-gql/
+
 WORKDIR /go/src/orders-gql
-COPY . /go/src/orders-gql
-RUN groupadd -r -g 20000 app && useradd -M -u 20001 -g 0 -r -c "Default app user" app && chown -R 20001:0 /go
+
 ENV GO111MODULE=on
+RUN go mod tidy
 RUN go mod download
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath  -a -ldflags '-s -w -extldflags "-static"' -o /go/bin/orders-gql server/server.go
+RUN date +%FT%H:%I:%M+%Z > /tmp/date
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -buildvcs=true -a -gcflags='all="-l"' -ldflags='-s -w -extldflags "-static" -X main.version='${TAG}' -X main.commit='${COMMIT}' -X main.date='$(cat /tmp/date) -o /go/bin/orders-gql /go/src/orders-gql/server/server.go
 
-#without these certificates, we cannot verify the JWT token
-FROM alpine:latest as certs
-RUN apk --update add ca-certificates
+FROM gcr.io/distroless/static-debian11:nonroot
+LABEL org.opencontainers.image.url='https://github.com/srinandan/sample-apps/orders-gql' \
+    org.opencontainers.image.documentation='https://github.com/srinandan/sample-apps' \
+    org.opencontainers.image.source='https://github.com/srinandan/sample-apps/orders-gql' \
+    org.opencontainers.image.vendor='Google LLC' \
+    org.opencontainers.image.licenses='Apache-2.0' \
+    org.opencontainers.image.description='A set of sample microservices'
 
-FROM scratch
-WORKDIR /
-COPY --from=builder /go/bin/orders-gql .
-COPY --from=builder /etc/passwd /etc/group /etc/shadow /etc/
-COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 20001
+COPY --from=builder /go/bin/orders-gql /
 EXPOSE 8080
-CMD ["./orders-gql"]
+CMD [ "/orders-gql" ]

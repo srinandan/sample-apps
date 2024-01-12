@@ -17,7 +17,7 @@ package app
 import (
 	common "internal/common"
 
-	customers "github.com/srinandan/sample-apps/customers/datastore"
+	data "customersdata"
 )
 
 // Initialize logging, context, sec mgr and kms
@@ -25,7 +25,7 @@ func Initialize() {
 	// init logging
 	common.InitLog()
 	// Read Customer File
-	if err := customers.ReadFile(); err != nil {
+	if err := data.ReadFile(); err != nil {
 		common.Error.Println("error reading inventory file ", err)
 	}
 }
