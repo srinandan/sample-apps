@@ -15,10 +15,10 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
-
-	common "internal/common"
 
 	"github.com/gorilla/websocket"
 )
@@ -26,12 +26,10 @@ import (
 var upgrader = websocket.Upgrader{}
 
 func main() {
-	// init logging
-	common.InitLog()
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/v1/ws", wsResponse)
-	mux.HandleFunc("/healthz", common.HealthHandler)
+	mux.HandleFunc("/healthz", HealthHandler)
 
 	// the following code is from gorilla mux samples
 	srv := &http.Server{
@@ -44,7 +42,7 @@ func main() {
 
 	err := srv.ListenAndServe()
 	if err != nil {
-		common.Error.Println("Error starting: ", err)
+		fmt.Println("Error starting: ", err)
 	}
 }
 
@@ -54,14 +52,19 @@ func wsResponse(w http.ResponseWriter, r *http.Request) {
 		for {
 			mType, msg, err := conn.ReadMessage()
 			if err != nil {
-				common.Error.Println(err)
+				fmt.Println(err)
 				conn.Close()
 				break
 			} else {
-				common.Info.Println("Received message: ", string(msg))
+				fmt.Println("Received message: ", string(msg))
 				reply := "Replying to: '" + string(msg) + "' with 'hello'"
 				conn.WriteMessage(mType, []byte(reply))
 			}
 		}
 	}(conn)
+}
+
+// HealthHandler handles kubernetes healthchecks
+func HealthHandler(w http.ResponseWriter, r *http.Request) {
+	_ = json.NewEncoder(w).Encode(map[string]bool{"ok": true})
 }

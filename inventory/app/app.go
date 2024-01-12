@@ -17,7 +17,7 @@ package app
 import (
 	common "internal/common"
 
-	items "github.com/srinandan/sample-apps/inventory/items"
+	data "inventorydata"
 )
 
 // Initialize logging, context, sec mgr and kms
@@ -25,7 +25,7 @@ func Initialize() {
 	// init logging
 	common.InitLog()
 	// ReadInventoryFile
-	if err := items.ReadInventoryFile(); err != nil {
+	if err := data.ReadInventoryFile(); err != nil {
 		common.Error.Println("error reading inventory file ", err)
 	}
 }

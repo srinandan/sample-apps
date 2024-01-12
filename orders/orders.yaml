@@ -56,28 +56,13 @@ spec:
             - containerPort: 8080
             - containerPort: 8090
           env:
-            - name: GOOGLE_APPLICATION_CREDENTIALS
-              value: /etc/secret/client_secret.json
             - name: INVENTORY
               value: 'http://inventory.apps.svc.cluster.local:8080'
             - name: DEBUG
               value: 'false'
-          # - name: DISABLE_TRACING
-          #   value: "1"
-          # - name: JAEGER_SERVICE_ADDR
-          #   value: "jaeger-collector:14268"  
           securityContext:
             runAsNonRoot: true
-            runAsUser: 20001
-            runAsGroup: 20000
             allowPrivilegeEscalation: false
-            capabilities:
-              # https://istio.io/latest/docs/ops/deployment/requirements/
-              add:
-                - NET_ADMIN
-                - NET_RAW
-              drop:
-                - ALL
           resources:
             requests:
               cpu: 50m
@@ -92,33 +77,11 @@ spec:
               port: 8090
             initialDelaySeconds: 20
             periodSeconds: 5
-          volumeMounts:
-            - mountPath: /etc/secret
-              name: svc-account-volume
-              readOnly: true
       #NOTE: This is not working with Istio. If not using Istio, comment these lines
       #serviceAccount: app-sa
       #serviceAccountName: app-sa
-      volumes:
-        - name: svc-account-volume
-          secret:
-            defaultMode: 420
-            secretName: google-auth-svc-account
-            optional: true
-      imagePullSecrets:
-       - name: gcrsecret      
-      affinity:
-        nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - preference:
-                matchExpressions:
-                  - key: cloud.google.com/gke-nodepool
-                    operator: In
-                    values:
-                      - apps
-              weight: 100
 ---
-apiVersion: autoscaling/v2beta2
+apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: orders
@@ -136,4 +99,4 @@ spec:
       name: cpu
       target:
         type: Utilization
-        averageUtilization: 50              
+        averageUtilization: 50

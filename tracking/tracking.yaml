@@ -33,7 +33,7 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: tracking  
+      app: tracking
   template:
     metadata:
       annotations:
@@ -45,7 +45,7 @@ spec:
         version: v1
         managed-by: apigee
     spec:
-      serviceAccountName: apps    
+      serviceAccountName: apps
       containers:
       - image: tracking
         imagePullPolicy: IfNotPresent
@@ -53,26 +53,11 @@ spec:
         ports:
         - containerPort: 50051
         env:
-          - name: GOOGLE_APPLICATION_CREDENTIALS
-            value: /etc/secret/client_secret.json #ensure the file name matches the kubectl secret
           - name: DEBUG
-            value: "true"
-        # - name: DISABLE_TRACING
-        #   value: "1"
-        # - name: JAEGER_SERVICE_ADDR
-        #   value: "jaeger-collector:14268"
+            value: "false"
         securityContext:
           runAsNonRoot: true
-          runAsUser: 20001
-          runAsGroup: 20000
           allowPrivilegeEscalation: false
-          capabilities:
-            # https://istio.io/latest/docs/ops/deployment/requirements/
-            add:
-              - NET_ADMIN
-              - NET_RAW
-            drop:
-              - ALL
         resources:
           requests:
             cpu: 50m
@@ -81,32 +66,10 @@ spec:
             ephemeral-storage: 5000Ki
             cpu: 50m
             memory: 128Mi
-        volumeMounts:
-          - mountPath: /etc/secret
-            name: svc-account-volume
-            readOnly: true
       #serviceAccount: app-sa
-      #serviceAccountName: app-sa  
-      volumes:
-      - name: svc-account-volume
-        secret:
-          defaultMode: 420
-          secretName: google-auth-svc-account
-          optional: true
-      imagePullSecrets:
-       - name: gcrsecret      
-      affinity:
-        nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - preference:
-              matchExpressions:
-              - key: cloud.google.com/gke-nodepool
-                operator: In
-                values:
-                - apps
-            weight: 100
+      #serviceAccountName: app-sa
 ---
-apiVersion: autoscaling/v2beta2
+apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: tracking
@@ -124,4 +87,4 @@ spec:
       name: cpu
       target:
         type: Utilization
-        averageUtilization: 50 
+        averageUtilization: 50

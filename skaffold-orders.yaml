@@ -15,21 +15,23 @@
 apiVersion: skaffold/v1beta2
 kind: Config
 build:
-  artifacts:      
+  artifacts:
   - image: orders
-    context: orders
+    context: .
     docker:
-      cacheFrom: 
-        - golang:latest
-        - alpine:latest
+      dockerfile: ./orders/Dockerfile
+      cacheFrom:
+        - golang:1.21
+        - gcr.io/distroless/static-debian11:nonroot
   - image: orders-gql
-    context: orders-gql
+    context: .
     docker:
-      cacheFrom: 
-        - golang:latest
-        - alpine:latest
+      dockerfile: ./orders-gql/Dockerfile
+      cacheFrom:
+        - golang:1.21
+        - gcr.io/distroless/static-debian11:debug
   tagPolicy:
-      gitCommit: {} 
+      gitCommit: {}
 deploy:
   kubectl:
     flags:

@@ -12,4 +12,8 @@ require github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indir
 
 replace internal/datatypes => ../internal/datatypes
 
+require customersdata v1.0.0
+
+replace customersdata => ../customers/data
+
 require github.com/gorilla/mux v1.8.1

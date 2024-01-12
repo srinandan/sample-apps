@@ -17,13 +17,14 @@ kind: Config
 build:
   artifacts:
   - image: inventory
-    context: inventory
+    context: .
     docker:
-      cacheFrom: 
-        - golang:latest
-        - alpine:latest        
+      dockerfile: ./inventory/Dockerfile
+      cacheFrom:
+        - golang:1.21
+        - gcr.io/distroless/static-debian11:nonroot
   tagPolicy:
-      gitCommit: {}                         
+      gitCommit: {}
 deploy:
   kubectl:
     flags:

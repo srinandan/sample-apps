@@ -1,26 +1,37 @@
 #docker build -f Dockerfile.client -t gcr.io/project-id/tracking-client .
 #docker run -d -p 50051:50051 --name tracking gcr.io/project-id/tracking-client
-FROM golang:latest as builder
-ADD ./api /go/src/tracking-client/api
-ADD ./cmd/client /go/src/tracking-client/cmd/client
-ADD ./pkg /go/src/tracking-client/pkg
-COPY go.mod go.sum /go/src/tracking-client/
+
+FROM golang:1.21 as builder
+
+ARG TAG
+ARG COMMIT
+
+ADD tracking/api /go/src/tracking-client/api
+ADD tracking/cmd/client /go/src/tracking-client/cmd/client
+ADD tracking/google /go/src/tracking-client/google
+ADD tracking/pkg /go/src/tracking-client/pkg
+ADD internal/common /go/src/internal/common
+ADD internal/datatypes /go/src/internal/datatypes
+
+COPY tracking/go.mod tracking/go.sum /go/src/tracking-client/
+
 WORKDIR /go/src/tracking-client
-RUN groupadd -r -g 20000 app &&  useradd -M -u 20001 -g 0 -r -c "Default app user" app && chown -R 20001:0 /go
+
 ENV GO111MODULE=on
+RUN go mod tidy
 RUN go mod download
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath  -a -ldflags '-s -w -extldflags "-static"' -o /go/bin/tracking-client /go/src/tracking-client/cmd/client/main.go
+RUN date +%FT%H:%I:%M+%Z > /tmp/date
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -buildvcs=true -a -gcflags='all="-l"' -ldflags='-s -w -extldflags "-static" -X main.version='${TAG}' -X main.commit='${COMMIT}' -X main.date='$(cat /tmp/date) -o /go/bin/tracking-client /go/src/tracking-client/cmd/client/main.go
 
-#without these certificates, we cannot verify the JWT token
-FROM alpine:latest as certs
-RUN apk --update add ca-certificates
+FROM gcr.io/distroless/static-debian11:nonroot
+LABEL org.opencontainers.image.url='https://github.com/srinandan/sample-apps/tracking' \
+    org.opencontainers.image.documentation='https://github.com/srinandan/sample-apps' \
+    org.opencontainers.image.source='https://github.com/srinandan/sample-apps/tracking' \
+    org.opencontainers.image.vendor='Google LLC' \
+    org.opencontainers.image.licenses='Apache-2.0' \
+    org.opencontainers.image.description='A set of sample microservices'
 
-FROM scratch
-WORKDIR /
-COPY --from=builder /go/bin/tracking-client .
-COPY --from=builder /etc/passwd /etc/group /etc/shadow /etc/
-COPY --from=certs /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-USER 20001
+COPY --from=builder /go/bin/tracking-client /
 EXPOSE 8080
 EXPOSE 8090
-CMD ["./tracking-client"]
+CMD [ "/tracking-client" ]

@@ -31,14 +31,14 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: client  
+      app: client
   template:
     metadata:
       labels:
         app: client
         version: v1
     spec:
-      serviceAccountName: apps    
+      serviceAccountName: apps
       containers:
       - image: client
         imagePullPolicy: Always
@@ -50,15 +50,3 @@ spec:
           limits:
             cpu: 50m
             memory: 128Mi
-      imagePullSecrets:
-       - name: gcrsecret      
-      affinity:
-        nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - preference:
-              matchExpressions:
-              - key: cloud.google.com/gke-nodepool
-                operator: In
-                values:
-                - apps
-            weight: 100
