@@ -33,5 +33,4 @@ LABEL org.opencontainers.image.url='https://github.com/srinandan/sample-apps/tra
 
 COPY --from=builder /go/bin/tracking-client /
 EXPOSE 8080
-EXPOSE 8090
 CMD [ "/tracking-client" ]

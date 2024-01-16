@@ -44,6 +44,8 @@ func main() {
 		Methods("GET")
 	r.HandleFunc("/items/{id}", apis.DeleteInventoryHandler).
 		Methods("DELETE")
+	r.HandleFunc("/healthz", common.HealthHandler).
+		Methods("GET")
 
 	common.Info.Println("Starting server - ", common.GetAddress())
 
@@ -58,26 +60,6 @@ func main() {
 
 	go func() {
 		if err := srv.ListenAndServe(); err != nil {
-			common.Error.Println(err)
-		}
-	}()
-
-	rHealth := mux.NewRouter()
-	rHealth.HandleFunc("/healthz", common.HealthHandler).
-		Methods("GET")
-
-	healthSvr := &http.Server{
-		Addr:         common.GetHealthAddress(),
-		WriteTimeout: time.Second * 15,
-		ReadTimeout:  time.Second * 15,
-		IdleTimeout:  time.Second * 60,
-		Handler:      rHealth,
-	}
-
-	common.Info.Println("Starting healthcheck - ", common.GetHealthAddress())
-
-	go func() {
-		if err := healthSvr.ListenAndServe(); err != nil {
 			common.Error.Println(err)
 		}
 	}()

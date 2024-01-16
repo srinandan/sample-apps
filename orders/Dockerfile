@@ -48,5 +48,4 @@ LABEL org.opencontainers.image.url='https://github.com/srinandan/sample-apps/ord
 
 COPY --from=builder /go/bin/orders /
 EXPOSE 8080
-EXPOSE 8090
 CMD [ "/orders" ]

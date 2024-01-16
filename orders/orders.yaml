@@ -54,7 +54,6 @@ spec:
           name: orders
           ports:
             - containerPort: 8080
-            - containerPort: 8090
           env:
             - name: INVENTORY
               value: 'http://inventory.apps.svc.cluster.local:8080'
@@ -74,7 +73,7 @@ spec:
           livenessProbe:
             httpGet:
               path: /healthz
-              port: 8090
+              port: 8080
             initialDelaySeconds: 20
             periodSeconds: 5
       #NOTE: This is not working with Istio. If not using Istio, comment these lines

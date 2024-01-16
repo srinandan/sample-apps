@@ -38,6 +38,5 @@ LABEL org.opencontainers.image.url='https://github.com/srinandan/sample-apps/web
     org.opencontainers.image.description='A set of sample microservices'
 
 COPY --from=builder /go/bin/websockets /
-EXPOSE 8080
-EXPOSE 8090
+EXPOSE 3000
 CMD [ "/websockets" ]

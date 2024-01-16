@@ -46,6 +46,8 @@ func main() {
 		Methods("GET")
 	r.HandleFunc("/customers/{id}", apis.DeleteCustomerHandler).
 		Methods("DELETE")
+	r.HandleFunc("/healthz", common.HealthHandler).
+		Methods("GET")
 
 	common.Info.Println("Starting server - ", common.GetAddress())
 

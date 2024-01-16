@@ -54,7 +54,6 @@ spec:
         name: inventory
         ports:
         - containerPort: 8080
-        - containerPort: 8090
         env:
           - name: DEBUG
             value: "false" #set to true to enable debug
@@ -72,7 +71,7 @@ spec:
         livenessProbe:
           httpGet:
             path: /healthz
-            port: 8090
+            port: 8080
           initialDelaySeconds: 20
           periodSeconds: 5
 ---

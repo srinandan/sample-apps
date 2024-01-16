@@ -46,6 +46,5 @@ LABEL org.opencontainers.image.url='https://github.com/srinandan/sample-apps/tra
     org.opencontainers.image.description='A set of sample microservices'
 
 COPY --from=builder /go/bin/tracking /
-EXPOSE 8080
-EXPOSE 8090
+EXPOSE 50051
 CMD [ "/tracking" ]

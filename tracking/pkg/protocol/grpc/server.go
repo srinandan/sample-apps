@@ -29,6 +29,9 @@ import (
 
 	common "internal/common"
 
+	"google.golang.org/grpc/health"
+	"google.golang.org/grpc/health/grpc_health_v1"
+
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	api "github.com/srinandan/sample-apps/tracking/pkg/api/v1"
 	service "github.com/srinandan/sample-apps/tracking/pkg/service/v1"
@@ -91,6 +94,8 @@ func RunServer(grpcPort string, restAddress string) error {
 			grpc_auth.StreamServerInterceptor(authorize),
 		),
 	)
+
+	grpc_health_v1.RegisterHealthServer(grpcServer, health.NewServer())
 
 	ShipmentServer, err := service.NewShipmentService()
 	if err != nil {
