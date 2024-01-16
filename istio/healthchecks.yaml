@@ -1,0 +1,74 @@
+apiVersion: networking.gke.io/v1
+kind: HealthCheckPolicy
+metadata:
+  name: orders-hc
+  namespace: apps
+spec:
+  default:
+    checkIntervalSec: 15
+    timeoutSec: 15
+    healthyThreshold: 1
+    unhealthyThreshold: 2
+    logConfig:
+      enabled: false
+    config:
+      type: HTTP
+      httpHealthCheck:
+        port: 8080
+        host: orders
+        requestPath: "/healthz"
+        proxyHeader: "NONE"
+  targetRef:
+    group: ""
+    kind: Service
+    name: orders
+---
+apiVersion: networking.gke.io/v1
+kind: HealthCheckPolicy
+metadata:
+  name: customers-hc
+  namespace: apps
+spec:
+  default:
+    checkIntervalSec: 15
+    timeoutSec: 15
+    healthyThreshold: 1
+    unhealthyThreshold: 2
+    logConfig:
+      enabled: false
+    config:
+      type: HTTP
+      httpHealthCheck:
+        port: 8080
+        host: customers
+        requestPath: "/healthz"
+        proxyHeader: "NONE"
+  targetRef:
+    group: ""
+    kind: Service
+    name: customers
+---
+apiVersion: networking.gke.io/v1
+kind: HealthCheckPolicy
+metadata:
+  name: orders-hc
+  namespace: apps
+spec:
+  default:
+    checkIntervalSec: 15
+    timeoutSec: 15
+    healthyThreshold: 1
+    unhealthyThreshold: 2
+    logConfig:
+      enabled: false
+    config:
+      type: HTTP
+      httpHealthCheck:
+        port: 8080
+        host: inventory
+        requestPath: "/healthz"
+        proxyHeader: "NONE"
+  targetRef:
+    group: ""
+    kind: Service
+    name: inventory

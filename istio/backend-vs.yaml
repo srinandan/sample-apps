@@ -1,4 +1,4 @@
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: backend-services
@@ -9,18 +9,6 @@ spec:
   hosts:
   - '*'
   http:
-  - match:
-    - uri:
-        regex: /api(/[^/]+)*/?
-    rewrite:
-      authority: api.nandanks-serverless.internal
-      uri: /orders
-    route:
-    - destination:
-        host: api.nandanks-serverless.internal
-        port:
-          number: 443
-    timeout: 5s
   - match:
     - uri:
         regex: /v1/httpbin(/[^/]+)*/?
@@ -36,8 +24,6 @@ spec:
   - match:
     - uri:
         regex: /customers(/[^/]+)*/?
-    rewrite:
-      authority: customers.apps.svc.cluster.local:8080
     route:
     - destination:
         host: customers.apps.svc.cluster.local
@@ -93,7 +79,7 @@ spec:
     - uri:
         regex: /shipping(/[^/]+)*/?
     rewrite:
-      uri: /v1/tracking        
+      uri: /v1/tracking
     route:
     - destination:
         host: tracking.apps.svc.cluster.local
@@ -109,35 +95,5 @@ spec:
         host: websockets.apps.svc.cluster.local
         port:
           number: 3000
-      weight: 100
-    timeout: 300s
-  - match:
-    - uri:
-        exact: /cert
-    route:
-    - destination:
-        host: keyservice.apps.svc.cluster.local
-        port:
-          number: 8080
-      weight: 100
-    timeout: 300s
-  - match:
-    - uri:
-        exact: /kid
-    route:
-    - destination:
-        host: keyservice.apps.svc.cluster.local
-        port:
-          number: 8080
-      weight: 100
-    timeout: 300s
-  - match:
-    - uri:
-        exact: /key
-    route:
-    - destination:
-        host: keyservice.apps.svc.cluster.local
-        port:
-          number: 8080
       weight: 100
     timeout: 300s

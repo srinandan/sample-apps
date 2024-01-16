@@ -1,0 +1,37 @@
+kind: HTTPRoute
+apiVersion: gateway.networking.k8s.io/v1beta1
+metadata:
+  name: sample-apps-routes
+  namespace: apps
+spec:
+  parentRefs:
+    - kind: Gateway
+      name: sample-apps-gateway
+      namespace: apps
+  hostnames:
+    - "sampleapps.endpoints.nandanks-151422.cloud.goog"
+  rules:
+    - matches:
+        - path:
+            value: /orders
+      backendRefs:
+        - name: orders
+          port: 8080
+    - matches:
+        - path:
+            value: /query
+      backendRefs:
+        - name: orders-gql
+          port: 8080
+    - matches:
+        - path:
+            value: /customers
+      backendRefs:
+        - name: customers
+          port: 8080
+    - matches:
+        - path:
+            value: /items
+      backendRefs:
+        - name: inventory
+          port: 8080

@@ -1,88 +1,88 @@
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
 metadata:
   name: orders-port
   namespace: apps
 spec:
   host: orders.apps.svc.cluster.local
-  trafficPolicy: 
+  trafficPolicy:
     portLevelSettings:
     - port:
         number: 8080
       loadBalancer:
         simple: ROUND_ROBIN
 ---
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
 metadata:
   name: inventory-port
   namespace: apps
 spec:
   host: inventory.apps.svc.cluster.local
-  trafficPolicy: 
+  trafficPolicy:
     portLevelSettings:
     - port:
         number: 8080
       loadBalancer:
         simple: ROUND_ROBIN
 ---
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
 metadata:
   name: orders-gql-port
   namespace: apps
 spec:
   host: orders-gql.apps.svc.cluster.local
-  trafficPolicy: 
+  trafficPolicy:
     portLevelSettings:
     - port:
         number: 8080
       loadBalancer:
         simple: ROUND_ROBIN
 ---
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
 metadata:
   name: tracking-port
   namespace: apps
 spec:
   host: tracking.apps.svc.cluster.local
-  trafficPolicy: 
+  trafficPolicy:
     portLevelSettings:
     - port:
         number: 50051
       loadBalancer:
         simple: ROUND_ROBIN
 ---
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
 metadata:
   name: tracking-client-port
   namespace: apps
 spec:
   host: tracking-client.apps.svc.cluster.local
-  trafficPolicy: 
+  trafficPolicy:
     portLevelSettings:
     - port:
         number: 8080
       loadBalancer:
         simple: ROUND_ROBIN
 ---
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
 metadata:
   name: customers-port
   namespace: apps
 spec:
   host: customers.apps.svc.cluster.local
-  trafficPolicy: 
+  trafficPolicy:
     portLevelSettings:
     - port:
         number: 8080
       loadBalancer:
         simple: ROUND_ROBIN
 ---
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
 metadata:
   name: client-port

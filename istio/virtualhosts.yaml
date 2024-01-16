@@ -1,4 +1,4 @@
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: customers
@@ -7,7 +7,7 @@ spec:
   hosts:
   - customers
   http:
-  - timeout: 5s  
+  - timeout: 5s
     rewrite:
       authority: customers.apps.svc.cluster.local:8080
     route:
@@ -16,7 +16,7 @@ spec:
         port:
           number: 8080
 ---
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: orders
@@ -25,7 +25,7 @@ spec:
   hosts:
   - orders
   http:
-  - timeout: 5s  
+  - timeout: 5s
     rewrite:
       authority: orders.apps.svc.cluster.local:8080
     route:
@@ -34,7 +34,7 @@ spec:
         port:
           number: 8080
 ---
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: inventory
@@ -45,14 +45,14 @@ spec:
   http:
   - timeout: 5s
     rewrite:
-      authority: inventory.apps.svc.cluster.local:8080   
+      authority: inventory.apps.svc.cluster.local:8080
     route:
     - destination:
         host: inventory.apps.svc.cluster.local
         port:
-          number: 8080        
+          number: 8080
 ---
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: orders-gql
@@ -63,14 +63,14 @@ spec:
   http:
   - timeout: 5s
     rewrite:
-      authority: orders-gql.apps.svc.cluster.local:8080     
+      authority: orders-gql.apps.svc.cluster.local:8080
     route:
     - destination:
         host: orders-gql.apps.svc.cluster.local
         port:
-          number: 8080        
+          number: 8080
 ---
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: tracking
@@ -79,16 +79,16 @@ spec:
   hosts:
   - tracking
   http:
-  - timeout: 5s  
+  - timeout: 5s
     rewrite:
-      authority: tracking.apps.svc.cluster.local:50051   
+      authority: tracking.apps.svc.cluster.local:50051
     route:
     - destination:
         host: tracking.apps.svc.cluster.local
         port:
-          number: 50051        
+          number: 50051
 ---
-apiVersion: networking.istio.io/v1alpha3
+apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: tracking-client
@@ -97,11 +97,11 @@ spec:
   hosts:
   - tracking-client
   http:
-  - timeout: 5s  
+  - timeout: 5s
     rewrite:
-      authority: tracking-client.apps.svc.cluster.local:8080   
+      authority: tracking-client.apps.svc.cluster.local:8080
     route:
     - destination:
         host: tracking-client.apps.svc.cluster.local
         port:
-          number: 8080        
+          number: 8080

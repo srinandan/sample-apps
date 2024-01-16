@@ -1,0 +1,21 @@
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: Gateway
+metadata:
+  name: sample-apps-gateway
+  namespace: apps
+spec:
+  gatewayClassName: gke-l7-global-external-managed
+  listeners:
+  - name: https
+    protocol: HTTPS
+    port: 443
+    tls:
+      mode: Terminate
+      options:
+        networking.gke.io/pre-shared-certs: sample-apps-cert
+    allowedRoutes:
+      kinds:
+      - kind: HTTPRoute
+  addresses:
+    - type: NamedAddress
+      value: sample-apps
