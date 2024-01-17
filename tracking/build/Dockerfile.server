@@ -11,7 +11,7 @@ ENV GO111MODULE=on
 RUN go mod download
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -a -ldflags='-s -w -extldflags "-static"' -o /go/bin/tracking /go/src/byoc/server/main.go
 
-FROM gcr.io/distroless/static-debian11
+FROM gcr.io/distroless/static-debian11:nonroot
 COPY --from=builder /go/bin/tracking /
 EXPOSE 50051
 EXPOSE 8080

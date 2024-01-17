@@ -51,7 +51,7 @@ spec:
 apiVersion: networking.gke.io/v1
 kind: HealthCheckPolicy
 metadata:
-  name: orders-hc
+  name: inventory-hc
   namespace: apps
 spec:
   default:
@@ -72,3 +72,53 @@ spec:
     group: ""
     kind: Service
     name: inventory
+---
+apiVersion: networking.gke.io/v1
+kind: HealthCheckPolicy
+metadata:
+  name: tracking-client-hc
+  namespace: apps
+spec:
+  default:
+    checkIntervalSec: 15
+    timeoutSec: 15
+    healthyThreshold: 1
+    unhealthyThreshold: 2
+    logConfig:
+      enabled: false
+    config:
+      type: HTTP
+      httpHealthCheck:
+        port: 8080
+        host: tracking-client
+        requestPath: "/healthz"
+        proxyHeader: "NONE"
+  targetRef:
+    group: ""
+    kind: Service
+    name: tracking-client
+---
+apiVersion: networking.gke.io/v1
+kind: HealthCheckPolicy
+metadata:
+  name: orders-gql-hc
+  namespace: apps
+spec:
+  default:
+    checkIntervalSec: 15
+    timeoutSec: 15
+    healthyThreshold: 1
+    unhealthyThreshold: 2
+    logConfig:
+      enabled: false
+    config:
+      type: HTTP
+      httpHealthCheck:
+        port: 8080
+        host: orders-gql
+        requestPath: "/"
+        proxyHeader: "NONE"
+  targetRef:
+    group: ""
+    kind: Service
+    name: orders-gql

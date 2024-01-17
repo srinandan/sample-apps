@@ -1,0 +1,33 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: sample-apps-issuer
+  namespace: apps
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: sample-apps-ca
+  namespace: apps
+spec:
+  isCA: true
+  commonName: sample-apps-ca
+  secretName: root-secret
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+  issuerRef:
+    name: sample-apps-issuer
+    kind: Issuer
+    group: cert-manager.io
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: samplea-apps-ca-issuer
+  namespace: apps
+spec:
+  ca:
+    secretName: root-secret

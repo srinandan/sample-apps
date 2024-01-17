@@ -1,0 +1,84 @@
+apiVersion: networking.gke.io/v1
+kind: GCPBackendPolicy
+metadata:
+  name: orders-iap-policy
+  namespace: apps
+spec:
+  default:
+    iap:
+      enabled: false
+      oauth2ClientSecret:
+        name: iap-secret
+      clientID: CLIENT_ID
+  targetRef:
+    group: ""
+    kind: Service
+    name: orders
+---
+apiVersion: networking.gke.io/v1
+kind: GCPBackendPolicy
+metadata:
+  name: tracking-iap-policy
+  namespace: apps
+spec:
+  default:
+    iap:
+      enabled: false
+      oauth2ClientSecret:
+        name: iap-secret
+      clientID: CLIENT_ID
+  targetRef:
+    group: ""
+    kind: Service
+    name: tracking-client
+---
+apiVersion: networking.gke.io/v1
+kind: GCPBackendPolicy
+metadata:
+  name: orders-gql-iap-policy
+  namespace: apps
+spec:
+  default:
+    iap:
+      enabled: false
+      oauth2ClientSecret:
+        name: iap-secret
+      clientID: CLIENT_ID
+  targetRef:
+    group: ""
+    kind: Service
+    name: orders-gql
+---
+apiVersion: networking.gke.io/v1
+kind: GCPBackendPolicy
+metadata:
+  name: inventory-iap-policy
+  namespace: apps
+spec:
+  default:
+    iap:
+      enabled: false
+      oauth2ClientSecret:
+        name: iap-secret
+      clientID: CLIENT_ID
+  targetRef:
+    group: ""
+    kind: Service
+    name: inventory
+---
+apiVersion: networking.gke.io/v1
+kind: GCPBackendPolicy
+metadata:
+  name: customers-iap-policy
+  namespace: apps
+spec:
+  default:
+    iap:
+      enabled: false
+      oauth2ClientSecret:
+        name: iap-secret
+      clientID: CLIENT_ID
+  targetRef:
+    group: ""
+    kind: Service
+    name: customers

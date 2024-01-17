@@ -29,7 +29,7 @@ build:
       dockerfile: ./orders-gql/Dockerfile
       cacheFrom:
         - golang:1.21
-        - gcr.io/distroless/static-debian11:debug
+        - gcr.io/distroless/static-debian11:nonroot
   tagPolicy:
       gitCommit: {}
 deploy:

@@ -35,3 +35,9 @@ spec:
       backendRefs:
         - name: inventory
           port: 8080
+    - matches:
+        - path:
+            value: /tracking
+      backendRefs:
+        - name: tracking-client
+          port: 8080
