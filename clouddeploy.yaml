@@ -1,0 +1,18 @@
+apiVersion: deploy.cloud.google.com/v1
+kind: DeliveryPipeline
+metadata:
+  name: sample-apps-pipeline
+description: main sample apps pipeline
+serialPipeline:
+  stages:
+  - targetId: dev
+    profiles: []
+---
+
+apiVersion: deploy.cloud.google.com/v1
+kind: Target
+metadata:
+  name: dev
+description: sample apps cluster
+gke:
+  cluster: projects/nandanks-151422/locations/us-west1/clusters/nandanks-151422

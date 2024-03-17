@@ -1,0 +1,73 @@
+apiVersion: skaffold/v4beta5
+kind: Config
+build:
+  artifacts:
+  - image: client
+    context: client
+    docker:
+      cacheFrom:
+        - alpine:latest
+  - image: customers
+    context: .
+    docker:
+      dockerfile: ./customers/Dockerfile
+      cacheFrom:
+        - golang:1.21
+        - gcr.io/distroless/static-debian11:nonroot
+  - image: inventory
+    context: .
+    docker:
+      dockerfile: ./inventory/Dockerfile
+      cacheFrom:
+        - golang:1.21
+        - gcr.io/distroless/static-debian11:nonroot
+  - image: orders
+    context: .
+    docker:
+      dockerfile: ./orders/Dockerfile
+      cacheFrom:
+        - golang:1.21
+        - gcr.io/distroless/static-debian11:nonroot
+  - image: orders-gql
+    context: .
+    docker:
+      dockerfile: ./orders-gql/Dockerfile
+      cacheFrom:
+        - golang:1.21
+        - gcr.io/distroless/static-debian11:nonroot
+  - image: tracking
+    context: .
+    docker:
+      dockerfile: ./tracking/Dockerfile.server
+      cacheFrom:
+        - golang:1.21
+        - gcr.io/distroless/static-debian11:nonroot
+  - image: tracking-client
+    context: .
+    docker:
+      dockerfile: ./tracking/Dockerfile.client
+      cacheFrom:
+        - golang:1.21
+        - gcr.io/distroless/static-debian11:nonroot
+  - image: websockets
+    context: .
+    docker:
+      dockerfile: ./websockets/Dockerfile
+      cacheFrom:
+        - golang:1.21
+        - gcr.io/distroless/static-debian11:nonroot
+  tagPolicy:
+      gitCommit: {}
+manifests:
+  rawYaml:
+  - kubernetes-manifests/*.yaml
+deploy:
+  kubectl:
+    flags:
+      global: ["--namespace=apps"]
+profiles:
+- name: gcb
+  build:
+    googleCloudBuild:
+      diskSizeGb: 10
+      machineType: N1_HIGHCPU_8
