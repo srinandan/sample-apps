@@ -37,8 +37,9 @@ spec:
       labels:
         app: load-test-customer
     spec:
+      serviceAccountName: apps
       containers:
-      - image: fortio
+      - image: loadgenerator
         imagePullPolicy: Always
         env:
         - name: POD_NAMESPACE
@@ -58,5 +59,6 @@ spec:
         - -qps
         - "5"
         - -quiet
-        - -k
-        - https://customers.${POD_NAMESPACE}.svc.cluster.local:8080/customers/600000
+        - -keepalive
+        - -allow-initial-errors
+        - http://customers.apps.svc.cluster.local:8080/customers

@@ -37,8 +37,9 @@ spec:
       labels:
         app: load-test-tracking
     spec:
+      serviceAccountName: apps
       containers:
-      - image: fortio
+      - image: loadgenerator
         imagePullPolicy: Always
         env:
         - name: POD_NAMESPACE
@@ -58,4 +59,6 @@ spec:
         - -qps
         - "1"
         - -quiet
-        - https://tracking.${POD_NAMESPACE}.svc.cluster.local:8080/tracking
+        - -keepalive
+        - -allow-initial-errors
+        - http://tracking-client.apps.svc.cluster.local:8080/tracking

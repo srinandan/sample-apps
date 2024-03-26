@@ -1,1 +1,1 @@
-FROM fortio/fortio:1.60.1
+FROM fortio/fortio:latest

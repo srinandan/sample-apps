@@ -37,8 +37,9 @@ spec:
       labels:
         app: load-test-inventory
     spec:
+      serviceAccountName: apps
       containers:
-      - image: fortio
+      - image: loadgenerator
         imagePullPolicy: Always
         env:
         - name: POD_NAMESPACE
@@ -58,4 +59,6 @@ spec:
         - -qps
         - "3"
         - -quiet
-        - https://inventory.${POD_NAMESPACE}.svc.cluster.local:8080/items
+        - -allow-initial-errors
+        - -keepalive
+        - http://inventory.apps.svc.cluster.local:8080/items
