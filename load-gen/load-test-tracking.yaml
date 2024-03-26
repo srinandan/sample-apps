@@ -15,34 +15,37 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: load-test-mock
+  name: load-test-tracking
   labels:
-    app: load-test-mock
+    app: load-test-tracking
 spec:
   clusterIP: None
   selector:
-    app: load-test-mock
+    app: load-test-tracking
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: load-test-mock
+  name: load-test-tracking
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: load-test-mock
+      app: load-test-tracking
   template:
     metadata:
       labels:
-        app: load-test-mock
-      annotations:
-        sidecar.istio.io/inject: "false"
+        app: load-test-tracking
     spec:
       containers:
-      - image: fortio/fortio
+      - image: fortio
         imagePullPolicy: Always
-        name: load-test-mock
+        env:
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        name: load-test-tracking
         ports:
         - containerPort: 8080
         resources:
@@ -53,9 +56,6 @@ spec:
         - -t
         - "0" #run forever
         - -qps
-        - "5"
+        - "1"
         - -quiet
-        - -k
-        - -H
-        - "x-api-key: yKV93DR6l6rQ0sgNSN9BpshbHQ2gQrM7Kmui44XuwE79q7ip"
-        - https://api.nandanks-serverless.internal/mockjson/json
+        - https://tracking.${POD_NAMESPACE}.svc.cluster.local:8080/tracking

@@ -1,5 +1,7 @@
 apiVersion: skaffold/v4beta5
 kind: Config
+metadata:
+  name: sample-apps
 build:
   artifacts:
   - image: client
@@ -61,6 +63,32 @@ build:
 manifests:
   rawYaml:
   - kubernetes-manifests/*.yaml
+deploy:
+  kubectl:
+    flags:
+      global: ["--namespace=apps"]
+profiles:
+- name: gcb
+  build:
+    googleCloudBuild:
+      diskSizeGb: 10
+      machineType: N1_HIGHCPU_8
+---
+apiVersion: skaffold/v4beta5
+kind: Config
+metadata:
+  name: loadgenerator
+build:
+  artifacts:
+  - image: loadgenerator
+    context: .
+    docker:
+      dockerfile: ./load-gen/Dockerfile
+  tagPolicy:
+      gitCommit: {}
+manifests:
+  rawYaml:
+  - load-gen/*.yaml
 deploy:
   kubectl:
     flags:

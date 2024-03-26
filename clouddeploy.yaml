@@ -15,4 +15,4 @@ metadata:
   name: dev
 description: sample apps cluster
 gke:
-  cluster: projects/nandanks-151422/locations/us-west1/clusters/nandanks-151422
+  cluster: projects/nandanks-151422/locations/us-west1/clusters/sample-apps

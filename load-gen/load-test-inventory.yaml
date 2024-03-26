@@ -15,32 +15,37 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: load-test-tracking
+  name: load-test-inventory
   labels:
-    app: load-test-tracking
+    app: load-test-inventory
 spec:
   clusterIP: None
   selector:
-    app: load-test-tracking
+    app: load-test-inventory
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: load-test-tracking
+  name: load-test-inventory
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: load-test-tracking
+      app: load-test-inventory
   template:
     metadata:
       labels:
-        app: load-test-tracking
+        app: load-test-inventory
     spec:
       containers:
-      - image: fortio/fortio
+      - image: fortio
         imagePullPolicy: Always
-        name: load-test-tracking
+        env:
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        name: load-test-inventory
         ports:
         - containerPort: 8080
         resources:
@@ -51,8 +56,6 @@ spec:
         - -t
         - "0" #run forever
         - -qps
-        - "1"
+        - "3"
         - -quiet
-        - -H
-        - "x-api-key: xxx"
-        - https://api.fazio.apigeeks.net/tracking
+        - https://inventory.${POD_NAMESPACE}.svc.cluster.local:8080/items
