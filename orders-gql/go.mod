@@ -12,7 +12,7 @@ replace internal/datatypes => ../internal/datatypes
 
 require (
 	github.com/99designs/gqlgen v0.17.5
-	github.com/vektah/gqlparser/v2 v2.4.2
+	github.com/vektah/gqlparser/v2 v2.5.14
 )
 
 require (
@@ -22,5 +22,4 @@ require (
 	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
-	github.com/stretchr/testify v1.8.1 // indirect
 )
